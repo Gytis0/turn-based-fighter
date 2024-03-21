@@ -1,0 +1,3 @@
+Add a filter to show only weapons or only armors
+
+Add delete item function (Delete by IDs)
