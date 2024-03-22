@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Items/Item")]
@@ -24,4 +23,6 @@ public class ItemData : ScriptableObject
         if (slot == HandSlot.LeftHand) return Quaternion.Euler(leftHandRotation);
         else return Quaternion.Euler(rightHandRotation);
     }
+
+    public string GetName() { return itemName; }
 }

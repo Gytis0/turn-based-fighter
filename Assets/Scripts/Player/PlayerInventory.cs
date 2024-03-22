@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PlayerInventory : MonoBehaviour
@@ -16,6 +18,7 @@ public class PlayerInventory : MonoBehaviour
     Transform inventoryUIroot;
     List<Transform> slots = new();
 
+
     private void Awake()
     {
         inventoryUIroot = GameObject.FindGameObjectWithTag("Inventory").transform;
@@ -23,7 +26,7 @@ public class PlayerInventory : MonoBehaviour
 
         foreach (Transform t in inventoryUIroot)
         {
-            slots.Add(t);
+            slots.Add(t.GetChild(0));
         }
 
         inputActions = new InputController();
@@ -35,11 +38,13 @@ public class PlayerInventory : MonoBehaviour
     private void OnEnable()
     {
         Interactable.onPickUp += AddItem;
+        DragAndDrop.onDrop += DropItem;
     }
 
     private void OnDisable()
     {
         Interactable.onPickUp -= AddItem;
+        DragAndDrop.onDrop -= DropItem;
     }
 
     void AddItem(GameObject item)
@@ -55,12 +60,31 @@ public class PlayerInventory : MonoBehaviour
         UpdateInventoryUI();
     }
 
+    void DropItem(ItemData data)
+    {
+        foreach (var item in items)
+        {
+            if(item.Value.GetItemData().GetName() == data.GetName())
+            {
+                GameObject droppedItem = ItemManager.GetItemObject(data.GetName());
+                Instantiate(droppedItem, transform.position, transform.rotation);
+
+                items.Remove(item.Key);
+                break;
+            }
+        }
+
+        UpdateInventoryUI();
+    }
+
     void UpdateInventoryUI()
     {
         Image tempImage;
+        ItemDataWrapper tempItemData;
         for (int i = 0; i < slots.Count; i++)
         {
             tempImage = slots[i].GetComponent<Image>();
+            tempItemData = slots[i].GetComponent<ItemDataWrapper>();
 
             if (items.ContainsKey(i))
             {
@@ -68,6 +92,8 @@ public class PlayerInventory : MonoBehaviour
                 if (!tempImage.hasBorder) tempImage.type = Image.Type.Simple;
                 else tempImage.type = Image.Type.Sliced;
                 tempImage.color = new Color(1, 1, 1, 1);
+
+                tempItemData.itemData = items[i].GetItemData();
             }
             else
             {
@@ -75,6 +101,8 @@ public class PlayerInventory : MonoBehaviour
                 if (!tempImage.hasBorder) tempImage.type = Image.Type.Simple;
                 else tempImage.type = Image.Type.Sliced;
                 tempImage.color = new Color(1, 1, 1, 0.5f);
+
+                tempItemData.itemData = null;
             }
         }
     }
@@ -84,18 +112,6 @@ public class PlayerInventory : MonoBehaviour
         for (int i = 0; i < slots.Count; i++)
         {
             if (!items.ContainsKey(i))
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    int FindFirstItem()
-    {
-        for (int i = 0; i < slots.Count; i++)
-        {
-            if (items.ContainsKey(i))
             {
                 return i;
             }

@@ -19,6 +19,8 @@ public class Interactable : MonoBehaviour
 
     public List<InteractionOptions> interactions = new List<InteractionOptions>();
     public float radius = 2f;
+    [SerializeField]
+    Vector3 radiusOffset;
 
     public void StartInteraction(int i)
     {
@@ -49,6 +51,6 @@ public class Interactable : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, radius);
+        Gizmos.DrawWireSphere(transform.position + radiusOffset, radius);
     }
 }
