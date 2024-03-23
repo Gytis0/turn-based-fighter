@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -39,12 +40,14 @@ public class PlayerInventory : MonoBehaviour
     {
         Interactable.onPickUp += AddItem;
         DragAndDrop.onDrop += DropItem;
+        DragAndDrop.onSwitch += SwitchItem;
     }
 
     private void OnDisable()
     {
         Interactable.onPickUp -= AddItem;
         DragAndDrop.onDrop -= DropItem;
+        DragAndDrop.onSwitch -= SwitchItem;
     }
 
     void AddItem(GameObject item)
@@ -60,18 +63,33 @@ public class PlayerInventory : MonoBehaviour
         UpdateInventoryUI();
     }
 
-    void DropItem(ItemData data)
+    void DropItem(int index)
     {
-        foreach (var item in items)
-        {
-            if(item.Value.GetItemData().GetName() == data.GetName())
-            {
-                GameObject droppedItem = ItemManager.GetItemObject(data.GetName());
-                Instantiate(droppedItem, transform.position, transform.rotation);
+        GameObject droppedItem = ItemManager.GetItemObject(items[index].GetItemData().GetName());
+        Instantiate(droppedItem, transform.position, transform.rotation);
 
-                items.Remove(item.Key);
-                break;
-            }
+        items.Remove(index);
+        
+        UpdateInventoryUI();
+    }
+
+    void SwitchItem(int indexFrom, int indexTo)
+    {
+        Item temp;
+
+        if (items.TryGetValue(indexTo, out temp))
+        {
+            temp = items[indexTo];
+        }
+        items[indexTo] = items[indexFrom];
+
+        if(temp != null) 
+        {
+            items[indexFrom] = temp;
+        }
+        else
+        {
+            items.Remove(indexFrom);
         }
 
         UpdateInventoryUI();
@@ -80,11 +98,11 @@ public class PlayerInventory : MonoBehaviour
     void UpdateInventoryUI()
     {
         Image tempImage;
-        ItemDataWrapper tempItemData;
+        ItemSlot tempItemData;
         for (int i = 0; i < slots.Count; i++)
         {
             tempImage = slots[i].GetComponent<Image>();
-            tempItemData = slots[i].GetComponent<ItemDataWrapper>();
+            tempItemData = slots[i].GetComponent<ItemSlot>();
 
             if (items.ContainsKey(i))
             {

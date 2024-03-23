@@ -1,34 +1,41 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
-    public delegate void PlayerItemDropped(ItemData item);
+    public delegate void PlayerItemDropped(int index);
     public static event PlayerItemDropped onDrop;
+    public delegate void PlayerItemSwitch(int indexFrom, int indexTo);
+    public static event PlayerItemSwitch onSwitch;
 
-    ItemDataWrapper itemDataWrapper;
+    ItemSlot itemSlot;
     RectTransform background;
     RectTransform imageRect;
     Canvas canvas;
+    CanvasGroup canvasGroup;
+
 
     public void Start()
     {
-        itemDataWrapper = GetComponent<ItemDataWrapper>();
+        itemSlot = GetComponent<ItemSlot>();
         background = GameObject.FindGameObjectWithTag("Inventory").GetComponent<RectTransform>();
         canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<Canvas>();
+        canvasGroup = GetComponent<CanvasGroup>();
         imageRect = GetComponent<RectTransform>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-
+        canvasGroup.alpha = 0.7f;
+        canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if(itemDataWrapper.itemData != null)
+        if(itemSlot.itemData != null)
         {
-            imageRect.anchoredPosition += eventData.delta / canvas.scaleFactor;
+            //imageRect.anchoredPosition += eventData.delta / canvas.scaleFactor;
+            imageRect.position = eventData.position;
         }
     }
 
@@ -36,14 +43,26 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     {
         if(!IsRectInside(imageRect, background))
         {
-            onDrop(itemDataWrapper.itemData);
+            onDrop(itemSlot.index);
         }
 
         imageRect.localPosition = new Vector2(0, 0);
+
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        int indexFrom = eventData.pointerDrag.GetComponent<ItemSlot>().index, indexTo = itemSlot.index;
+        if (indexFrom == indexTo) return;
+
+        Debug.Log("Dropping on: " + itemSlot.index);
+        onSwitch(indexFrom, indexTo);
     }
 
     bool IsRectInside(RectTransform R1, RectTransform R2)
@@ -56,7 +75,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
         for (int i = 0; i < 4; i++)
         {
-            if (Contains(imageVector[i], backgroundVector[0][0], backgroundVector[1][0], backgroundVector[0][1], backgroundVector[2][1]))
+            if (Contains(imageVector[i], backgroundVector[0][0], backgroundVector[2][0], backgroundVector[0][1], backgroundVector[1][1]))
             {
                 return true;
             }
@@ -68,4 +87,6 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     {
         return point.x >= xMin && point.x < xMax && point.y >= yMin && point.y < yMax;
     }
+
+   
 }
