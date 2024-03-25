@@ -7,7 +7,7 @@ public class HumanoidStats : MonoBehaviour
     HumanoidMovementController humanoidMovement;
     HumanoidProperties humanoidProperties;
     public bool inCombat = false;
-    public string currentState = "Idle";
+    public AnimationStates currentState = AnimationStates.IDLE;
     public Transform followingObj;
     public bool following = false;
 
@@ -24,22 +24,7 @@ public class HumanoidStats : MonoBehaviour
 
     private void Update()
     {
-        if (inCombat)
-        {
-            if (currentState == "Walking")
-            {
-                humanoidProperties.DrainStamina(1);
-            }
-            else if (currentState == "Running")
-            {
-                humanoidProperties.DrainStamina(2);
-            }
-        }
-        else
-        {
-            humanoidProperties.RegenerateStamina(1);
-        }
-    
+
     }
 
     public void TakeDamage(int damage)

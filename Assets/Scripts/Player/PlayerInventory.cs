@@ -66,7 +66,8 @@ public class PlayerInventory : MonoBehaviour
     void DropItem(int index)
     {
         GameObject droppedItem = ItemManager.GetItemObject(items[index].GetItemData().GetName());
-        Instantiate(droppedItem, transform.position, transform.rotation);
+        ItemData droppedItemData = droppedItem.GetComponent<Item>().GetItemData();
+        Instantiate(droppedItem, transform.position, droppedItemData.GetDropRotation());
 
         items.Remove(index);
         

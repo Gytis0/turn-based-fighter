@@ -9,37 +9,25 @@ public class HumanoidAnimationController : MonoBehaviour
     public HumanoidMovementController movementController;
 
     string path;
-    class PlayerStates
-    {
-        public List<string> playerStates = new List<string>();
-    }
+    AnimationStates animationStates;
 
-    PlayerStates states = new PlayerStates();
     private void Awake()
     {
-        path = Application.dataPath + "/Scripts/Humanoid/States.json";
         animator = GetComponentInChildren<Animator>();
         movementController = transform.GetComponent<HumanoidMovementController>();
-
-        LoadPlayerStates();
     }
     
-    void LoadPlayerStates()
+    void UpdateStates(AnimationStates newState)
     {
-        string json = File.ReadAllText(path);
-        states = JsonUtility.FromJson<PlayerStates>(json);
-    }
-    void UpdateStates(string _currentState)
-    {
-        foreach(string state in states.playerStates)
+        foreach (AnimatorControllerParameter state in animator.parameters)
         {
-            if(state == _currentState)
+            if(state.name.ToLower() == newState.ToString().ToLower())
             {
-                animator.SetBool(state, true);
+                animator.SetBool(state.name, true);
             }
             else
             {
-                animator.SetBool(state, false);
+                animator.SetBool(state.name, false);
             }
         }
     }

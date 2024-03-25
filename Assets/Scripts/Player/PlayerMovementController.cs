@@ -48,6 +48,4 @@ public class PlayerMovementController : HumanoidMovementController
         inputActions.Disable();
         OnFollowed -= TriggerFollowed;
     }
-
-
 }

@@ -12,6 +12,8 @@ public class ItemData : ScriptableObject
     [SerializeField] Vector3 leftHandRotation;
     [SerializeField] Vector3 rightHandRotation;
 
+    [SerializeField] Quaternion dropAngle;
+
     public Sprite GetIcon() { return icon; }
     public Vector3 GetHandOffset(HandSlot slot)
     {
@@ -23,6 +25,7 @@ public class ItemData : ScriptableObject
         if (slot == HandSlot.LeftHand) return Quaternion.Euler(leftHandRotation);
         else return Quaternion.Euler(rightHandRotation);
     }
+    public Quaternion GetDropRotation() { return dropAngle; }
 
     public string GetName() { return itemName; }
 }

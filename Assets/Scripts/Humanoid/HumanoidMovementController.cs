@@ -12,7 +12,7 @@ public class HumanoidMovementController : MonoBehaviour
     protected HumanoidProperties humanoidProperties;
     protected HumanoidStats humanoidStats;
 
-    public delegate void ChangedState(string currentState);
+    public delegate void ChangedState(AnimationStates newState);
     public event ChangedState onChangedState;
 
     [SerializeField]
@@ -37,7 +37,7 @@ public class HumanoidMovementController : MonoBehaviour
         agent.SetDestination(_destination);
         agent.speed = walkingSpeed;
 
-        humanoidStats.currentState = "Walking";
+        humanoidStats.currentState = AnimationStates.WALKING;
         if (onChangedState != null) onChangedState(humanoidStats.currentState);
     }
 
@@ -47,13 +47,13 @@ public class HumanoidMovementController : MonoBehaviour
         agent.SetDestination(_destination);
         agent.speed = runningSpeed;
 
-        humanoidStats.currentState = "Running";
+        humanoidStats.currentState = AnimationStates.RUNNING;
         if (onChangedState != null) onChangedState(humanoidStats.currentState);
     }
 
     public void Idle()
     {
-        humanoidStats.currentState = "Idle";
+        humanoidStats.currentState = AnimationStates.IDLE;
         if (onChangedState != null) onChangedState(humanoidStats.currentState);
     }
 

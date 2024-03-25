@@ -7,8 +7,12 @@ public class Item : MonoBehaviour
     [SerializeField]
     ItemData itemData;
 
-    [SerializeField]
     Rigidbody rigid;
+
+    public void Start()
+    {
+        rigid = GetComponent<Rigidbody>();
+    }
 
     public ItemData GetItemData() { return itemData; }
     public void AppearInHand(HandSlot slot)
