@@ -9,21 +9,27 @@ using static UnityEditor.Progress;
 
 public class PlayerInventory : MonoBehaviour
 {
+    public enum armorSlot{
+        HEAD,
+        CHEST,
+        LEGS,
+        BOOTS,
+        GLOVES,
+        SHOULDERS
+    }
     InputController inputActions;
-    Dictionary<int, Item> items = new();
+    Dictionary<int, Item> equipmentItems = new();
+    Dictionary<armorSlot, Item> armorItems = new();
 
     // References
     [SerializeField] Sprite emptySlot;
-    Equipment equipment;
 
     Transform inventoryUIroot;
     List<Transform> slots = new();
 
-
     private void Awake()
     {
         inventoryUIroot = GameObject.FindGameObjectWithTag("Inventory").transform;
-        equipment = transform.parent.GetComponent<Equipment>();
 
         foreach (Transform t in inventoryUIroot)
         {
@@ -52,10 +58,10 @@ public class PlayerInventory : MonoBehaviour
 
     void AddItem(GameObject item)
     {
-        if (items.Count >= slots.Count) return;
+        if (equipmentItems.Count >= slots.Count) return;
         int index = FindFirstEmptySlot();
 
-        items.Add(index, item.GetComponent<Item>());
+        equipmentItems.Add(index, item.GetComponent<Item>());
         item.transform.parent = transform;
         item.transform.localPosition = new Vector3(0, 0, 0);
         item.SetActive(false);
@@ -65,11 +71,11 @@ public class PlayerInventory : MonoBehaviour
 
     void DropItem(int index)
     {
-        GameObject droppedItem = ItemManager.GetItemObject(items[index].GetItemData().GetName());
+        GameObject droppedItem = ItemManager.GetItemObject(equipmentItems[index].GetItemData().GetName());
         ItemData droppedItemData = droppedItem.GetComponent<Item>().GetItemData();
         Instantiate(droppedItem, transform.position, droppedItemData.GetDropRotation());
 
-        items.Remove(index);
+        equipmentItems.Remove(index);
         
         UpdateInventoryUI();
     }
@@ -78,19 +84,19 @@ public class PlayerInventory : MonoBehaviour
     {
         Item temp;
 
-        if (items.TryGetValue(indexTo, out temp))
+        if (equipmentItems.TryGetValue(indexTo, out temp))
         {
-            temp = items[indexTo];
+            temp = equipmentItems[indexTo];
         }
-        items[indexTo] = items[indexFrom];
+        equipmentItems[indexTo] = equipmentItems[indexFrom];
 
         if(temp != null) 
         {
-            items[indexFrom] = temp;
+            equipmentItems[indexFrom] = temp;
         }
         else
         {
-            items.Remove(indexFrom);
+            equipmentItems.Remove(indexFrom);
         }
 
         UpdateInventoryUI();
@@ -105,14 +111,14 @@ public class PlayerInventory : MonoBehaviour
             tempImage = slots[i].GetComponent<Image>();
             tempItemData = slots[i].GetComponent<ItemSlot>();
 
-            if (items.ContainsKey(i))
+            if (equipmentItems.ContainsKey(i))
             {
-                tempImage.sprite = items[i].GetItemData().GetIcon();
+                tempImage.sprite = equipmentItems[i].GetItemData().GetIcon();
                 if (!tempImage.hasBorder) tempImage.type = Image.Type.Simple;
                 else tempImage.type = Image.Type.Sliced;
                 tempImage.color = new Color(1, 1, 1, 1);
 
-                tempItemData.itemData = items[i].GetItemData();
+                tempItemData.itemData = equipmentItems[i].GetItemData();
             }
             else
             {
@@ -130,7 +136,7 @@ public class PlayerInventory : MonoBehaviour
     {
         for (int i = 0; i < slots.Count; i++)
         {
-            if (!items.ContainsKey(i))
+            if (!equipmentItems.ContainsKey(i))
             {
                 return i;
             }

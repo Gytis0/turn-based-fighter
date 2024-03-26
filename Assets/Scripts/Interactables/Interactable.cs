@@ -10,11 +10,15 @@ public class Interactable : MonoBehaviour
     public delegate void SelectPickUp(GameObject item);
     public static event SelectPickUp onPickUp;
 
+    public delegate void SelectEquip(GameObject item);
+    public static event SelectEquip onEquip;
+
     public enum InteractionOptions
     {
         StartDialogue,
         Attack,
-        PickUp
+        PickUp,
+        Equip
     };
 
     public List<InteractionOptions> interactions = new List<InteractionOptions>();
@@ -46,6 +50,11 @@ public class Interactable : MonoBehaviour
     void PickUp()
     {
         if (onPickUp != null) onPickUp(transform.gameObject);
+    }
+
+    void Equip()
+    {
+        if (onEquip != null) onEquip(transform.gameObject);
     }
 
     private void OnDrawGizmosSelected()
