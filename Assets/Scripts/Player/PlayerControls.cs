@@ -1,11 +1,11 @@
-    using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
-public class PlayerPointerController : MonoBehaviour
+public class PlayerControls : MonoBehaviour
 {
+    [SerializeField] GameObject pauseMenu;
+
     Camera cam;
     InputController inputActions;
     PlayerMovementController playerMovementController;
@@ -22,6 +22,13 @@ public class PlayerPointerController : MonoBehaviour
 
         inputActions.FindAction("LeftClick").performed += x => LeftClick();
         inputActions.FindAction("RightClick").performed += x => RightClick();
+        inputActions.FindAction("Esc").performed += x => TogglePauseMenu();
+
+    }
+
+    void TogglePauseMenu()
+    {
+        pauseMenu.SetActive(!pauseMenu.activeSelf);
     }
 
     public void LeftClick()

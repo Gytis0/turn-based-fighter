@@ -24,27 +24,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Q",
+                    "name": "Esc",
                     "type": "Button",
-                    "id": "9b1cea7c-06da-468c-bcbc-7622edf414a4",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "E",
-                    "type": "Button",
-                    "id": "bdd7bd4c-b9f3-4e30-b661-3bea18fa0531",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "G",
-                    "type": "Button",
-                    "id": "71a3010f-f70e-4613-9e10-6b60f69ec945",
+                    "id": "9e0fe360-fb5e-4a6f-8f79-9b167c3c6f50",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -76,34 +58,12 @@
                 },
                 {
                     "name": "",
-                    "id": "c01da1b6-2ede-4142-a0b4-71fda2bcabd0",
-                    "path": "<Keyboard>/q",
+                    "id": "a9515cb9-e14d-4f14-9ebc-7f844987002f",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Q",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "08924d49-db62-4822-bb4f-82235f9e1e20",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "E",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3214d0e6-af34-425f-a62c-4b671295b4c7",
-                    "path": "<Keyboard>/g",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "G",
+                    "action": "Esc",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

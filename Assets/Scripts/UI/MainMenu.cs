@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
@@ -15,8 +16,6 @@ public class MainMenu : MonoBehaviour
     [SerializeField] List<Image> staminaBubbles;
     [SerializeField] List<Image> composureBubbles;
     [SerializeField] List<Image> intelligenceBubbles;
-
-    
 
     int healthPoints = 3;
     int staminaPoints = 3;
@@ -109,5 +108,15 @@ public class MainMenu : MonoBehaviour
     public void ExitApp()
     {
         Application.Quit();
+    }
+
+    public void StartGame()
+    {
+        PlayerPrefs.SetInt("healthPoints", healthPoints);
+        PlayerPrefs.SetInt("staminaPoints", staminaPoints);
+        PlayerPrefs.SetInt("composurePoints", composurePoints);
+        PlayerPrefs.SetInt("intelligencePoints", intelligencePoints);
+
+        SceneManager.LoadScene(1);
     }
 }

@@ -46,27 +46,9 @@ public partial class @InputController : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Q"",
+                    ""name"": ""Esc"",
                     ""type"": ""Button"",
-                    ""id"": ""9b1cea7c-06da-468c-bcbc-7622edf414a4"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""E"",
-                    ""type"": ""Button"",
-                    ""id"": ""bdd7bd4c-b9f3-4e30-b661-3bea18fa0531"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""G"",
-                    ""type"": ""Button"",
-                    ""id"": ""71a3010f-f70e-4613-9e10-6b60f69ec945"",
+                    ""id"": ""9e0fe360-fb5e-4a6f-8f79-9b167c3c6f50"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -98,34 +80,12 @@ public partial class @InputController : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c01da1b6-2ede-4142-a0b4-71fda2bcabd0"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""id"": ""a9515cb9-e14d-4f14-9ebc-7f844987002f"",
+                    ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Q"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""08924d49-db62-4822-bb4f-82235f9e1e20"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""E"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3214d0e6-af34-425f-a62c-4b671295b4c7"",
-                    ""path"": ""<Keyboard>/g"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""G"",
+                    ""action"": ""Esc"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -234,9 +194,7 @@ public partial class @InputController : IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_LeftClick = m_Player.FindAction("LeftClick", throwIfNotFound: true);
         m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
-        m_Player_Q = m_Player.FindAction("Q", throwIfNotFound: true);
-        m_Player_E = m_Player.FindAction("E", throwIfNotFound: true);
-        m_Player_G = m_Player.FindAction("G", throwIfNotFound: true);
+        m_Player_Esc = m_Player.FindAction("Esc", throwIfNotFound: true);
         // Camera
         m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
         m_Camera_StartMovingAround = m_Camera.FindAction("StartMovingAround", throwIfNotFound: true);
@@ -306,18 +264,14 @@ public partial class @InputController : IInputActionCollection2, IDisposable
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_LeftClick;
     private readonly InputAction m_Player_RightClick;
-    private readonly InputAction m_Player_Q;
-    private readonly InputAction m_Player_E;
-    private readonly InputAction m_Player_G;
+    private readonly InputAction m_Player_Esc;
     public struct PlayerActions
     {
         private @InputController m_Wrapper;
         public PlayerActions(@InputController wrapper) { m_Wrapper = wrapper; }
         public InputAction @LeftClick => m_Wrapper.m_Player_LeftClick;
         public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
-        public InputAction @Q => m_Wrapper.m_Player_Q;
-        public InputAction @E => m_Wrapper.m_Player_E;
-        public InputAction @G => m_Wrapper.m_Player_G;
+        public InputAction @Esc => m_Wrapper.m_Player_Esc;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -333,15 +287,9 @@ public partial class @InputController : IInputActionCollection2, IDisposable
                 @RightClick.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
                 @RightClick.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
                 @RightClick.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
-                @Q.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQ;
-                @Q.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQ;
-                @Q.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQ;
-                @E.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnE;
-                @E.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnE;
-                @E.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnE;
-                @G.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnG;
-                @G.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnG;
-                @G.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnG;
+                @Esc.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsc;
+                @Esc.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsc;
+                @Esc.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsc;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -352,15 +300,9 @@ public partial class @InputController : IInputActionCollection2, IDisposable
                 @RightClick.started += instance.OnRightClick;
                 @RightClick.performed += instance.OnRightClick;
                 @RightClick.canceled += instance.OnRightClick;
-                @Q.started += instance.OnQ;
-                @Q.performed += instance.OnQ;
-                @Q.canceled += instance.OnQ;
-                @E.started += instance.OnE;
-                @E.performed += instance.OnE;
-                @E.canceled += instance.OnE;
-                @G.started += instance.OnG;
-                @G.performed += instance.OnG;
-                @G.canceled += instance.OnG;
+                @Esc.started += instance.OnEsc;
+                @Esc.performed += instance.OnEsc;
+                @Esc.canceled += instance.OnEsc;
             }
         }
     }
@@ -451,9 +393,7 @@ public partial class @InputController : IInputActionCollection2, IDisposable
     {
         void OnLeftClick(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
-        void OnQ(InputAction.CallbackContext context);
-        void OnE(InputAction.CallbackContext context);
-        void OnG(InputAction.CallbackContext context);
+        void OnEsc(InputAction.CallbackContext context);
     }
     public interface ICameraActions
     {
