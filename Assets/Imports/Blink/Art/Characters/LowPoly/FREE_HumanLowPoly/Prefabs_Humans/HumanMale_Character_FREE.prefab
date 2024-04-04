@@ -986,7 +986,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1438546959266459337}
-  - component: {fileID: 4540229000190281644}
+  - component: {fileID: 3254928026705391798}
   m_Layer: 0
   m_Name: HumanMale_Character_FREE
   m_TagString: Untagged
@@ -1012,7 +1012,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &4540229000190281644
+--- !u!95 &3254928026705391798
 Animator:
   serializedVersion: 4
   m_ObjectHideFlags: 0

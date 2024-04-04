@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Main Menu.unity
     guid: fc1af88cd68e6914b942db80942deaea
   - enabled: 1
-    path: Assets/Scenes/Test Scene.unity
+    path: Assets/Scenes/Equipment stage/Equipment Scene.unity
+    guid: 53dc8b7a22d695a48b604586dd430440
+  - enabled: 1
+    path: Assets/Scenes/Test Scene/Test Scene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}

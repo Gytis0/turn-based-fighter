@@ -10,7 +10,7 @@ public class Spike : MonoBehaviour
         Debug.Log("Trigger");
         if (other.CompareTag("Player"))
         {
-            other.GetComponentInParent<EntityProperties>().AlterHealth(-5);
+            other.GetComponentInParent<HumanoidProperties>().AlterHealth(-5);
 
             Debug.Log("Dealing damage.");
         }

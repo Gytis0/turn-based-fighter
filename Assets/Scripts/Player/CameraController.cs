@@ -6,35 +6,66 @@ using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour
 {
     GameObject player;
+    Transform camera;
 
     InputController inputActions;
     bool movingAround = false;
 
+    Vector3 cameraStartPosition;
+
     Vector2 mouseMovement;
+    float mouseScroll;
+    float zoomIn = 0;
+
     [SerializeField]
     [Range(0.01f, 2f)]
     float movingAroundSpeed;
 
+    [SerializeField]
+    [Range(0.01f, 1f)]
+    float zoomInRange;
+
+    [SerializeField]
+    [Range(0.01f, 1f)]
+    float zoomInSpeed;
+
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        camera = transform.GetChild(0);
+        cameraStartPosition = camera.transform.localPosition;
 
         inputActions = new InputController();
 
         inputActions.FindAction("StartMovingAround").started += x => MovingAroundState(true);
         inputActions.FindAction("StartMovingAround").canceled += x => MovingAroundState(false);
-
         inputActions.FindAction("MoveAround").performed += x => mouseMovement = x.ReadValue<Vector2>();
+
+        inputActions.FindAction("Scroll").performed += x => mouseScroll = x.ReadValue<float>();
     }
 
     void Update()
     {
-        transform.position = player.transform.position;
-        
-        if(movingAround)
+        if (mouseScroll > 0)
         {
-            transform.Rotate(Vector3.up, mouseMovement.x * movingAroundSpeed);
+            zoomIn += zoomInSpeed;
+            zoomIn = Mathf.Clamp(zoomIn, 0f, zoomInRange);
+            mouseScroll = 0;
         }
+        else if (mouseScroll < 0)
+        {
+            zoomIn -= zoomInSpeed;
+            zoomIn = Mathf.Clamp(zoomIn, 0f, zoomInRange);
+            mouseScroll = 0;
+        }
+
+        if (movingAround)
+        {
+            transform.rotation = Quaternion.Euler(Mathf.Clamp(transform.eulerAngles.x + mouseMovement.y * movingAroundSpeed, 0, 40), transform.eulerAngles.y + mouseMovement.x * movingAroundSpeed, 0);
+        }
+
+        transform.position = player.transform.position;
+        camera.localPosition = Vector3.Lerp(cameraStartPosition, new Vector3(0, 2, 0), zoomIn);
     }
 
     public void MovingAroundState(bool state)

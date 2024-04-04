@@ -26,9 +26,4 @@ public class HumanoidStats : MonoBehaviour
     {
 
     }
-
-    public void TakeDamage(int damage)
-    {
-        humanoidProperties.TakeDamage(damage);
-    }
 }

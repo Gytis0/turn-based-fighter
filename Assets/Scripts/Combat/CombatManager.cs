@@ -172,18 +172,15 @@ public class CombatManager : MonoBehaviour
     public void SwingWeapon(bool left)
     {
         // Play an animation for left or right swing
-        enemyStats.TakeDamage(playerEquipment.GetEquippedWeapon().GetDamage());
 
     }
 
     public void OverheadWeapon()
     {
-        enemyStats.TakeDamage(playerEquipment.GetEquippedWeapon().GetDamage());
     }
 
     public void StabEnemy()
     {
-        enemyStats.TakeDamage(playerEquipment.GetEquippedWeapon().GetDamage());
     }
 }
 
