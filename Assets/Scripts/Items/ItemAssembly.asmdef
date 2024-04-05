@@ -1,3 +1,16 @@
 {
-	"name": "ItemAssembly"
+    "name": "ItemAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d793ec8ca4e913f4e8b9285ffc026332"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
