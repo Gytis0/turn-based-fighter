@@ -128,6 +128,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactions: 02000000
-  radius: 2
+  radius: 1
   radiusOffset: {x: 0, y: 0, z: 0}
-  itemData: {fileID: 0}
+  itemData: {fileID: 11400000, guid: 7a2ad7cc758b207448e5a0c159318c1f, type: 2}

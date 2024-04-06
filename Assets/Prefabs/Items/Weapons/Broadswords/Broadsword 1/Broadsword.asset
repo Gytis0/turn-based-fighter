@@ -18,11 +18,11 @@ MonoBehaviour:
   rightHandRotation: {x: 0, y: 0, z: 0}
   dropAngle: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
   itemName: Broadsword
-  icon: {fileID: 21300000, guid: df2e656c4a95aaf4b96720940ef98b27, type: 3}
-  weight: 5
-  damage: 5
-  speed: 5
-  durability: 150
+  icon: {fileID: 21300000, guid: edaab23257ad82748b0b6828952eb8f2, type: 3}
+  weight: 10
+  damage: 50
+  speed: 1
+  durability: 70
   damageType: 2
-  weaponType: 1
-  actions: 000000000100000002000000
+  weaponType: 0
+  actions: 0000000001000000

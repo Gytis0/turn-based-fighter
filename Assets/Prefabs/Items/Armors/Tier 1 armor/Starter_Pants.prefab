@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8469257096373781816}
   - component: {fileID: 3361689593244037526}
   - component: {fileID: 8180809467608424657}
+  - component: {fileID: -8040484411873740055}
   m_Layer: 0
   m_Name: Starter_Pants
   m_TagString: Untagged
@@ -83,3 +84,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-8040484411873740055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8694866464193606028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e35369844b793154da620887b3cfbc8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactions: 03000000
+  radius: 1
+  radiusOffset: {x: 0, y: 0, z: 0}
+  itemData: {fileID: 11400000, guid: b1669000e5c43d4498ff0e86886649a3, type: 2}

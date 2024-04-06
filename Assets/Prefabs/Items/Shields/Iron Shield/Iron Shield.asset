@@ -18,9 +18,7 @@ MonoBehaviour:
   rightHandRotation: {x: 92.215, y: 0, z: 0}
   dropAngle: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
   itemName: Iron Shield
-  icon: {fileID: 21300000, guid: 86b968173a411244fb79712ec304761d, type: 3}
-  weight: 10
-  reduction: 10
-  speed: 3
-  durability: 180
-  actions: 
+  icon: {fileID: 21300000, guid: 63e3da6607ecf124e8c82943433b8398, type: 3}
+  weight: 8
+  durability: 20
+  actions: 00000000

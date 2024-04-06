@@ -2,17 +2,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+[CreateAssetMenu(fileName = "New Armor", menuName = "Items/Armor")]
 public class Armor : ItemData
 {
     [SerializeField]
-    protected int armorPoints, durability, basicResistance;
+    protected int durability, baseResistance;
 
     [SerializeField]
-    protected List<Tuple<DamageTypes, int>> resistances = new();
-
-    [SerializeField]
-    string serializedResistances;
+    protected Resistances[] resistances;
 
     [SerializeField]
     ArmorType type;
+}
+
+[System.Serializable]
+public class Resistances
+{
+    public DamageTypes damageType;
+    public int resistance;
 }

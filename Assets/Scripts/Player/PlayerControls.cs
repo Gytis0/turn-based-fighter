@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class PlayerControls : MonoBehaviour
 {
@@ -14,8 +15,13 @@ public class PlayerControls : MonoBehaviour
     public LayerMask layerMask;
     bool waitingToGetInRadius = false;
 
+    int UILayer;
+    bool pointerOverUI = false;
+
     void Awake()
     {
+        UILayer = LayerMask.NameToLayer("UI");
+        Debug.Log("UILayer: " + UILayer);
         cam = Camera.main;
         inputActions = new InputController();
         playerMovementController = transform.GetComponent<PlayerMovementController>();
@@ -23,7 +29,6 @@ public class PlayerControls : MonoBehaviour
         inputActions.FindAction("LeftClick").performed += x => LeftClick();
         inputActions.FindAction("RightClick").performed += x => RightClick();
         inputActions.FindAction("Esc").performed += x => TogglePauseMenu();
-
     }
 
     void TogglePauseMenu()
@@ -31,10 +36,16 @@ public class PlayerControls : MonoBehaviour
         pauseMenu.SetActive(!pauseMenu.activeSelf);
     }
 
+    private void Update()
+    {
+        pointerOverUI = IsPointerOverUIElement();
+    }
+
+
     public void LeftClick()
     {
         //if we're pressing on UI, return
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (pointerOverUI) return;
 
         // Shooting a ray to where the mouse points
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -52,7 +63,7 @@ public class PlayerControls : MonoBehaviour
     void RightClick()
     {
         //if we're pressing on UI, return
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (pointerOverUI) return;
 
         // Shooting a ray to where the mouse points
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -94,7 +105,7 @@ public class PlayerControls : MonoBehaviour
         if(waitingToGetInRadius)
         {
             InteractionMenuBox.Instance.gameObject.SetActive(true);
-            InteractionMenuBox.Instance.OpenInteractionBox(focus, focus.transform.position + new Vector3(0f, 2f, 0f));
+            InteractionMenuBox.Instance.OpenInteractionBox(focus);
             waitingToGetInRadius = false;
         }   
     }
@@ -116,5 +127,26 @@ public class PlayerControls : MonoBehaviour
     {
         inputActions.Disable();
         PlayerMovementController.onPlayerReachedFollower -= OpenInteractionBox;
+    }
+
+    private bool IsPointerOverUIElement()
+    {
+        List<RaycastResult> eventSystemRaycastResults = GetEventSystemRaycastResults();
+        for (int index = 0; index < eventSystemRaycastResults.Count; index++)
+        {
+            RaycastResult curRaysastResult = eventSystemRaycastResults[index];
+            if (curRaysastResult.gameObject.layer == UILayer)
+                return true;
+        }
+        return false;
+    }
+
+    static List<RaycastResult> GetEventSystemRaycastResults()
+    {
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Input.mousePosition;
+        List<RaycastResult> raysastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, raysastResults);
+        return raysastResults;
     }
 }

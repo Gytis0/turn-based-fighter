@@ -16,6 +16,6 @@ public class UIStatic : MonoBehaviour
 
     private void Update()
     { 
-        rectTransform.rotation = Quaternion.Euler(cam.localRotation.eulerAngles + controller.localRotation.eulerAngles);
+        rectTransform.LookAt(cam.transform.position);
     }
 }

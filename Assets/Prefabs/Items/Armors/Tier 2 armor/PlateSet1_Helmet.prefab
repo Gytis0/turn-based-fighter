@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8224568458473497779}
   - component: {fileID: 6916515507305118408}
   - component: {fileID: 495517296124302921}
+  - component: {fileID: -899367373468843254}
   m_Layer: 0
   m_Name: PlateSet1_Helmet
   m_TagString: Untagged
@@ -83,3 +84,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-899367373468843254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2351222846887098936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e35369844b793154da620887b3cfbc8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactions: 03000000
+  radius: 1
+  radiusOffset: {x: 0, y: 0, z: 0}
+  itemData: {fileID: 11400000, guid: bb7d7618931626544846c7f8cb331edc, type: 2}

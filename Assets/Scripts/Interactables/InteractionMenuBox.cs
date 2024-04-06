@@ -29,15 +29,16 @@ public class InteractionMenuBox : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void OpenInteractionBox(Interactable _interactable, Vector3 _mousePos)
+    public void OpenInteractionBox(Interactable _interactable)
     {
         currentInteractable = _interactable;
-        transform.position = _mousePos;
+        transform.position = _interactable.transform.position + Vector3.up * 0.5f;
         EnableButtons(_interactable);
     }
 
     public void CloseInteractionBox()
     {
+        gameObject.SetActive(false);
         DisableButtons();
     }
 
