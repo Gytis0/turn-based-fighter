@@ -15,7 +15,6 @@ public class Interactable : MonoBehaviour
 
     public enum InteractionOptions
     {
-        StartDialogue,
         Attack,
         PickUp,
         Equip
@@ -31,20 +30,9 @@ public class Interactable : MonoBehaviour
         Invoke(interactions[i].ToString(), 0f);
     }
 
-    void StartDialogue()
-    {
-        DialogueManager.Instance.StartDialogue(transform.GetComponent<Dialogue>());
-    }
-
     void Attack()
     {
         if (onAttack != null) onAttack(transform.parent.gameObject);
-    }
-
-    void Close()
-    {
-        InteractionMenuBox.Instance.CloseInteractionBox();
-        InteractionMenuBox.Instance.gameObject.SetActive(false);
     }
 
     void PickUp()

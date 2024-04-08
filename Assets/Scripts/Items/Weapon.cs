@@ -12,6 +12,8 @@ public class Weapon : ItemData
     public int GetDamage() { return damage; }
     public int GetSpeed() { return speed; }
     public int GetDurability() { return durability; }
+    public DamageTypes GetDamageType() { return damageType; }
+    public WeaponType GetWeaponType() { return weaponType; }
     public void AlterDurability(int amount) { durability -= amount; }
     public List<WeaponActions> GetWeaponActions() { return actions; }
 }

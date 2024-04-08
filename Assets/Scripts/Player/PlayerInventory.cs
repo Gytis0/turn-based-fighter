@@ -8,9 +8,7 @@ public class PlayerInventory : MonoBehaviour
         HEAD,
         CHEST,
         LEGS,
-        BOOTS,
-        GLOVES,
-        SHOULDERS
+        BOOTS
     }
     InputController inputActions;
     Dictionary<int, Item> equipmentItems = new();
@@ -40,6 +38,7 @@ public class PlayerInventory : MonoBehaviour
     private void OnEnable()
     {
         Interactable.onPickUp += AddItem;
+        Interactable.onEquip += Equip;
         DragAndDrop.onDrop += DropItem;
         DragAndDrop.onSwitch += SwitchItem;
     }
@@ -47,6 +46,7 @@ public class PlayerInventory : MonoBehaviour
     private void OnDisable()
     {
         Interactable.onPickUp -= AddItem;
+        Interactable.onEquip -= Equip;
         DragAndDrop.onDrop -= DropItem;
         DragAndDrop.onSwitch -= SwitchItem;
     }
@@ -64,6 +64,10 @@ public class PlayerInventory : MonoBehaviour
         UpdateInventoryUI();
     }
 
+    void Equip(GameObject item)
+    {
+
+    }
     void DropItem(int index)
     {
         GameObject droppedItem = ItemManager.GetItemObject(equipmentItems[index].GetItemData().GetName());

@@ -6,13 +6,17 @@ using System;
 public class Armor : ItemData
 {
     [SerializeField]
-    protected int durability, baseResistance;
+    protected int durability, armorPoints;
 
     [SerializeField]
     protected Resistances[] resistances;
 
     [SerializeField]
     ArmorType type;
+
+    public int GetDurability() { return durability; }
+    public int GetArmorPoints() { return armorPoints; }
+    public Resistances[] GetResistances() {  return resistances; }
 }
 
 [System.Serializable]

@@ -104,8 +104,9 @@ public class PlayerControls : MonoBehaviour
     {
         if(waitingToGetInRadius)
         {
+            Vector3 targetPos = cam.WorldToScreenPoint(focus.transform.position);
             InteractionMenuBox.Instance.gameObject.SetActive(true);
-            InteractionMenuBox.Instance.OpenInteractionBox(focus);
+            InteractionMenuBox.Instance.OpenInteractionBox(focus, targetPos);
             waitingToGetInRadius = false;
         }   
     }

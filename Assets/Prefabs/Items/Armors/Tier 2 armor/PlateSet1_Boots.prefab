@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1764085107738580734}
   - component: {fileID: 9071644858052708921}
   - component: {fileID: -8471559782485198620}
+  - component: {fileID: 2246993488148898508}
   m_Layer: 0
   m_Name: PlateSet1_Boots
   m_TagString: Untagged
@@ -96,7 +97,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e35369844b793154da620887b3cfbc8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactions: 03000000
+  interactions: 02000000
   radius: 1
   radiusOffset: {x: 0, y: 0, z: 0}
   itemData: {fileID: 11400000, guid: bea27182d75ae6d4f81de089481057cf, type: 2}
+--- !u!64 &2246993488148898508
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8613943532149781658}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 4d4175204c1098f49ab9a6e0dc98805f, type: 2}

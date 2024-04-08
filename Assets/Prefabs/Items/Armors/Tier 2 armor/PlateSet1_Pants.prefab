@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6440936649936201599}
   - component: {fileID: 1792469713275166036}
   - component: {fileID: -8624989955482675214}
+  - component: {fileID: -3528336570814063937}
   m_Layer: 0
   m_Name: PlateSet1_Pants
   m_TagString: Untagged
@@ -96,7 +97,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e35369844b793154da620887b3cfbc8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactions: 03000000
+  interactions: 02000000
   radius: 1
   radiusOffset: {x: 0, y: 0, z: 0}
   itemData: {fileID: 11400000, guid: 4e885b297dba982459c6064b805fd7f2, type: 2}
+--- !u!64 &-3528336570814063937
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854462856150970325}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 1ed727afa5526824eb88fb45cf5217d1, type: 2}

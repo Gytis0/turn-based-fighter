@@ -26,6 +26,7 @@ public class ItemData : ScriptableObject
         else return Quaternion.Euler(rightHandRotation);
     }
     public Quaternion GetDropRotation() { return dropAngle; }
+    public int GetWeight() { return weight; } 
 
     public string GetName() { return itemName; }
 }

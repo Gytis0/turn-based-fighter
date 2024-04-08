@@ -8,5 +8,5 @@ public class Shield : ItemData
     [SerializeField] protected List<ShieldActions> actions;
 
     public List<ShieldActions> GetShieldActions() { return actions; }
-
+    public int GetDurability() { return durability; }
 }
