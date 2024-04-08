@@ -29,7 +29,7 @@ public class ItemManager : MonoBehaviour
         foreach (GameObject item in itemsStatic)
         {
             temp = item.GetComponent<Item>().GetItemData();
-            if (temp.GetName() == itemName)
+            if (temp.GetName().ToLower() == itemName.ToLower())
             {
                 return item;
             }

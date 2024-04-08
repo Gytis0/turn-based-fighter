@@ -81,7 +81,7 @@ public class PlayerControls : MonoBehaviour
                 focus = hit.transform.GetComponent<Interactable>();
 
                 //check if the player is in the radius
-                if (focus.radius < Vector3.Distance(gameObject.transform.position, focus.transform.position))
+                if (focus.radius < Vector3.Distance(gameObject.transform.position, focus.transform.position + focus.GetRadiusOffset()))
                 {
                     playerMovementController.StartFollowing(hit.transform, focus.radius);
                     waitingToGetInRadius = true;

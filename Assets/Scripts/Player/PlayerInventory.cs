@@ -1,123 +1,150 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class PlayerInventory : MonoBehaviour
 {
-    public enum armorSlot{
-        HEAD,
-        CHEST,
-        LEGS,
-        BOOTS
-    }
     InputController inputActions;
-    Dictionary<int, Item> equipmentItems = new();
-    Dictionary<armorSlot, Item> armorItems = new();
 
-    // References
+    Transform itemInventoryRoot;
+    Dictionary<int, Item> allItems = new();
+    List<Transform> allItemsSlots = new();
+
+    Transform armorInventoryRoot;
+    Dictionary<ArmorType, Armor> armorItems = new();
+    Dictionary<ArmorType, Transform> armorItemsSlots = new();
+    
     [SerializeField] Sprite emptySlot;
 
-    Transform inventoryUIroot;
-    List<Transform> slots = new();
+    [SerializeField] GameObject ironHelmet;
+    [SerializeField] GameObject ironChest;
+    [SerializeField] GameObject ironShoulders;
+    [SerializeField] GameObject ironGloves;
+    [SerializeField] GameObject ironPants;
+    [SerializeField] GameObject ironBoots;
+
+    [SerializeField] GameObject boots;
+    [SerializeField] GameObject pants;
+    [SerializeField] GameObject chest;
+
 
     private void Awake()
     {
-        inventoryUIroot = GameObject.FindGameObjectWithTag("Inventory").transform;
+        itemInventoryRoot = GameObject.FindGameObjectWithTag("Item Inventory").transform;
+        armorInventoryRoot = GameObject.FindGameObjectWithTag("Armor Inventory").transform;
 
-        foreach (Transform t in inventoryUIroot)
+        foreach (Transform t in itemInventoryRoot)
         {
-            slots.Add(t.GetChild(0));
+            allItemsSlots.Add(t.GetChild(0));
+        }
+
+        for(int i = 0; i < armorInventoryRoot.childCount; i++)
+        {
+            armorItemsSlots.Add((ArmorType)Enum.GetValues(typeof(ArmorType)).GetValue(i), armorInventoryRoot.GetChild(i).GetChild(0));
         }
 
         inputActions = new InputController();
         inputActions.Enable();
-
-        //inputActions.FindAction("G").performed += x => DropItem(FindFirstItem());
     }
 
     private void OnEnable()
     {
         Interactable.onPickUp += AddItem;
-        Interactable.onEquip += Equip;
-        DragAndDrop.onDrop += DropItem;
+        Interactable.onPickUpAndEquip += EquipFromGround;
+
+        DragAndDrop.onItemAdd += AddItemFromArmorInventory;
+        DragAndDrop.onItemDrop += DropItem;
+        DragAndDrop.onArmorEquip += EquipArmor;
+        DragAndDrop.onArmorDrop += DropArmor;
         DragAndDrop.onSwitch += SwitchItem;
     }
 
     private void OnDisable()
     {
         Interactable.onPickUp -= AddItem;
-        Interactable.onEquip -= Equip;
-        DragAndDrop.onDrop -= DropItem;
+        Interactable.onPickUpAndEquip -= EquipFromGround;
+
+        DragAndDrop.onItemAdd -= AddItemFromArmorInventory;
+        DragAndDrop.onItemDrop -= DropItem;
+        DragAndDrop.onArmorEquip -= EquipArmor;
+        DragAndDrop.onArmorDrop -= DropArmor;
         DragAndDrop.onSwitch -= SwitchItem;
     }
 
+    // All items------------------------------------------------------------
+
     void AddItem(GameObject item)
     {
-        if (equipmentItems.Count >= slots.Count) return;
+        if (allItems.Count >= allItemsSlots.Count) return;
         int index = FindFirstEmptySlot();
 
-        equipmentItems.Add(index, item.GetComponent<Item>());
-        item.transform.parent = transform;
-        item.transform.localPosition = new Vector3(0, 0, 0);
-        item.SetActive(false);
-
-        UpdateInventoryUI();
+        allItems.Add(index, item.GetComponent<Item>());
+        Destroy(item);
+        UpdateItemInventory();
     }
 
-    void Equip(GameObject item)
+    void AddItemFromArmorInventory(ItemData itemData, int index)
     {
+        Item item = ItemManager.GetItemObject(itemData.GetName()).GetComponent<Item>();
+        allItems.Add(index, item);
+        armorItems.Remove(((Armor)itemData).GetArmorType());
 
+        UpdateItemInventory();
+        UpdateArmorInventory();
     }
+
     void DropItem(int index)
     {
-        GameObject droppedItem = ItemManager.GetItemObject(equipmentItems[index].GetItemData().GetName());
+        GameObject droppedItem = ItemManager.GetItemObject(allItems[index].GetItemData().GetName());
         ItemData droppedItemData = droppedItem.GetComponent<Item>().GetItemData();
         Instantiate(droppedItem, transform.position, droppedItemData.GetDropRotation());
 
-        equipmentItems.Remove(index);
-        
-        UpdateInventoryUI();
+        allItems.Remove(index);
+
+        UpdateItemInventory();
     }
 
     void SwitchItem(int indexFrom, int indexTo)
     {
         Item temp;
 
-        if (equipmentItems.TryGetValue(indexTo, out temp))
+        if (allItems.TryGetValue(indexTo, out temp))
         {
-            temp = equipmentItems[indexTo];
+            temp = allItems[indexTo];
         }
-        equipmentItems[indexTo] = equipmentItems[indexFrom];
+        allItems[indexTo] = allItems[indexFrom];
 
-        if(temp != null) 
+        if (temp != null)
         {
-            equipmentItems[indexFrom] = temp;
+            allItems[indexFrom] = temp;
         }
         else
         {
-            equipmentItems.Remove(indexFrom);
+            allItems.Remove(indexFrom);
         }
 
-        UpdateInventoryUI();
+        UpdateItemInventory();
     }
 
-    void UpdateInventoryUI()
+    void UpdateItemInventory()
     {
         Image tempImage;
         ItemSlot tempItemData;
-        for (int i = 0; i < slots.Count; i++)
+        for (int i = 0; i < allItemsSlots.Count; i++)
         {
-            tempImage = slots[i].GetComponent<Image>();
-            tempItemData = slots[i].GetComponent<ItemSlot>();
+            tempImage = allItemsSlots[i].GetComponent<Image>();
+            tempItemData = allItemsSlots[i].GetComponent<ItemSlot>();
 
-            if (equipmentItems.ContainsKey(i))
+            if (allItems.ContainsKey(i))
             {
-                tempImage.sprite = equipmentItems[i].GetItemData().GetIcon();
+                tempImage.sprite = allItems[i].GetItemData().GetIcon();
                 if (!tempImage.hasBorder) tempImage.type = Image.Type.Simple;
                 else tempImage.type = Image.Type.Sliced;
                 tempImage.color = new Color(1, 1, 1, 1);
 
-                tempItemData.itemData = equipmentItems[i].GetItemData();
+                tempItemData.itemData = allItems[i].GetItemData();
             }
             else
             {
@@ -133,13 +160,116 @@ public class PlayerInventory : MonoBehaviour
 
     int FindFirstEmptySlot()
     {
-        for (int i = 0; i < slots.Count; i++)
+        for (int i = 0; i < allItemsSlots.Count; i++)
         {
-            if (!equipmentItems.ContainsKey(i))
+            if (!allItems.ContainsKey(i))
             {
                 return i;
             }
         }
         return -1;
+    }
+
+    // Armors------------------------------------------------------------
+
+    void EquipFromGround(GameObject item)
+    {
+        Armor armor = ((Armor) item.transform.GetComponent<Item>().GetItemData());
+        if (armorItems.ContainsKey(armor.GetArmorType()))
+        {
+            return;
+        }
+
+        armorItems.Add(armor.GetArmorType(), armor);
+        Destroy(item);
+
+        UpdateArmorInventory();
+    }
+
+    void EquipArmor(Armor armor, int index)
+    {
+        ArmorType armorType = armor.GetArmorType();
+        if (armorItems.ContainsKey(armorType))
+        {
+            return;
+        }
+
+        allItems.Remove(index);
+        armorItems.Add(armorType, armor);
+
+        UpdateItemInventory();
+        UpdateArmorInventory();
+    }
+
+    void DropArmor(ArmorType armorType)
+    {
+        GameObject droppedItem = ItemManager.GetItemObject(armorItems[armorType].GetName());
+        ItemData droppedItemData = droppedItem.GetComponent<Item>().GetItemData();
+        Instantiate(droppedItem, transform.position, droppedItemData.GetDropRotation());
+
+        armorItems.Remove(armorType);
+
+        UpdateArmorInventory();
+    }
+
+    void UpdateArmorInventory()
+    {
+        Image tempImage;
+        ItemSlot tempItemData;
+        foreach(ArmorType armorType in Enum.GetValues(typeof(ArmorType)))
+        {
+            tempImage = armorItemsSlots[armorType].GetComponent<Image>();
+            tempItemData = armorItemsSlots[armorType].GetComponent<ItemSlot>();
+
+            if (armorItems.ContainsKey(armorType))
+            {
+                tempImage.sprite = armorItems[armorType].GetIcon();
+                if (!tempImage.hasBorder) tempImage.type = Image.Type.Simple;
+                else tempImage.type = Image.Type.Sliced;
+                tempImage.color = new Color(1, 1, 1, 1);
+
+                tempItemData.itemData = armorItems[armorType];
+            }
+            else
+            {
+                tempImage.sprite = emptySlot;
+                if (!tempImage.hasBorder) tempImage.type = Image.Type.Simple;
+                else tempImage.type = Image.Type.Sliced;
+                tempImage.color = new Color(1, 1, 1, 0.5f);
+
+                tempItemData.itemData = null;
+            }
+        }
+
+        // :((
+        if (!armorItems.ContainsKey(ArmorType.Feet))
+        {
+            boots.SetActive(false); ironBoots.SetActive(false);
+        }
+        else if (armorItems[ArmorType.Feet].GetName().ToLower() == "boots") boots.SetActive(true);
+        else ironBoots.SetActive(true);
+
+        if (!armorItems.ContainsKey(ArmorType.Chestplate))
+        {
+            chest.SetActive(false); ironChest.SetActive(false); ironShoulders.SetActive(false); ironGloves.SetActive(false);
+        }
+        else if (armorItems[ArmorType.Chestplate].GetName().ToLower() == "chest") chest.SetActive(true);
+        else
+        {
+            ironChest.SetActive(true); ironShoulders.SetActive(true); ironGloves.SetActive(true);
+        }
+
+        if (!armorItems.ContainsKey(ArmorType.Legs))
+        {
+            pants.SetActive(false); ironPants.SetActive(false);
+        }
+        else if (armorItems[ArmorType.Legs].GetName().ToLower() == "pants") pants.SetActive(true);
+        else ironPants.SetActive(true);
+
+        if (!armorItems.ContainsKey(ArmorType.Head))
+        {
+            ironHelmet.SetActive(false);
+        }
+        else ironHelmet.SetActive(true);
     }
 }

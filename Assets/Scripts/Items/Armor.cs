@@ -17,6 +17,7 @@ public class Armor : ItemData
     public int GetDurability() { return durability; }
     public int GetArmorPoints() { return armorPoints; }
     public Resistances[] GetResistances() {  return resistances; }
+    public ArmorType GetArmorType() {  return type; }
 }
 
 [System.Serializable]

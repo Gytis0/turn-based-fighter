@@ -17,11 +17,11 @@ MonoBehaviour:
   leftHandRotation: {x: 0, y: 0, z: 0}
   rightHandRotation: {x: 0, y: 0, z: 0}
   dropAngle: {x: 0, y: 0, z: 0, w: 0}
-  itemName: Reinforced Helmet
+  itemName: Iron Helmet
   icon: {fileID: 21300000, guid: 0245df59cc4f15749b05feb83b0c6ef9, type: 3}
   weight: 3
   durability: 10
-  baseResistance: 10
+  armorPoints: 0
   resistances:
   - damageType: 1
     resistance: 3

@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e35369844b793154da620887b3cfbc8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactions: 02000000
+  interactions: 01000000
   radius: 1
   radiusOffset: {x: 0, y: 0, z: 0}
   itemData: {fileID: 11400000, guid: 8bf38399ddf31e241a5fce6dbc5e2fbc, type: 2}

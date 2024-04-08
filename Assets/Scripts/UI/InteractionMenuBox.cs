@@ -42,8 +42,14 @@ public class InteractionMenuBox : MonoBehaviour
 
     public void OpenInteractionBox(Interactable _interactable, Vector3 mousePos)
     {
+        RectTransform rect = GetComponent<RectTransform>();
         currentInteractable = _interactable;
-        transform.position = new Vector3(mousePos.x, mousePos.y, 0);
+        float minX = rect.sizeDelta.x / 2;
+        float minY = rect.sizeDelta.y / 2;
+        float maxX = Screen.currentResolution.width - minX;
+        float maxY = Screen.currentResolution.height - minY;
+
+        transform.position = new Vector3(Math.Clamp(mousePos.x, minX, maxY), Math.Clamp(mousePos.y, minY, maxY), 0);
         if(_interactable.GetType() == typeof(Item))
         {
             Item item = (Item) _interactable;

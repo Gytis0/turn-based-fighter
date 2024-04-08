@@ -17,11 +17,11 @@ MonoBehaviour:
   leftHandRotation: {x: 0, y: 0, z: 0}
   rightHandRotation: {x: 0, y: 0, z: 0}
   dropAngle: {x: 0, y: 0, z: 0, w: 0}
-  itemName: Reinforced Boots
+  itemName: Iron Boots
   icon: {fileID: 21300000, guid: 76b0f631de2941b428b7fd756afd692a, type: 3}
   weight: 2
   durability: 5
-  baseResistance: 8
+  armorPoints: 0
   resistances:
   - damageType: 1
     resistance: 3

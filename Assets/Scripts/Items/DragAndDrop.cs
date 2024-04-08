@@ -1,25 +1,33 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
     public delegate void PlayerItemDropped(int index);
-    public static event PlayerItemDropped onDrop;
+    public static event PlayerItemDropped onItemDrop;
+    public delegate void PlayerItemAdded(ItemData item, int index);
+    public static event PlayerItemAdded onItemAdd;
+
+    public delegate void PlayerArmorDropped(ArmorType armorType);
+    public static event PlayerArmorDropped onArmorDrop;
+    public delegate void PlayerArmorEquipped(Armor armor, int index);
+    public static event PlayerArmorEquipped onArmorEquip;
+
     public delegate void PlayerItemSwitch(int indexFrom, int indexTo);
     public static event PlayerItemSwitch onSwitch;
 
     ItemSlot itemSlot;
-    RectTransform background;
+    RectTransform itemInventoryBackground;
+    RectTransform armorInventoryBackground;
     RectTransform imageRect;
-    Canvas canvas;
     CanvasGroup canvasGroup;
 
 
     public void Start()
     {
         itemSlot = GetComponent<ItemSlot>();
-        background = GameObject.FindGameObjectWithTag("Inventory").GetComponent<RectTransform>();
-        canvas = GameObject.FindGameObjectWithTag("UI Canvas").GetComponent<Canvas>();
+        itemInventoryBackground = GameObject.FindGameObjectWithTag("Item Inventory").GetComponent<RectTransform>();
+        armorInventoryBackground = GameObject.FindGameObjectWithTag("Armor Inventory").GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         imageRect = GetComponent<RectTransform>();
     }
@@ -34,16 +42,16 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     {
         if(itemSlot.itemData != null)
         {
-            //imageRect.anchoredPosition += eventData.delta / canvas.scaleFactor;
             imageRect.position = eventData.position;
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if(!IsRectInside(imageRect, background))
+        if (!IsRectInside(imageRect, armorInventoryBackground) && !IsRectInside(imageRect, itemInventoryBackground))
         {
-            onDrop(itemSlot.index);
+            if (itemSlot.index == -1) onArmorDrop(((Armor)itemSlot.itemData).GetArmorType());
+            else onItemDrop(itemSlot.index);
         }
 
         imageRect.localPosition = new Vector2(0, 0);
@@ -52,17 +60,45 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
         canvasGroup.blocksRaycasts = true;
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-    }
-
     public void OnDrop(PointerEventData eventData)
     {
-        int indexFrom = eventData.pointerDrag.GetComponent<ItemSlot>().index, indexTo = itemSlot.index;
-        if (indexFrom == indexTo) return;
+        ItemSlot otherItemSlot = eventData.pointerDrag.GetComponent<ItemSlot>();
 
-        Debug.Log("Dropping on: " + itemSlot.index);
-        onSwitch(indexFrom, indexTo);
+        // Item dropped on armor slot
+        if (itemSlot.index == -1)
+        {
+            // Item is an armor
+            if (otherItemSlot.itemData.GetType() == typeof(Armor))
+            {
+                Armor armor = (Armor)otherItemSlot.itemData;
+                if (itemSlot.itemData == null && itemSlot.armorSlot == armor.GetArmorType())
+                {
+                    onArmorEquip(armor, otherItemSlot.index);    
+                }
+                else return;
+            }
+            else return;
+        }
+        // Item dropped on item slot
+        else
+        {
+            // Item is an armor coming from armor inventory
+            if (otherItemSlot.index == -1)
+            {
+                if (itemSlot.itemData == null)
+                {
+                    onItemAdd(otherItemSlot.itemData, itemSlot.index);
+                }
+                else return;
+            }
+            else
+            {
+                int indexFrom = eventData.pointerDrag.GetComponent<ItemSlot>().index, indexTo = itemSlot.index;
+                if (indexFrom == indexTo) return;
+
+                onSwitch(indexFrom, indexTo);
+            }
+        }
     }
 
     bool IsRectInside(RectTransform R1, RectTransform R2)
@@ -70,8 +106,8 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
         Vector3[] imageVector = new Vector3[4];
         Vector3[] backgroundVector = new Vector3[4];
 
-        imageRect.GetWorldCorners(imageVector);
-        background.GetWorldCorners(backgroundVector);
+        R1.GetWorldCorners(imageVector);
+        R2.GetWorldCorners(backgroundVector);
 
         for (int i = 0; i < 4; i++)
         {

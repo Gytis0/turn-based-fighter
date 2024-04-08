@@ -5,9 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
-  - Inventory
   - UI Canvas
   - Player Inventory
+  - Armor Inventory
+  - Item Inventory
+  - Inventory
   layers:
   - Default
   - TransparentFX

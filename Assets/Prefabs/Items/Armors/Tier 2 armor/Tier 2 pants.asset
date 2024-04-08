@@ -17,11 +17,11 @@ MonoBehaviour:
   leftHandRotation: {x: 0, y: 0, z: 0}
   rightHandRotation: {x: 0, y: 0, z: 0}
   dropAngle: {x: 0, y: 0, z: 0, w: 0}
-  itemName: Reinforced Pants
+  itemName: Iron Pants
   icon: {fileID: 21300000, guid: 5eaea643fa771e44abdbe350fe0a9539, type: 3}
   weight: 6
   durability: 10
-  baseResistance: 15
+  armorPoints: 0
   resistances:
   - damageType: 1
     resistance: 3

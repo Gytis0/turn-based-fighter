@@ -11,7 +11,7 @@ public class Interactable : MonoBehaviour
     public static event SelectPickUp onPickUp;
 
     public delegate void SelectEquip(GameObject item);
-    public static event SelectEquip onEquip;
+    public static event SelectEquip onPickUpAndEquip;
 
     public enum InteractionOptions
     {
@@ -24,6 +24,8 @@ public class Interactable : MonoBehaviour
     public float radius = 2f;
     [SerializeField]
     Vector3 radiusOffset;
+
+    public Vector3 GetRadiusOffset() { return radiusOffset; }
 
     public void StartInteraction(int i)
     {
@@ -42,7 +44,7 @@ public class Interactable : MonoBehaviour
 
     void Equip()
     {
-        if (onEquip != null) onEquip(transform.gameObject);
+        if (onPickUpAndEquip != null) onPickUpAndEquip(transform.gameObject);
     }
 
     private void OnDrawGizmosSelected()
