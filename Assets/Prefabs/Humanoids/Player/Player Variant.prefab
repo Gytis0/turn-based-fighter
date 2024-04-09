@@ -350,9 +350,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseMenu: {fileID: 0}
-  layerMask:
+  mouseRaycastLayers:
     serializedVersion: 2
-    m_Bits: 51
+    m_Bits: 87
 --- !u!114 &8416967476256079606
 MonoBehaviour:
   m_ObjectHideFlags: 0

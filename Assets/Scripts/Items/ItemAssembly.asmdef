@@ -2,7 +2,8 @@
     "name": "ItemAssembly",
     "rootNamespace": "",
     "references": [
-        "GUID:d793ec8ca4e913f4e8b9285ffc026332"
+        "GUID:d793ec8ca4e913f4e8b9285ffc026332",
+        "GUID:5ad926ab5ff9d914ea1f6812dfd6f07a"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

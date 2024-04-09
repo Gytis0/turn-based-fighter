@@ -80,7 +80,9 @@ public class PlayerInventory : MonoBehaviour
         if (allItems.Count >= allItemsSlots.Count) return;
         int index = FindFirstEmptySlot();
 
-        allItems.Add(index, item.GetComponent<Item>());
+        //allItems.Add(index, item.GetComponent<Item>());
+        Item actualItem = new Item(item.GetComponent<Item>());
+        allItems.Add(index, actualItem);
         Destroy(item);
         UpdateItemInventory();
     }

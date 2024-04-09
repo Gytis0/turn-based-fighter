@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using UnityEngine.InputSystem.HID;
+using System;
 
 public class PlayerControls : MonoBehaviour
 {
@@ -12,7 +14,7 @@ public class PlayerControls : MonoBehaviour
     PlayerMovementController playerMovementController;
 
     Interactable focus;
-    public LayerMask layerMask;
+    public LayerMask mouseRaycastLayers;
     bool waitingToGetInRadius = false;
 
     int UILayer;
@@ -21,7 +23,6 @@ public class PlayerControls : MonoBehaviour
     void Awake()
     {
         UILayer = LayerMask.NameToLayer("UI");
-        Debug.Log("UILayer: " + UILayer);
         cam = Camera.main;
         inputActions = new InputController();
         playerMovementController = transform.GetComponent<PlayerMovementController>();
@@ -49,11 +50,13 @@ public class PlayerControls : MonoBehaviour
 
         // Shooting a ray to where the mouse points
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-        RaycastHit hit;
 
         //checking what did we hit
-        if (Physics.Raycast(ray, out hit))
+        RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, mouseRaycastLayers);
+
+        if (hits.Length > 0)
         {
+            RaycastHit hit = FindClosestHit(hits);
             CloseInteractionBox();
 
             playerMovementController.StartWalking(hit.point);
@@ -67,12 +70,13 @@ public class PlayerControls : MonoBehaviour
 
         // Shooting a ray to where the mouse points
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-        RaycastHit hit;
         Interactable interactable;
 
         //checking what did we hit
-        if (Physics.Raycast(ray, out hit, layerMask))
+        RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, mouseRaycastLayers);
+        if (hits.Length > 0)
         {
+            RaycastHit hit = FindClosestHit(hits);
             CloseInteractionBox();
 
             if (interactable = hit.transform.GetComponent<Interactable>())
@@ -89,15 +93,14 @@ public class PlayerControls : MonoBehaviour
                 else
                 {
                     waitingToGetInRadius = true;
-                    OpenInteractionBox();   
+                    OpenInteractionBox();
                 }
-               
             }
             else
             {
                 playerMovementController.StartRunning(hit.point);
             }
-        } 
+        }
     }
 
     void OpenInteractionBox()
@@ -149,5 +152,21 @@ public class PlayerControls : MonoBehaviour
         List<RaycastResult> raysastResults = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, raysastResults);
         return raysastResults;
+    }
+
+    RaycastHit FindClosestHit(RaycastHit[] hits)
+    {
+        float closest = 999f;
+        RaycastHit result = hits[0];
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.distance < closest)
+            {
+                result = hit;
+                closest = hit.distance;
+            }
+        }
+
+        return result;
     }
 }

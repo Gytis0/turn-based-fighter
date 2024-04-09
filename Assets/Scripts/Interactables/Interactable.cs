@@ -1,3 +1,4 @@
+using cakeslice;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,16 @@ public class Interactable : MonoBehaviour
     public delegate void SelectEquip(GameObject item);
     public static event SelectEquip onPickUpAndEquip;
 
+    protected Outline outline;
+
+    protected void Start()
+    {
+        if(!(outline = gameObject.GetComponent<Outline>()))
+        {
+            outline = gameObject.AddComponent<Outline>();
+            outline.enabled = false;
+        }
+    }
     public enum InteractionOptions
     {
         Attack,
@@ -23,7 +34,7 @@ public class Interactable : MonoBehaviour
     public List<InteractionOptions> interactions = new List<InteractionOptions>();
     public float radius = 2f;
     [SerializeField]
-    Vector3 radiusOffset;
+    protected Vector3 radiusOffset;
 
     public Vector3 GetRadiusOffset() { return radiusOffset; }
 
@@ -51,5 +62,15 @@ public class Interactable : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position + radiusOffset, radius);
+    }
+
+    protected void OnMouseOver()
+    {
+        outline.enabled = true;
+    }
+
+    protected void OnMouseExit()
+    {
+        outline.enabled = false;
     }
 }

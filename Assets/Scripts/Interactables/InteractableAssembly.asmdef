@@ -2,8 +2,8 @@
     "name": "InteractableAssembly",
     "rootNamespace": "",
     "references": [
-        "GUID:8f5c9309daad22145a5befeaec003ed1",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:5ad926ab5ff9d914ea1f6812dfd6f07a"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

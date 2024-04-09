@@ -6,11 +6,20 @@ public class Item : Interactable
 {
     [SerializeField]
     ItemData itemData;
-
+    
     Rigidbody rigid;
+
+    public Item(Item item)
+    {
+        interactions = item.interactions;
+        radius = item.radius;
+        radiusOffset = item.radiusOffset;
+        itemData = item.itemData;
+    }
 
     public void Start()
     {
+        base.Start();
         rigid = GetComponent<Rigidbody>();
     }
 
