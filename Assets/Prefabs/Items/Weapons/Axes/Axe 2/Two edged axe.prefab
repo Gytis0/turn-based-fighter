@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 2559508372033454263}
   - component: {fileID: 1453229848297099026}
   - component: {fileID: 3732955849282206680}
-  - component: {fileID: 2480298533014677686}
   - component: {fileID: 5240636665241404378}
   - component: {fileID: 5240636665241404377}
+  - component: {fileID: 889616367267000125}
   m_Layer: 0
   m_Name: Two edged axe
   m_TagString: Untagged
@@ -86,19 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &2480298533014677686
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2940538162897820173}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.6473357, y: 1.4420997, z: 0.065996826}
-  m_Center: {x: 0.0008497238, y: 0.72104985, z: 0}
 --- !u!54 &5240636665241404378
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -131,3 +118,17 @@ MonoBehaviour:
   radius: 1
   radiusOffset: {x: 0, y: 0, z: 0}
   itemData: {fileID: 11400000, guid: 44f712e31564bd047ae6b00c68be2cac, type: 2}
+--- !u!64 &889616367267000125
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2940538162897820173}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6279080039571952389, guid: 9fcc9cb70cf42544b824b85a941e5e93, type: 3}

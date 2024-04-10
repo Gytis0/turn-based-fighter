@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
 
@@ -9,7 +10,7 @@ public class PlayerInventory : MonoBehaviour
     InputController inputActions;
 
     Transform itemInventoryRoot;
-    Dictionary<int, Item> allItems = new();
+    Dictionary<int, ItemData> allItems = new();
     List<Transform> allItemsSlots = new();
 
     Transform armorInventoryRoot;
@@ -80,17 +81,18 @@ public class PlayerInventory : MonoBehaviour
         if (allItems.Count >= allItemsSlots.Count) return;
         int index = FindFirstEmptySlot();
 
-        //allItems.Add(index, item.GetComponent<Item>());
-        Item actualItem = new Item(item.GetComponent<Item>());
-        allItems.Add(index, actualItem);
+        allItems.Add(index, item.GetComponent<Item>().GetItemData());
         Destroy(item);
         UpdateItemInventory();
+    }
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("clicked");
     }
 
     void AddItemFromArmorInventory(ItemData itemData, int index)
     {
-        Item item = ItemManager.GetItemObject(itemData.GetName()).GetComponent<Item>();
-        allItems.Add(index, item);
+        allItems.Add(index, itemData);
         armorItems.Remove(((Armor)itemData).GetArmorType());
 
         UpdateItemInventory();
@@ -99,7 +101,7 @@ public class PlayerInventory : MonoBehaviour
 
     void DropItem(int index)
     {
-        GameObject droppedItem = ItemManager.GetItemObject(allItems[index].GetItemData().GetName());
+        GameObject droppedItem = ItemManager.GetItemObject(allItems[index].GetName());
         ItemData droppedItemData = droppedItem.GetComponent<Item>().GetItemData();
         Instantiate(droppedItem, transform.position, droppedItemData.GetDropRotation());
 
@@ -110,7 +112,7 @@ public class PlayerInventory : MonoBehaviour
 
     void SwitchItem(int indexFrom, int indexTo)
     {
-        Item temp;
+        ItemData temp;
 
         if (allItems.TryGetValue(indexTo, out temp))
         {
@@ -141,12 +143,12 @@ public class PlayerInventory : MonoBehaviour
 
             if (allItems.ContainsKey(i))
             {
-                tempImage.sprite = allItems[i].GetItemData().GetIcon();
+                tempImage.sprite = allItems[i].GetIcon();
                 if (!tempImage.hasBorder) tempImage.type = Image.Type.Simple;
                 else tempImage.type = Image.Type.Sliced;
                 tempImage.color = new Color(1, 1, 1, 1);
 
-                tempItemData.itemData = allItems[i].GetItemData();
+                tempItemData.itemData = allItems[i];
             }
             else
             {
