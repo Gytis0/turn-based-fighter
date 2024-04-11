@@ -1,18 +1,20 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
     int[] points;
+    Dictionary<int, ItemData> allItems = new();
+    Dictionary<ArmorType, Armor> armorItems = new();
+
 
     [SerializeField] MainMenu menu;
 
     PlayerProperties playerProperties;
+    PlayerInventory inventory;
 
     private void Awake()
     {
@@ -29,6 +31,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Interactable.onTravel += LoadFightScene;
+
         points = new int[4];
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -41,16 +45,18 @@ public class GameManager : MonoBehaviour
 
     private void OnLevelWasLoaded(int level)
     {
-        Debug.Log("OnLevelLoad");
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
+        if(level == 1)
         {
+            Interactable.onTravel += LoadFightScene;
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
             playerProperties = player.GetComponent<PlayerProperties>();
-        }
-
-        if (level != 0 && playerProperties != null)
-        {
             playerProperties.SetStats(points);
+        }
+        else if(level == 2)
+        {
+            inventory.SetItemInventory(allItems);
+            inventory.SetArmorInventory(armorItems);
         }
 
     }
@@ -74,6 +80,10 @@ public class GameManager : MonoBehaviour
 
     public void LoadFightScene()
     {
+        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
+        allItems = inventory.GetItemsInventory();
+        armorItems = inventory.GetArmorInventory();
+
         SceneManager.LoadScene(2);
     }
 

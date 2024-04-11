@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -174,6 +173,17 @@ public class PlayerInventory : MonoBehaviour
         return -1;
     }
 
+    public Dictionary<int, ItemData> GetItemsInventory()
+    {
+        return allItems;
+    }
+
+    public void SetItemInventory(Dictionary<int, ItemData> inventory)
+    {
+        allItems = inventory;
+        UpdateItemInventory();
+    }
+
     // Armors------------------------------------------------------------
 
     void EquipFromGround(GameObject item)
@@ -275,5 +285,16 @@ public class PlayerInventory : MonoBehaviour
             ironHelmet.SetActive(false);
         }
         else ironHelmet.SetActive(true);
+    }
+
+    public Dictionary<ArmorType, Armor> GetArmorInventory()
+    {
+        return armorItems;
+    }
+
+    public void SetArmorInventory(Dictionary<ArmorType, Armor> inventory)
+    {
+        armorItems = inventory;
+        UpdateArmorInventory();
     }
 }

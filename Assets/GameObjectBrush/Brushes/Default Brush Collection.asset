@@ -84,8 +84,8 @@ MonoBehaviour:
     randomizeYRotation: 1
     randomizeZRotation: 0
     parentContainer: {fileID: 0}
-    density: 2.84
-    brushSize: 14.72
+    density: 0.1
+    brushSize: 1
     minScale: 1
     maxScale: 2
     offsetFromPivot: {x: 0, y: 0, z: 0}
@@ -128,8 +128,8 @@ MonoBehaviour:
     parentContainer: {fileID: 0}
     density: 1
     brushSize: 2
-    minScale: 1
-    maxScale: 1.2
+    minScale: 5
+    maxScale: 7
     offsetFromPivot: {x: 0, y: 0, z: 0}
     rotOffsetFromPivot: {x: 0, y: 0, z: 0}
     minSlope: 0
@@ -274,9 +274,51 @@ MonoBehaviour:
     randomizeZRotation: 0
     parentContainer: {fileID: 0}
     density: 1
-    brushSize: 5
-    minScale: 1.5
-    maxScale: 1.6
+    brushSize: 2.57
+    minScale: 4
+    maxScale: 5
+    offsetFromPivot: {x: 0, y: 0, z: 0}
+    rotOffsetFromPivot: {x: 0, y: 0, z: 0}
+    minSlope: 0
+    maxSlope: 80
+    layerFilter:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    isTagFilteringEnabled: 1
+    tagFilter: Terrain
+  - brushObject: {fileID: 6941765000743290380, guid: c60edd51c065ceb46b345849a03bc106, type: 3}
+    usePrefabs: 1
+    allowIntercollision: 0
+    alignToSurface: 0
+    randomizeXRotation: 0
+    randomizeYRotation: 1
+    randomizeZRotation: 0
+    parentContainer: {fileID: 0}
+    density: 0.1
+    brushSize: 1
+    minScale: 2
+    maxScale: 2
+    offsetFromPivot: {x: 0, y: 0, z: 0}
+    rotOffsetFromPivot: {x: 0, y: 0, z: 0}
+    minSlope: 0
+    maxSlope: 20
+    layerFilter:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    isTagFilteringEnabled: 0
+    tagFilter: 
+  - brushObject: {fileID: 7405846476849542632, guid: c6308cb7062fac34e8e50600086b12a1, type: 3}
+    usePrefabs: 1
+    allowIntercollision: 0
+    alignToSurface: 1
+    randomizeXRotation: 0
+    randomizeYRotation: 1
+    randomizeZRotation: 0
+    parentContainer: {fileID: 0}
+    density: 2.07
+    brushSize: 1.6
+    minScale: 0.2
+    maxScale: 0.3
     offsetFromPivot: {x: 0, y: 0, z: 0}
     rotOffsetFromPivot: {x: 0, y: 0, z: 0}
     minSlope: 0
@@ -287,7 +329,7 @@ MonoBehaviour:
     isTagFilteringEnabled: 1
     tagFilter: Terrain
   primarySelectedBrush:
-    brushObject: {fileID: 1576488453971893466, guid: a778b631c6253a04899cb31bad047c81, type: 3}
+    brushObject: {fileID: 7405846476849542632, guid: c6308cb7062fac34e8e50600086b12a1, type: 3}
     usePrefabs: 1
     allowIntercollision: 0
     alignToSurface: 1
@@ -295,21 +337,21 @@ MonoBehaviour:
     randomizeYRotation: 1
     randomizeZRotation: 0
     parentContainer: {fileID: 0}
-    density: 1
-    brushSize: 2
-    minScale: 1
-    maxScale: 1.2
+    density: 2.07
+    brushSize: 1.6
+    minScale: 0.2
+    maxScale: 0.3
     offsetFromPivot: {x: 0, y: 0, z: 0}
     rotOffsetFromPivot: {x: 0, y: 0, z: 0}
     minSlope: 0
-    maxSlope: 212.66666
+    maxSlope: 80
     layerFilter:
       serializedVersion: 2
       m_Bits: 4294967295
     isTagFilteringEnabled: 1
     tagFilter: Terrain
   selectedBrushes:
-  - brushObject: {fileID: 1576488453971893466, guid: a778b631c6253a04899cb31bad047c81, type: 3}
+  - brushObject: {fileID: 7405846476849542632, guid: c6308cb7062fac34e8e50600086b12a1, type: 3}
     usePrefabs: 1
     allowIntercollision: 0
     alignToSurface: 1
@@ -317,14 +359,14 @@ MonoBehaviour:
     randomizeYRotation: 1
     randomizeZRotation: 0
     parentContainer: {fileID: 0}
-    density: 1
-    brushSize: 2
-    minScale: 1
-    maxScale: 1.2
+    density: 2.07
+    brushSize: 1.6
+    minScale: 0.2
+    maxScale: 0.3
     offsetFromPivot: {x: 0, y: 0, z: 0}
     rotOffsetFromPivot: {x: 0, y: 0, z: 0}
     minSlope: 0
-    maxSlope: 212.66666
+    maxSlope: 80
     layerFilter:
       serializedVersion: 2
       m_Bits: 4294967295
