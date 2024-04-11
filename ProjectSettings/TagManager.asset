@@ -12,6 +12,7 @@ TagManager:
   - Inventory
   - Terrain
   - Game Manager
+  - Main Menu
   layers:
   - Default
   - TransparentFX

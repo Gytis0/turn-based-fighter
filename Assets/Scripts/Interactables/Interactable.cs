@@ -64,6 +64,7 @@ public class Interactable : MonoBehaviour
 
     void Travel()
     {
+        Debug.Log("Travelling");
         if (onTravel != null) onTravel();
     }
 

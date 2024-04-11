@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     Dictionary<ArmorType, Armor> armorItems = new();
 
 
-    [SerializeField] MainMenu menu;
+    MainMenu menu;
 
     PlayerProperties playerProperties;
     PlayerInventory inventory;
@@ -31,7 +31,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Interactable.onTravel += LoadFightScene;
+        menu = GameObject.FindGameObjectWithTag("Main Menu").GetComponent<MainMenu>();
+        if(menu != null)
+        {
+            MainMenu.onGameStart += LoadEquipmentScene;
+        }
 
         points = new int[4];
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -45,30 +49,28 @@ public class GameManager : MonoBehaviour
 
     private void OnLevelWasLoaded(int level)
     {
+        Debug.Log("Loaded");
         if(level == 1)
         {
             Interactable.onTravel += LoadFightScene;
+            MainMenu.onGameStart -= LoadEquipmentScene;
             GameObject player = GameObject.FindGameObjectWithTag("Player");
-            inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
             playerProperties = player.GetComponent<PlayerProperties>();
             playerProperties.SetStats(points);
         }
         else if(level == 2)
         {
+            Interactable.onTravel -= LoadFightScene;
+            
+            inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
             inventory.SetItemInventory(allItems);
             inventory.SetArmorInventory(armorItems);
+
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            playerProperties = player.GetComponent<PlayerProperties>();
+            playerProperties.SetStats(points);
         }
 
-    }
-
-    private void OnEnable()
-    {
-        Interactable.onTravel += LoadFightScene;
-    }
-
-    private void OnDisable()
-    {
-        Interactable.onTravel -= LoadFightScene;
     }
 
     public void LoadEquipmentScene()

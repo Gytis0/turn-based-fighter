@@ -17,6 +17,9 @@ public class MainMenu : MonoBehaviour
     [SerializeField] List<Image> composureBubbles;
     [SerializeField] List<Image> intelligenceBubbles;
 
+    public delegate void StartGame();
+    public static event StartGame onGameStart;
+
     int healthPoints = 3;
     int staminaPoints = 3;
     int composurePoints = 3;
@@ -99,6 +102,11 @@ public class MainMenu : MonoBehaviour
     {
         availablePoints += points;
         availablePointsText.SetText("Points Left: " + availablePoints);
+    }
+
+    public void StartGameButton()
+    {
+        if(onGameStart != null) onGameStart();
     }
 
     public void ResetPoints()

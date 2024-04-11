@@ -1591,9 +1591,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: LoadEquipmentScene
+      - m_Target: {fileID: 8646605900101698517}
+        m_TargetAssemblyTypeName: MainMenu, UiAssembly
+        m_MethodName: StartGameButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6803,7 +6803,7 @@ GameObject:
   - component: {fileID: 8646605900101698517}
   m_Layer: 5
   m_Name: Main Menu Canvas
-  m_TagString: Untagged
+  m_TagString: Main Menu
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

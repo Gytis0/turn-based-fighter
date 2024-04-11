@@ -92,17 +92,16 @@ public class HumanoidMovementController : MonoBehaviour
 
     protected virtual void Update()
     {
-        if(humanoidStats.following)
+        
+        
+        if (humanoidStats.following)
         {
             Run(humanoidStats.destination);
         }
 
-        if(humanoidProperties.GetStamina() <= 0 && humanoidStats.inCombat)
-        {
-            Stop();
-        }
-
-        if(agent.remainingDistance < agent.stoppingDistance + 0.1f && agent.remainingDistance > agent.stoppingDistance)
+        // Stop moving if there is no path generating
+        // Stop moving if we reached the destination
+        if ((!agent.hasPath && !agent.pathPending) || (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending))
         {
             Stop();
         }
