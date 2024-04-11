@@ -1708,7 +1708,7 @@ MonoBehaviour:
   textSet2: {fileID: 8002630881311330388}
   twoSetSize: {x: 580, y: 300}
   oneSetSize: {x: 290, y: 300}
-  noSetSize: {x: 290, y: 100}
+  noSetSize: {x: 300, y: 100}
 --- !u!1 &1735343576281128223
 GameObject:
   m_ObjectHideFlags: 0

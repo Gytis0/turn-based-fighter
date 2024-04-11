@@ -68,16 +68,16 @@ public class HumanoidMovementController : MonoBehaviour
         StopFollowing();
     }
 
-    public void StartFollowing(Transform _obj, float _radius = 0f)
+    public void Reach(Vector3 destination, float _radius = 0f)
     {
-        humanoidStats.followingObj = _obj;
+        humanoidStats.destination = destination;
         agent.stoppingDistance = _radius;
         humanoidStats.following = true;
     }
 
     protected virtual void StopFollowing()
     {
-        humanoidStats.followingObj = null;
+        humanoidStats.destination = Vector3.zero;
         agent.stoppingDistance = 0f;
         humanoidStats.following = false;
     }
@@ -94,7 +94,7 @@ public class HumanoidMovementController : MonoBehaviour
     {
         if(humanoidStats.following)
         {
-            Run(humanoidStats.followingObj.position);
+            Run(humanoidStats.destination);
         }
 
         if(humanoidProperties.GetStamina() <= 0 && humanoidStats.inCombat)

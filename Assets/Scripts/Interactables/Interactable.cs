@@ -14,6 +14,9 @@ public class Interactable : MonoBehaviour
     public delegate void SelectEquip(GameObject item);
     public static event SelectEquip onPickUpAndEquip;
 
+    public delegate void SelectTravel();
+    public static event SelectTravel onTravel;
+
     protected Outline outline;
 
     protected void Start()
@@ -28,7 +31,8 @@ public class Interactable : MonoBehaviour
     {
         Attack,
         PickUp,
-        Equip
+        Equip,
+        Travel
     };
 
     public List<InteractionOptions> interactions = new List<InteractionOptions>();
@@ -56,6 +60,11 @@ public class Interactable : MonoBehaviour
     void Equip()
     {
         if (onPickUpAndEquip != null) onPickUpAndEquip(transform.gameObject);
+    }
+
+    void Travel()
+    {
+        if (onTravel != null) onTravel();
     }
 
     private void OnDrawGizmosSelected()

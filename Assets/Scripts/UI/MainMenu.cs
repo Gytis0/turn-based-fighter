@@ -24,10 +24,14 @@ public class MainMenu : MonoBehaviour
 
     int availablePoints = 0;
 
+    public int[] GetPoints()
+    {
+        return new int[] { healthPoints, staminaPoints, composurePoints, intelligencePoints };
+    }
+
     private void Start()
     {
         updateAllPanels();
-
     }
 
     public void changeHealthPoints(int change) {
@@ -110,13 +114,5 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
     }
 
-    public void StartGame()
-    {
-        PlayerPrefs.SetInt("healthPoints", healthPoints);
-        PlayerPrefs.SetInt("staminaPoints", staminaPoints);
-        PlayerPrefs.SetInt("composurePoints", composurePoints);
-        PlayerPrefs.SetInt("intelligencePoints", intelligencePoints);
-
-        SceneManager.LoadScene(1);
-    }
+    
 }

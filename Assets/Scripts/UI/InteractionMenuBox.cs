@@ -49,7 +49,7 @@ public class InteractionMenuBox : MonoBehaviour
         float maxX = Screen.currentResolution.width - minX;
         float maxY = Screen.currentResolution.height - minY;
 
-        transform.position = new Vector3(Math.Clamp(mousePos.x, minX, maxY), Math.Clamp(mousePos.y, minY, maxY), 0);
+        transform.position = new Vector3(Math.Clamp(mousePos.x, minX, maxX), Math.Clamp(mousePos.y, minY, maxY), 0);
         if(_interactable.GetType() == typeof(Item))
         {
             Item item = (Item) _interactable;
@@ -100,18 +100,29 @@ public class InteractionMenuBox : MonoBehaviour
                 });
             }
         }
-
+        else
+        {
+            interactableName.SetText("Travel to a fight?");
+            ClearStats();
+        }
         EnableButtons(_interactable);
+    }
+
+    void ClearStats()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            textPairs[i].Item1.SetText("");
+            textPairs[i].Item2.SetText("");
+        }
+
+        textSet1.SetActive(false);
+        textSet2.SetActive(false);
+        ((RectTransform)transform).sizeDelta = noSetSize;
     }
 
     void SetForStats(int sets, string[] texts)
     {
-        int emptySum = 0;
-        foreach (string text in texts)
-        {
-            if (text == "") emptySum++;
-        }
-
         if(sets == 0)
         {
             textSet1.SetActive(false);

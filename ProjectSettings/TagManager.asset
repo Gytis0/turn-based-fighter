@@ -11,6 +11,7 @@ TagManager:
   - Item Inventory
   - Inventory
   - Terrain
+  - Game Manager
   layers:
   - Default
   - TransparentFX

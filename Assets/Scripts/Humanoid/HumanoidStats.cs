@@ -8,7 +8,7 @@ public class HumanoidStats : MonoBehaviour
     HumanoidProperties humanoidProperties;
     public bool inCombat = false;
     public AnimationStates currentState = AnimationStates.IDLE;
-    public Transform followingObj;
+    public Vector3 destination;
     public bool following = false;
 
     void Start()
