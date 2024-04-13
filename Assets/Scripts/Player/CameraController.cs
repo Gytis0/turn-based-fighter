@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour
 {
     GameObject player;
-    Camera camera;
+    Camera playerCamera;
 
     [SerializeField] float clippingOffset;
     InputController inputActions;
@@ -33,8 +33,8 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        camera = transform.GetChild(0).GetComponent<Camera>();
-        cameraStartPosition = camera.transform.localPosition;
+        playerCamera = transform.GetChild(0).GetComponent<Camera>();
+        cameraStartPosition = playerCamera.transform.localPosition;
 
         inputActions = new InputController();
 
@@ -66,10 +66,10 @@ public class CameraController : MonoBehaviour
         }
 
         transform.position = player.transform.position;
-        camera.transform.localPosition = Vector3.Lerp(cameraStartPosition, new Vector3(0, 2, 0), zoomIn);
+        playerCamera.transform.localPosition = Vector3.Lerp(cameraStartPosition, new Vector3(0, 2, 0), zoomIn);
         
         // Clip objects that are too close
-        camera.nearClipPlane = Mathf.Clamp(Vector3.Distance(camera.transform.position, transform.position) - clippingOffset, 0.01f , 10f);
+        playerCamera.nearClipPlane = Mathf.Clamp(Vector3.Distance(playerCamera.transform.position, transform.position) - clippingOffset, 0.01f , 10f);
     }
 
     public void MovingAroundState(bool state)

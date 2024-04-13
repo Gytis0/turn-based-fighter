@@ -5,8 +5,11 @@ using UnityEngine;
 public class ItemManager : MonoBehaviour
 {
     public static ItemManager Instance { get; private set; }
-    public List<GameObject> items = new List<GameObject>();
-    public static List<GameObject> itemsStatic = new List<GameObject>();
+
+    public List<Item> items = new List<Item>();
+    public List<Weapon> weapons = new List<Weapon>();
+    public List<Armor> armors = new List<Armor>();
+    public List<Shield> shields = new List<Shield>();
 
     private void Awake()
     {
@@ -20,13 +23,28 @@ public class ItemManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        itemsStatic = items;
+        foreach(Item item in items)
+        {
+            if (item.GetType() == typeof(Weapon))
+            {
+                weapons.Add((Weapon)item.GetItemData());
+            }
+            else if(item.GetType() == typeof(Armor))
+            {
+                armors.Add((Armor)item.GetItemData());
+            }
+            else if( item.GetType() == typeof(Shield))
+            {
+                shields.Add((Shield)item.GetItemData());
+            }
+        }
+
     }
 
-    public static GameObject GetItemObject(string itemName)
+    public Item GetItem(string itemName)
     {
         ItemData temp;
-        foreach (GameObject item in itemsStatic)
+        foreach (Item item in items)
         {
             temp = item.GetComponent<Item>().GetItemData();
             if (temp.GetName().ToLower() == itemName.ToLower())
@@ -36,6 +54,18 @@ public class ItemManager : MonoBehaviour
         }
 
         return null;
+    }
+    public List<Weapon> GetAllWeapons()
+    {
+        return weapons;
+    }
+    public List<Armor> GetAllArmors() 
+    {
+        return armors;
+    }
+    public List<Shield> GetAllShields()
+    {
+        return shields;
     }
 
 }

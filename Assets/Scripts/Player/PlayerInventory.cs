@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PlayerInventory : MonoBehaviour
+public class PlayerInventory : Inventory
 {
     InputController inputActions;
 
@@ -18,20 +18,11 @@ public class PlayerInventory : MonoBehaviour
     
     [SerializeField] Sprite emptySlot;
 
-    [SerializeField] GameObject ironHelmet;
-    [SerializeField] GameObject ironChest;
-    [SerializeField] GameObject ironShoulders;
-    [SerializeField] GameObject ironGloves;
-    [SerializeField] GameObject ironPants;
-    [SerializeField] GameObject ironBoots;
-
-    [SerializeField] GameObject boots;
-    [SerializeField] GameObject pants;
-    [SerializeField] GameObject chest;
-
-
+    ItemManager itemManager;
+    int inventorySize = 6;
     private void Awake()
     {
+        itemManager = ItemManager.Instance;
         itemInventoryRoot = GameObject.FindGameObjectWithTag("Item Inventory").transform;
         armorInventoryRoot = GameObject.FindGameObjectWithTag("Armor Inventory").transform;
 
@@ -77,16 +68,12 @@ public class PlayerInventory : MonoBehaviour
 
     void AddItem(GameObject item)
     {
-        if (allItems.Count >= allItemsSlots.Count) return;
+        if (allItems.Count >= inventorySize) return;
         int index = FindFirstEmptySlot();
 
         allItems.Add(index, item.GetComponent<Item>().GetItemData());
         Destroy(item);
         UpdateItemInventory();
-    }
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Debug.Log("clicked");
     }
 
     void AddItemFromArmorInventory(ItemData itemData, int index)
@@ -100,8 +87,8 @@ public class PlayerInventory : MonoBehaviour
 
     void DropItem(int index)
     {
-        GameObject droppedItem = ItemManager.GetItemObject(allItems[index].GetName());
-        ItemData droppedItemData = droppedItem.GetComponent<Item>().GetItemData();
+        Item droppedItem = itemManager.GetItem(allItems[index].GetName());
+        ItemData droppedItemData = droppedItem.GetItemData();
         Instantiate(droppedItem, transform.position, droppedItemData.GetDropRotation());
 
         allItems.Remove(index);
@@ -135,7 +122,7 @@ public class PlayerInventory : MonoBehaviour
     {
         Image tempImage;
         ItemSlot tempItemData;
-        for (int i = 0; i < allItemsSlots.Count; i++)
+        for (int i = 0; i < inventorySize; i++)
         {
             tempImage = allItemsSlots[i].GetComponent<Image>();
             tempItemData = allItemsSlots[i].GetComponent<ItemSlot>();
@@ -163,7 +150,7 @@ public class PlayerInventory : MonoBehaviour
 
     int FindFirstEmptySlot()
     {
-        for (int i = 0; i < allItemsSlots.Count; i++)
+        for (int i = 0; i < inventorySize; i++)
         {
             if (!allItems.ContainsKey(i))
             {
@@ -171,11 +158,6 @@ public class PlayerInventory : MonoBehaviour
             }
         }
         return -1;
-    }
-
-    public Dictionary<int, ItemData> GetItemsInventory()
-    {
-        return allItems;
     }
 
     public void SetItemInventory(Dictionary<int, ItemData> inventory)
@@ -217,8 +199,8 @@ public class PlayerInventory : MonoBehaviour
 
     void DropArmor(ArmorType armorType)
     {
-        GameObject droppedItem = ItemManager.GetItemObject(armorItems[armorType].GetName());
-        ItemData droppedItemData = droppedItem.GetComponent<Item>().GetItemData();
+        Item droppedItem = itemManager.GetItem(armorItems[armorType].GetName());
+        ItemData droppedItemData = droppedItem.GetItemData();
         Instantiate(droppedItem, transform.position, droppedItemData.GetDropRotation());
 
         armorItems.Remove(armorType);

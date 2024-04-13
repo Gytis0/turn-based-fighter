@@ -11,10 +11,13 @@ public class GameManager : MonoBehaviour
     Dictionary<ArmorType, Armor> armorItems = new();
 
 
+    GameObject menuObject;
     MainMenu menu;
 
     PlayerProperties playerProperties;
     PlayerInventory inventory;
+
+    ItemManager itemManager;
 
     private void Awake()
     {
@@ -25,15 +28,17 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            DestroyImmediate(gameObject);
         }
     }
 
     private void Start()
     {
-        menu = GameObject.FindGameObjectWithTag("Main Menu").GetComponent<MainMenu>();
-        if(menu != null)
+        itemManager = ItemManager.Instance;
+        menuObject = GameObject.FindGameObjectWithTag("Main Menu");
+        if(menuObject != null)
         {
+            menu = menuObject.GetComponent<MainMenu>();
             MainMenu.onGameStart += LoadEquipmentScene;
         }
 
@@ -43,32 +48,32 @@ public class GameManager : MonoBehaviour
         {
             playerProperties = player.GetComponent<PlayerProperties>();
         }
+
+        // TEMPORARY
+        SetEnemyStats();
+
     }
 
-    
+
 
     private void OnLevelWasLoaded(int level)
     {
-        Debug.Log("Loaded");
         if(level == 1)
         {
             Interactable.onTravel += LoadFightScene;
             MainMenu.onGameStart -= LoadEquipmentScene;
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            playerProperties = player.GetComponent<PlayerProperties>();
-            playerProperties.SetStats(points);
+
+            SetPlayerStats();
         }
         else if(level == 2)
         {
             Interactable.onTravel -= LoadFightScene;
-            
-            inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
-            inventory.SetItemInventory(allItems);
-            inventory.SetArmorInventory(armorItems);
 
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            playerProperties = player.GetComponent<PlayerProperties>();
-            playerProperties.SetStats(points);
+            SetPlayerItems();
+
+            SetPlayerStats();
+
+            SetEnemyStats();
         }
 
     }
@@ -89,4 +94,47 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(2);
     }
 
+    void SetPlayerStats()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        playerProperties = player.GetComponent<PlayerProperties>();
+        playerProperties.SetStats(points);
+    }
+
+    void SetPlayerItems()
+    {
+        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
+        inventory.SetItemInventory(allItems);
+        inventory.SetArmorInventory(armorItems);
+    }
+    
+    void SetEnemyStats()
+    {
+        GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
+        HumanoidProperties enemyProperties = enemy.GetComponent<HumanoidProperties>();
+
+        int availablePoints = 12;
+        int[] points = new int[4];
+
+        for(int i = 0; i < 4; i++)
+        {
+            int tempPoints = Random.Range(1, Mathf.Min(5, availablePoints - (3-i)));
+            availablePoints -= tempPoints;
+            points[i] = tempPoints;
+        }
+       
+        enemyProperties.SetStats(points);
+    }
+
+    void SetEnemyItems()
+    {
+        GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
+        Inventory inventory = enemy.GetComponentInChildren<Inventory>();
+
+        List<Weapon> weapons = new List<Weapon>();
+        Weapon randomWeapon = weapons[Random.Range(0, weapons.Count)];
+
+        List<Armor> armors = new List<Armor>();
+
+    }
 }
