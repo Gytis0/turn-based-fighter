@@ -56,10 +56,16 @@ public class PlayerControls : MonoBehaviour
 
         if (hits.Length > 0)
         {
-            RaycastHit hit = FindClosestHit(hits);
-            CloseInteractionBox();
+            if(InteractionMenuBox.Instance.isActiveAndEnabled)
+            {
+                CloseInteractionBox();
+            }
+            else
+            {
+                RaycastHit hit = FindClosestHit(hits);
 
-            playerMovementController.StartWalking(hit.point);
+                playerMovementController.StartWalking(hit.point);
+            }
         }
     }
 
@@ -77,7 +83,6 @@ public class PlayerControls : MonoBehaviour
         if (hits.Length > 0)
         {
             RaycastHit hit = FindClosestHit(hits);
-            CloseInteractionBox();
 
             if (interactable = hit.transform.GetComponent<Interactable>())
             {
@@ -98,7 +103,14 @@ public class PlayerControls : MonoBehaviour
             }
             else
             {
-                playerMovementController.StartRunning(hit.point);
+                if (InteractionMenuBox.Instance.isActiveAndEnabled)
+                {
+                    CloseInteractionBox();
+                }
+                else
+                {
+                    playerMovementController.StartRunning(hit.point);
+                }
             }
         }
     }

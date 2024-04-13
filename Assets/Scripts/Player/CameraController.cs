@@ -30,8 +30,6 @@ public class CameraController : MonoBehaviour
     [Range(0.01f, 1f)]
     float zoomInSpeed;
 
-    RaycastHit[] hits;
-
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -71,7 +69,7 @@ public class CameraController : MonoBehaviour
         camera.transform.localPosition = Vector3.Lerp(cameraStartPosition, new Vector3(0, 2, 0), zoomIn);
         
         // Clip objects that are too close
-        camera.nearClipPlane = Vector3.Distance(camera.transform.position, transform.position) - clippingOffset;
+        camera.nearClipPlane = Mathf.Clamp(Vector3.Distance(camera.transform.position, transform.position) - clippingOffset, 0.01f , 10f);
     }
 
     public void MovingAroundState(bool state)
