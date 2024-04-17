@@ -27,6 +27,8 @@ public class Item : Interactable
     public ItemData GetItemData() { return itemData; }
     public void AppearInHand(HandSlot slot)
     {
+        if (rigid == null) Start();
+
         rigid.isKinematic = true;
         rigid.useGravity = false;
         transform.localPosition = itemData.GetHandOffset(slot);
@@ -36,6 +38,8 @@ public class Item : Interactable
 
     public void AppearInWorld()
     {
+        if (rigid == null) Start();
+
         rigid.isKinematic = false;
         rigid.useGravity = true;
         transform.localPosition = Vector3.zero;

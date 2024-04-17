@@ -131,9 +131,12 @@ public class GameManager : MonoBehaviour
 
     void SetEnemyItems()
     {
+        // References
         GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
         Inventory inventory = enemy.GetComponentInChildren<Inventory>();
+        Equipment equipment = enemy.GetComponent<Equipment>();
 
+        // Generate weapons and shields to equip
         Dictionary<int ,ItemData> itemsToEquip = new Dictionary<int ,ItemData>();
         List<Weapon> weapons = itemManager.GetAllWeapons();
         Weapon randomWeapon = weapons[Random.Range(0, weapons.Count)];
@@ -146,6 +149,7 @@ public class GameManager : MonoBehaviour
             itemsToEquip.Add(1, randomShield);
         }
 
+        // Generate armors to equip
         List<Armor> armors = itemManager.GetAllArmors();
         List<Armor> selectedArmors = new List<Armor>();
 
@@ -183,8 +187,13 @@ public class GameManager : MonoBehaviour
             armorsToEquip[armor.GetArmorType()] = armor;
         }
 
-        inventory.SetItemInventory(itemsToEquip);
+        // Add armors to the inventory
         inventory.SetArmorInventory(armorsToEquip);
 
+        equipment.EquipHand(itemManager.GetItem(itemsToEquip[0].GetName()), HandSlot.RightHand);
+        if(itemsToEquip.Count > 1)
+        {
+            equipment.EquipHand(itemManager.GetItem(itemsToEquip[1].GetName()), HandSlot.LeftHand);
+        }
     }
 }

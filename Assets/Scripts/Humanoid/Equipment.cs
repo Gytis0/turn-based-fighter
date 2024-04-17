@@ -13,7 +13,7 @@ public class Equipment : MonoBehaviour
     [SerializeField] GameObject leftHand;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         int count = System.Enum.GetNames(typeof(ArmorType)).Length;
         armors = new Armor[count];
@@ -25,10 +25,11 @@ public class Equipment : MonoBehaviour
 
     public void EquipHand(Item item, HandSlot slot)
     {
-        handSlots[(int)slot] = item;
-        if(slot == HandSlot.RightHand) { item.transform.parent = rightHand.transform; }
-        else if(slot == HandSlot.LeftHand) { item.transform.parent = leftHand.transform; }
-        item.AppearInHand(slot);
+        Item itemToEquip = Instantiate(item);
+        handSlots[(int)slot] = itemToEquip;
+        if(slot == HandSlot.RightHand) { itemToEquip.transform.parent = rightHand.transform; }
+        else if(slot == HandSlot.LeftHand) { itemToEquip.transform.parent = leftHand.transform; }
+        itemToEquip.AppearInHand(slot);
     }
 
     public Item UnequipHand(HandSlot slot)

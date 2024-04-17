@@ -196,7 +196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inCombat: 0
   currentState: 0
-  followingObj: {fileID: 0}
+  destination: {x: 0, y: 0, z: 0}
   following: 0
 --- !u!114 &4005558496075148690
 MonoBehaviour:
@@ -224,8 +224,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfa7e157e635de94196618d6ade629fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rightHand: {fileID: 0}
-  leftHand: {fileID: 0}
+  rightHand: {fileID: 7024967328534371685}
+  leftHand: {fileID: 7227478100066625114}
 --- !u!1001 &3011377133693761978
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -286,6 +286,16 @@ PrefabInstance:
 --- !u!4 &4196283215977600883 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1438546959266459337, guid: 60770bdb4dc667c45bea53db0339dc05, type: 3}
+  m_PrefabInstance: {fileID: 3011377133693761978}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7024967328534371685 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5239723884395685087, guid: 60770bdb4dc667c45bea53db0339dc05, type: 3}
+  m_PrefabInstance: {fileID: 3011377133693761978}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7227478100066625114 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5586616958757773280, guid: 60770bdb4dc667c45bea53db0339dc05, type: 3}
   m_PrefabInstance: {fileID: 3011377133693761978}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6115638274421080702
