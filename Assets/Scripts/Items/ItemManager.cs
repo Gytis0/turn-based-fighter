@@ -25,15 +25,16 @@ public class ItemManager : MonoBehaviour
 
         foreach(Item item in items)
         {
-            if (item.GetType() == typeof(Weapon))
+            System.Type type = item.GetItemData().GetType();
+            if (type == typeof(Weapon))
             {
                 weapons.Add((Weapon)item.GetItemData());
             }
-            else if(item.GetType() == typeof(Armor))
+            else if(type == typeof(Armor))
             {
                 armors.Add((Armor)item.GetItemData());
             }
-            else if( item.GetType() == typeof(Shield))
+            else if( type == typeof(Shield))
             {
                 shields.Add((Shield)item.GetItemData());
             }

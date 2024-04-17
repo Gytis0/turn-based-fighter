@@ -12,8 +12,6 @@ public class Equipment : MonoBehaviour
     [SerializeField] GameObject rightHand;
     [SerializeField] GameObject leftHand;
 
-    HumanoidStats humanoidStats;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +21,6 @@ public class Equipment : MonoBehaviour
         count = System.Enum.GetNames(typeof (HandSlot)).Length;
         handSlots = new Item[count];
 
-        humanoidStats = transform.GetComponent<HumanoidStats>();
     }
 
     public void EquipHand(Item item, HandSlot slot)

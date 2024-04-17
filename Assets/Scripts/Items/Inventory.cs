@@ -30,6 +30,7 @@ public class Inventory : MonoBehaviour
         allItems = inventory;
     }
 
+
     // Armors------------------------------------------------------------
 
     protected void UpdateArmorInventory()

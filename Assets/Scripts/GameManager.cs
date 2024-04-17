@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
 
         // TEMPORARY
         SetEnemyStats();
+        SetEnemyItems();
 
     }
 
@@ -74,6 +75,8 @@ public class GameManager : MonoBehaviour
             SetPlayerStats();
 
             SetEnemyStats();
+
+            SetEnemyItems();
         }
 
     }
@@ -131,10 +134,57 @@ public class GameManager : MonoBehaviour
         GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
         Inventory inventory = enemy.GetComponentInChildren<Inventory>();
 
-        List<Weapon> weapons = new List<Weapon>();
+        Dictionary<int ,ItemData> itemsToEquip = new Dictionary<int ,ItemData>();
+        List<Weapon> weapons = itemManager.GetAllWeapons();
         Weapon randomWeapon = weapons[Random.Range(0, weapons.Count)];
+        itemsToEquip.Add(0, randomWeapon);
 
-        List<Armor> armors = new List<Armor>();
+        if(randomWeapon.GetWeaponType() == WeaponType.OneHanded)
+        {
+            List<Shield> shields = itemManager.GetAllShields();
+            Shield randomShield = shields[Random.Range(0, shields.Count)];
+            itemsToEquip.Add(1, randomShield);
+        }
+
+        List<Armor> armors = itemManager.GetAllArmors();
+        List<Armor> selectedArmors = new List<Armor>();
+
+        int randomIndex;
+        for (int i = 0; i < 4; i++) 
+        {
+            randomIndex = Random.Range(0, armors.Count);
+            selectedArmors.Add(armors[randomIndex]);
+            armors.RemoveAt(randomIndex);
+        }
+
+        for (int i = 0; i < selectedArmors.Count - 1; i++) 
+        {
+            for (int j = i + 1; j < selectedArmors.Count; j++)
+            {
+                if (selectedArmors[i].GetArmorType() == selectedArmors[j].GetArmorType())
+                {
+                    if (selectedArmors[i].GetArmorPoints() > selectedArmors[j].GetArmorPoints())
+                    {
+                        selectedArmors.RemoveAt(j);
+                        j -= 1;
+                    }
+                    else
+                    {
+                        selectedArmors.RemoveAt(i);
+                        i -= 1;
+                    }
+                }
+            }
+        }
+
+        Dictionary<ArmorType, Armor> armorsToEquip = new Dictionary<ArmorType, Armor>();
+        foreach (Armor armor in selectedArmors)
+        {
+            armorsToEquip[armor.GetArmorType()] = armor;
+        }
+
+        inventory.SetItemInventory(itemsToEquip);
+        inventory.SetArmorInventory(armorsToEquip);
 
     }
 }

@@ -21,7 +21,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 017dbb83815c2334d9eccf666d83b3b5, type: 3}
   weight: 5
   durability: 8
-  baseResistance: 15
+  armorPoints: 15
   resistances:
   - damageType: 1
     resistance: 7
