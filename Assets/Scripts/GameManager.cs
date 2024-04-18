@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    // References
+    [SerializeField] Camera cinematicCamera;
+
     int[] points;
     Dictionary<int, ItemData> allItems = new();
     Dictionary<ArmorType, Armor> armorItems = new();
@@ -49,13 +52,15 @@ public class GameManager : MonoBehaviour
             playerProperties = player.GetComponent<PlayerProperties>();
         }
 
+        if(SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            Interactable.onTravel += LoadFightScene;
+        }
         // TEMPORARY
-        SetEnemyStats();
-        SetEnemyItems();
+        //SetEnemyStats();
+        //SetEnemyItems();
 
     }
-
-
 
     private void OnLevelWasLoaded(int level)
     {

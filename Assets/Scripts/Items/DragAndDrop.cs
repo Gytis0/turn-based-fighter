@@ -22,6 +22,7 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
     RectTransform imageRect;
     CanvasGroup canvasGroup;
 
+    [SerializeField] SlotType slotType;
 
     public void Start()
     {
@@ -48,9 +49,10 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        // Item was dragged out of the inventories
         if (!IsRectInside(imageRect, armorInventoryBackground) && !IsRectInside(imageRect, itemInventoryBackground))
         {
-            if (itemSlot.index == -1) onArmorDrop(((Armor)itemSlot.itemData).GetArmorType());
+            if (itemSlot.itemData.GetItemType() == ItemType.Armor) onArmorDrop(((Armor)itemSlot.itemData).GetArmorType());
             else onItemDrop(itemSlot.index);
         }
 
@@ -65,10 +67,10 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
         ItemSlot otherItemSlot = eventData.pointerDrag.GetComponent<ItemSlot>();
 
         // Item dropped on armor slot
-        if (itemSlot.index == -1)
+        if (itemSlot.itemData.GetItemType() == ItemType.Armor)
         {
             // Item is an armor
-            if (otherItemSlot.itemData.GetType() == typeof(Armor))
+            if (otherItemSlot.itemData.GetItemType() == ItemType.Armor)
             {
                 Armor armor = (Armor)otherItemSlot.itemData;
                 if (itemSlot.itemData == null && itemSlot.armorSlot == armor.GetArmorType())
@@ -83,7 +85,7 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
         else
         {
             // Item is an armor coming from armor inventory
-            if (otherItemSlot.index == -1)
+            if (otherItemSlot.itemData.GetItemType() == ItemType.Armor)
             {
                 if (itemSlot.itemData == null)
                 {

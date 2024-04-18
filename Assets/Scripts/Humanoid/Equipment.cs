@@ -5,8 +5,7 @@ using UnityEngine.InputSystem.XInput;
 
 public class Equipment : MonoBehaviour
 {
-    Armor[] armors;
-    Item[] handSlots;
+    public Item[] handSlots;
 
     // References
     [SerializeField] GameObject rightHand;
@@ -15,34 +14,38 @@ public class Equipment : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        int count = System.Enum.GetNames(typeof(ArmorType)).Length;
-        armors = new Armor[count];
-
-        count = System.Enum.GetNames(typeof (HandSlot)).Length;
+        int count = System.Enum.GetNames(typeof (HandSlot)).Length;
         handSlots = new Item[count];
-
     }
+    
 
-    public void EquipHand(Item item, HandSlot slot)
+    public bool EquipHand(Item item, HandSlot slot)
     {
+        if (handSlots[(int)slot] != null) return false;
+
         Item itemToEquip = Instantiate(item);
         handSlots[(int)slot] = itemToEquip;
         if(slot == HandSlot.RightHand) { itemToEquip.transform.parent = rightHand.transform; }
         else if(slot == HandSlot.LeftHand) { itemToEquip.transform.parent = leftHand.transform; }
         itemToEquip.AppearInHand(slot);
+        return true;
     }
 
-    public Item UnequipHand(HandSlot slot)
+    public void UnequipHand(HandSlot slot)
     {
-        Item uneqquipedItem = handSlots[(int)slot];
+        Destroy(handSlots[(int)slot].gameObject);
         handSlots[(int)slot] = null;
-        return uneqquipedItem;
     }
 
     public bool IsHandEquipped(HandSlot slot)
     {
         if (handSlots[(int)slot] == null) return false;
         else return true;
+    }
+
+    public bool IsBothHandsEquipped()
+    {
+        return IsHandEquipped(HandSlot.LeftHand) && IsHandEquipped(HandSlot.RightHand);
     }
 
     public Weapon GetEquippedWeapon()

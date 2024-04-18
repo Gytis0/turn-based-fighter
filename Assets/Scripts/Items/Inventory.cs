@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    Dictionary<int, ItemData> allItems = new();
+    protected Dictionary<int, ItemData> allItems = new();
 
-    Dictionary<ArmorType, Armor> armorItems = new();
+    protected Dictionary<ArmorType, Armor> armorItems = new();
 
     [SerializeField] protected GameObject ironHelmet;
     [SerializeField] protected GameObject ironChest;

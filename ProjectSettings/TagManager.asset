@@ -13,6 +13,7 @@ TagManager:
   - Terrain
   - Game Manager
   - Main Menu
+  - Weapon Inventory
   layers:
   - Default
   - TransparentFX

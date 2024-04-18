@@ -14,6 +14,8 @@ public class ItemData : ScriptableObject
     [SerializeField] protected Sprite icon;
     [SerializeField] protected int weight;
 
+    protected virtual ItemType itemType { get; set; }
+
     public Sprite GetIcon() { return icon; }
     public Vector3 GetHandOffset(HandSlot slot)
     {
@@ -29,4 +31,5 @@ public class ItemData : ScriptableObject
     public int GetWeight() { return weight; } 
 
     public string GetName() { return itemName; }
+    public ItemType GetItemType () { return itemType; }
 }

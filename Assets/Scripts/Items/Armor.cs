@@ -14,6 +14,8 @@ public class Armor : ItemData
     [SerializeField]
     ArmorType type;
 
+    protected override ItemType itemType { get { return ItemType.Armor; } }
+
     public int GetDurability() { return durability; }
     public int GetArmorPoints() { return armorPoints; }
     public Resistances[] GetResistances() {  return resistances; }

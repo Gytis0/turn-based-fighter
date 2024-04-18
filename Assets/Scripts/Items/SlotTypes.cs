@@ -17,3 +17,19 @@ public enum WeaponType
     TwoHanded,
     OneHanded
 }
+
+public enum ItemType
+{
+    Weapon,
+    Armor,
+    Shield,
+    Other
+}
+
+public enum SlotType
+{
+    Weapon,
+    Armor,
+    Shield,
+    Other
+}

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerInventory : Inventory
@@ -9,12 +10,15 @@ public class PlayerInventory : Inventory
     InputController inputActions;
 
     Transform itemInventoryRoot;
-    Dictionary<int, ItemData> allItems = new();
     List<Transform> allItemsSlots = new();
 
     Transform armorInventoryRoot;
-    Dictionary<ArmorType, Armor> armorItems = new();
     Dictionary<ArmorType, Transform> armorItemsSlots = new();
+
+    Transform weaponInventoryRoot;
+    List<Transform> weaponsSlots = new();
+
+    Equipment equipment;
     
     [SerializeField] Sprite emptySlot;
 
@@ -25,6 +29,13 @@ public class PlayerInventory : Inventory
         itemManager = ItemManager.Instance;
         itemInventoryRoot = GameObject.FindGameObjectWithTag("Item Inventory").transform;
         armorInventoryRoot = GameObject.FindGameObjectWithTag("Armor Inventory").transform;
+        try
+        {
+            weaponInventoryRoot = GameObject.FindGameObjectWithTag("Weapon Inventory").transform;
+        }
+        catch(System.Exception e) { }
+
+        equipment = GetComponentInParent<Equipment>();
 
         foreach (Transform t in itemInventoryRoot)
         {
@@ -36,35 +47,77 @@ public class PlayerInventory : Inventory
             armorItemsSlots.Add((ArmorType)Enum.GetValues(typeof(ArmorType)).GetValue(i), armorInventoryRoot.GetChild(i).GetChild(0));
         }
 
+        if(weaponInventoryRoot != null)
+        {
+            foreach (Transform t in weaponInventoryRoot)
+            {
+                weaponsSlots.Add(t.GetChild(0));
+            }
+        }
+
         inputActions = new InputController();
         inputActions.Enable();
     }
 
     private void OnEnable()
     {
-        Interactable.onPickUp += AddItem;
-        Interactable.onPickUpAndEquip += EquipFromGround;
+        if(SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            Interactable.onPickUp += AddItem;
+            Interactable.onPickUpAndEquip += EquipFromGround;
 
-        DragAndDrop.onItemAdd += AddItemFromArmorInventory;
-        DragAndDrop.onItemDrop += DropItem;
-        DragAndDrop.onArmorEquip += EquipArmor;
-        DragAndDrop.onArmorDrop += DropArmor;
-        DragAndDrop.onSwitch += SwitchItem;
+            DragAndDrop.onItemAdd += AddItemFromArmorInventory;
+            DragAndDrop.onItemDrop += DropItem;
+            DragAndDrop.onArmorEquip += EquipArmor;
+            DragAndDrop.onArmorDrop += DropArmor;
+            DragAndDrop.onSwitch += SwitchItem;
+        }
+        else if(SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            DragAndDropEquipment.onItemAddFromArmor += AddItemFromArmorInventory;
+            DragAndDropEquipment.onItemDrop += DropItem;
+            DragAndDropEquipment.onArmorEquip += EquipArmor;
+            DragAndDropEquipment.onArmorDrop += DropArmor;
+            DragAndDropEquipment.onSwitch += SwitchItem;
+            DragAndDropEquipment.onWeaponEquip += EquipWeapon;
+            DragAndDropEquipment.onWeaponUnequip += UnequipWeapon;
+            DragAndDropEquipment.onItemAddFromWeapon += AddItemFromWeaponInventory;
+        }
+        
     }
 
     private void OnDisable()
     {
-        Interactable.onPickUp -= AddItem;
-        Interactable.onPickUpAndEquip -= EquipFromGround;
+        if (SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            Interactable.onPickUp -= AddItem;
+            Interactable.onPickUpAndEquip -= EquipFromGround;
 
-        DragAndDrop.onItemAdd -= AddItemFromArmorInventory;
-        DragAndDrop.onItemDrop -= DropItem;
-        DragAndDrop.onArmorEquip -= EquipArmor;
-        DragAndDrop.onArmorDrop -= DropArmor;
-        DragAndDrop.onSwitch -= SwitchItem;
+            DragAndDrop.onItemAdd -= AddItemFromArmorInventory;
+            DragAndDrop.onItemDrop -= DropItem;
+            DragAndDrop.onArmorEquip -= EquipArmor;
+            DragAndDrop.onArmorDrop -= DropArmor;
+            DragAndDrop.onSwitch -= SwitchItem;
+        }
+        else if (SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            DragAndDropEquipment.onItemAddFromArmor -= AddItemFromArmorInventory;
+            DragAndDropEquipment.onItemDrop -= DropItem;
+            DragAndDropEquipment.onArmorEquip -= EquipArmor;
+            DragAndDropEquipment.onArmorDrop -= DropArmor;
+            DragAndDropEquipment.onSwitch -= SwitchItem;
+            DragAndDropEquipment.onWeaponEquip -= EquipWeapon;
+            DragAndDropEquipment.onWeaponUnequip -= UnequipWeapon;
+            DragAndDropEquipment.onItemAddFromWeapon += AddItemFromWeaponInventory;
+        }
     }
 
     // All items------------------------------------------------------------
+
+    private void Update()
+    {
+        
+    }
 
     void AddItem(GameObject item)
     {
@@ -80,6 +133,14 @@ public class PlayerInventory : Inventory
     {
         allItems.Add(index, itemData);
         armorItems.Remove(((Armor)itemData).GetArmorType());
+
+        UpdateItemInventory();
+        UpdateArmorInventory();
+    }
+
+    void AddItemFromWeaponInventory(ItemData itemData, int index)
+    {
+        allItems.Add(index, itemData);
 
         UpdateItemInventory();
         UpdateArmorInventory();
@@ -278,5 +339,54 @@ public class PlayerInventory : Inventory
     {
         armorItems = inventory;
         UpdateArmorInventory();
+    }
+
+    // Weapons-----------------------------------------------------------
+
+    void EquipWeapon(Item item, HandSlot handSlot, int index)
+    {
+        if(equipment.EquipHand(item, handSlot))
+        {
+            allItems.Remove(index);
+            UpdateWeaponsInventory();
+            UpdateItemInventory();
+        }
+    }
+
+    void UnequipWeapon(HandSlot handSlot)
+    {
+        equipment.UnequipHand(handSlot);
+        UpdateWeaponsInventory();
+        UpdateItemInventory();
+    }
+
+    void UpdateWeaponsInventory()
+    {
+        Image tempImage;
+        ItemSlot tempItemData;
+        for (int i = 0; i < 2; i++)
+        {
+            tempImage = weaponsSlots[i].GetComponent<Image>();
+            tempItemData = weaponsSlots[i].GetComponent<ItemSlot>();
+
+            if (equipment.handSlots[i] != null)
+            {
+                tempImage.sprite = equipment.handSlots[i].GetItemData().GetIcon();
+                if (!tempImage.hasBorder) tempImage.type = Image.Type.Simple;
+                else tempImage.type = Image.Type.Sliced;
+                tempImage.color = new Color(1, 1, 1, 1);
+
+                tempItemData.itemData = equipment.handSlots[i].GetItemData();
+            }
+            else
+            {
+                tempImage.sprite = emptySlot;
+                if (!tempImage.hasBorder) tempImage.type = Image.Type.Simple;
+                else tempImage.type = Image.Type.Sliced;
+                tempImage.color = new Color(1, 1, 1, 0.5f);
+
+                tempItemData.itemData = null;
+            }
+        }
     }
 }
