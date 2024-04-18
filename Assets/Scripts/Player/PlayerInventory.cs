@@ -21,6 +21,7 @@ public class PlayerInventory : Inventory
     Equipment equipment;
     
     [SerializeField] Sprite emptySlot;
+    [SerializeField] Sprite lockedSlot;
 
     ItemManager itemManager;
     int inventorySize = 6;
@@ -79,9 +80,9 @@ public class PlayerInventory : Inventory
             DragAndDropEquipment.onArmorEquip += EquipArmor;
             DragAndDropEquipment.onArmorDrop += DropArmor;
             DragAndDropEquipment.onSwitch += SwitchItem;
-            DragAndDropEquipment.onWeaponEquip += EquipWeapon;
-            DragAndDropEquipment.onWeaponUnequip += UnequipWeapon;
-            DragAndDropEquipment.onItemAddFromWeapon += AddItemFromWeaponInventory;
+            DragAndDropEquipment.onWeaponryEquip += EquipWeapon;
+            DragAndDropEquipment.onWeaponryUnequip += UnequipWeapon;
+            DragAndDropEquipment.onItemAddFromWeaponry += AddItemFromWeaponryInventory;
         }
         
     }
@@ -106,9 +107,9 @@ public class PlayerInventory : Inventory
             DragAndDropEquipment.onArmorEquip -= EquipArmor;
             DragAndDropEquipment.onArmorDrop -= DropArmor;
             DragAndDropEquipment.onSwitch -= SwitchItem;
-            DragAndDropEquipment.onWeaponEquip -= EquipWeapon;
-            DragAndDropEquipment.onWeaponUnequip -= UnequipWeapon;
-            DragAndDropEquipment.onItemAddFromWeapon += AddItemFromWeaponInventory;
+            DragAndDropEquipment.onWeaponryEquip -= EquipWeapon;
+            DragAndDropEquipment.onWeaponryUnequip -= UnequipWeapon;
+            DragAndDropEquipment.onItemAddFromWeaponry += AddItemFromWeaponryInventory;
         }
     }
 
@@ -138,12 +139,12 @@ public class PlayerInventory : Inventory
         UpdateArmorInventory();
     }
 
-    void AddItemFromWeaponInventory(ItemData itemData, int index)
+    void AddItemFromWeaponryInventory(ItemData itemData, int index)
     {
         allItems.Add(index, itemData);
 
         UpdateItemInventory();
-        UpdateArmorInventory();
+        UpdateWeaponryInventory();
     }
 
     void DropItem(int index)
@@ -348,7 +349,7 @@ public class PlayerInventory : Inventory
         if(equipment.EquipHand(item, handSlot))
         {
             allItems.Remove(index);
-            UpdateWeaponsInventory();
+            UpdateWeaponryInventory();
             UpdateItemInventory();
         }
     }
@@ -356,11 +357,11 @@ public class PlayerInventory : Inventory
     void UnequipWeapon(HandSlot handSlot)
     {
         equipment.UnequipHand(handSlot);
-        UpdateWeaponsInventory();
+        UpdateWeaponryInventory();
         UpdateItemInventory();
     }
 
-    void UpdateWeaponsInventory()
+    void UpdateWeaponryInventory()
     {
         Image tempImage;
         ItemSlot tempItemData;

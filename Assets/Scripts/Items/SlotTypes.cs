@@ -28,7 +28,7 @@ public enum ItemType
 
 public enum SlotType
 {
-    Weapon,
+    Weaponry,
     Armor,
     Shield,
     Other

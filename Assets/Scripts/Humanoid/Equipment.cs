@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.XInput;
+using static UnityEditor.Progress;
 
 public class Equipment : MonoBehaviour
 {
@@ -21,12 +22,66 @@ public class Equipment : MonoBehaviour
 
     public bool EquipHand(Item item, HandSlot slot)
     {
+        // If the slot is taken, return
         if (handSlots[(int)slot] != null) return false;
+
+        ItemData itemData = item.GetItemData();
+        if (itemData.GetItemType() == ItemType.Weapon)
+        {
+            return EquipWeapon(item, slot);
+        }
+        else if (itemData.GetItemType() == ItemType.Shield)
+        {
+            return EquipShield(item, slot);
+        }
+        else return false;
+
+        
+    }
+
+    bool EquipWeapon(Item item, HandSlot slot)
+    {
+        WeaponType weaponType = ((Weapon)item.GetItemData()).GetWeaponType();
+
+        // If the weapon is two handed, and there's already an item, return
+        if (weaponType == WeaponType.TwoHanded && (IsHandEquipped(HandSlot.LeftHand) || IsHandEquipped(HandSlot.RightHand))) return false;
+
+        // If an equipped item is two handed, return
+        if (handSlots[0] != null && handSlots[0].GetItemData().GetItemType() == ItemType.Weapon)
+        {
+            if (((Weapon)handSlots[0].GetItemData()).GetWeaponType() == WeaponType.TwoHanded) return false;
+        }
+        if (handSlots[1] != null && handSlots[1].GetItemData().GetItemType() == ItemType.Weapon)
+        {
+            if (((Weapon)handSlots[1].GetItemData()).GetWeaponType() == WeaponType.TwoHanded) return false;
+        }
+
 
         Item itemToEquip = Instantiate(item);
         handSlots[(int)slot] = itemToEquip;
-        if(slot == HandSlot.RightHand) { itemToEquip.transform.parent = rightHand.transform; }
-        else if(slot == HandSlot.LeftHand) { itemToEquip.transform.parent = leftHand.transform; }
+        if (slot == HandSlot.RightHand) { itemToEquip.transform.parent = rightHand.transform; }
+        else if (slot == HandSlot.LeftHand) { itemToEquip.transform.parent = leftHand.transform; }
+        itemToEquip.AppearInHand(slot);
+        return true;
+    }
+
+    bool EquipShield(Item item, HandSlot slot)
+    {
+        // If an equipped item is two handed, return
+        if (handSlots[0] != null && handSlots[0].GetItemData().GetItemType() == ItemType.Weapon )
+        {
+            if (((Weapon)handSlots[0].GetItemData()).GetWeaponType() == WeaponType.TwoHanded) return false;
+        }
+        if (handSlots[1] != null && handSlots[1].GetItemData().GetItemType() == ItemType.Weapon)
+        {
+            if (((Weapon)handSlots[1].GetItemData()).GetWeaponType() == WeaponType.TwoHanded) return false;
+        }
+
+
+        Item itemToEquip = Instantiate(item);
+        handSlots[(int)slot] = itemToEquip;
+        if (slot == HandSlot.RightHand) { itemToEquip.transform.parent = rightHand.transform; }
+        else if (slot == HandSlot.LeftHand) { itemToEquip.transform.parent = leftHand.transform; }
         itemToEquip.AppearInHand(slot);
         return true;
     }
@@ -41,11 +96,6 @@ public class Equipment : MonoBehaviour
     {
         if (handSlots[(int)slot] == null) return false;
         else return true;
-    }
-
-    public bool IsBothHandsEquipped()
-    {
-        return IsHandEquipped(HandSlot.LeftHand) && IsHandEquipped(HandSlot.RightHand);
     }
 
     public Weapon GetEquippedWeapon()

@@ -17,13 +17,13 @@ public class DragAndDropEquipment : MonoBehaviour, IBeginDragHandler, IEndDragHa
     public static event PlayerItemSwitch onSwitch;
 
     public delegate void PlayerItemAddedFromWeapon(ItemData item, int index);
-    public static event PlayerItemAddedFromWeapon onItemAddFromWeapon;
+    public static event PlayerItemAddedFromWeapon onItemAddFromWeaponry;
 
-    public delegate void PlayerEquippedWeapon(Item item, HandSlot handSlot, int index);
-    public static event PlayerEquippedWeapon onWeaponEquip;
+    public delegate void PlayerEquippedWeaponry(Item item, HandSlot handSlot, int index);
+    public static event PlayerEquippedWeaponry onWeaponryEquip;
 
-    public delegate void PlayerUnequippedWeapon(HandSlot handSlot);
-    public static event PlayerUnequippedWeapon onWeaponUnequip;
+    public delegate void PlayerUnequippedWeaponry(HandSlot handSlot);
+    public static event PlayerUnequippedWeaponry onWeaponryUnequip;
 
     public ItemSlot itemSlot;
     RectTransform imageRect;
@@ -80,23 +80,24 @@ public class DragAndDropEquipment : MonoBehaviour, IBeginDragHandler, IEndDragHa
 
             onArmorEquip(armor, otherItemSlot.index);
         }
-        else if (slotType == SlotType.Weapon)
+        // Item dropped on weaponry slot
+        else if (slotType == SlotType.Weaponry)
         {
-            // Item is not a weapon
-            if (otherItemSlot.itemData.GetItemType() != ItemType.Weapon) return;
+            // Item is not a weapon and not a shield
+            if (otherItemSlot.itemData.GetItemType() != ItemType.Weapon && otherItemSlot.itemData.GetItemType() != ItemType.Shield) return;
 
             // If the slot is already full
             if (itemSlot.itemData != null) return;
 
-            Weapon weapon = (Weapon)otherItemSlot.itemData;
-            Item weaponItem = ItemManager.Instance.GetItem(weapon.GetName());
+            ItemData itemData = otherItemSlot.itemData;
+            Item item = ItemManager.Instance.GetItem(itemData.GetName());
             if(itemSlot.index == 0)
             {
-                onWeaponEquip(weaponItem, HandSlot.LeftHand, otherItemSlot.index);
+                onWeaponryEquip(item, HandSlot.LeftHand, otherItemSlot.index);
             }
             else if (itemSlot.index == 1)
             {
-                onWeaponEquip(weaponItem, HandSlot.RightHand, otherItemSlot.index);
+                onWeaponryEquip(item, HandSlot.RightHand, otherItemSlot.index);
             }
         }
         // Item dropped on item slot
@@ -111,20 +112,20 @@ public class DragAndDropEquipment : MonoBehaviour, IBeginDragHandler, IEndDragHa
                 }
                 else return;
             }
-            // Item is a weapon coming from weapon inventory
-            else if (otherItemSlot.slotType == SlotType.Weapon)
+            // Item is a weapon coming from weaponry inventory
+            else if (otherItemSlot.slotType == SlotType.Weaponry)
             {
                 if (itemSlot.itemData == null)
                 {
-                    onItemAddFromWeapon(otherItemSlot.itemData, itemSlot.index);
+                    onItemAddFromWeaponry(otherItemSlot.itemData, itemSlot.index);
 
                     if (otherItemSlot.index == 0)
                     {
-                        onWeaponUnequip(HandSlot.LeftHand);
+                        onWeaponryUnequip(HandSlot.LeftHand);
                     }
                     else if (otherItemSlot.index == 1)
                     {
-                        onWeaponUnequip(HandSlot.RightHand);
+                        onWeaponryUnequip(HandSlot.RightHand);
                     }
                 }
                 else return;
