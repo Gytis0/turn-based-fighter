@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     // References
     GameObject cinematicCamera;
-    GameObject equipmentSelectionCanvas;
+    GameObject preFightScreen;
 
     int[] points;
     Dictionary<int, ItemData> allItems = new();
@@ -18,7 +20,11 @@ public class GameManager : MonoBehaviour
     GameObject menuObject;
     MainMenu menu;
 
-    PlayerProperties playerProperties;
+    GameObject enemy;
+    HumanoidProperties enemyProperties;
+
+    GameObject player;
+    HumanoidProperties playerProperties;
     PlayerInventory playerInventory;
 
     ItemManager itemManager;
@@ -51,7 +57,7 @@ public class GameManager : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            playerProperties = player.GetComponent<PlayerProperties>();
+            playerProperties = player.GetComponent<HumanoidProperties>();
         }
 
         if(SceneManager.GetActiveScene().buildIndex == 1)
@@ -61,12 +67,16 @@ public class GameManager : MonoBehaviour
 
         // TEMPORARY
         cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
-        equipmentSelectionCanvas = GameObject.FindGameObjectWithTag("Equipment Selection");
+        preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
 
         StartButton.onStartGame += StartGame;
 
-        SetEnemyStats();
-        SetEnemyItems();
+        enemy = GameObject.FindGameObjectWithTag("Enemy");
+        enemyProperties = enemy.GetComponent<HumanoidProperties>();
+
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerProperties = player.GetComponent<HumanoidProperties>();
+        player.GetComponent<PlayerControls>().restrictedMovement = true;
 
         ItemData hammerItemData = itemManager.GetItem("Sword").GetItemData();
         ItemData shieldItemData = itemManager.GetItem("Wooden Shield").GetItemData();
@@ -74,10 +84,16 @@ public class GameManager : MonoBehaviour
         allItems.Add(0, hammerItemData);
         allItems.Add(1, shieldItemData);
         armorItems.Add(ArmorType.Chestplate, chestplate);
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerControls>().restrictedMovement = true;
 
+        SetEnemyStats();
+        SetEnemyItems();
 
+        //SetPlayerStats();
+        playerProperties.SetStats(new int[] { 3, 3, 3, 4 });
         SetPlayerItems();
+
+        SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
+        SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
 
     }
 
@@ -96,8 +112,14 @@ public class GameManager : MonoBehaviour
             StartButton.onStartGame += StartGame;
 
             cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
-            equipmentSelectionCanvas = GameObject.FindGameObjectWithTag("Equipment Selection");
-            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerControls>().restrictedMovement = true;
+            preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
+
+            enemy = GameObject.FindGameObjectWithTag("Enemy");
+            enemyProperties = enemy.GetComponent<HumanoidProperties>();
+
+            player = GameObject.FindGameObjectWithTag("Player");
+            playerProperties = player.GetComponent<HumanoidProperties>();
+            player.GetComponent<PlayerControls>().restrictedMovement = true;
 
             SetPlayerItems();
 
@@ -106,6 +128,10 @@ public class GameManager : MonoBehaviour
             SetEnemyStats();
 
             SetEnemyItems();
+
+            SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
+            SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
+
         }
 
     }
@@ -128,8 +154,6 @@ public class GameManager : MonoBehaviour
 
     void SetPlayerStats()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        playerProperties = player.GetComponent<PlayerProperties>();
         playerProperties.SetStats(points);
     }
 
@@ -142,9 +166,6 @@ public class GameManager : MonoBehaviour
     
     void SetEnemyStats()
     {
-        GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
-        HumanoidProperties enemyProperties = enemy.GetComponent<HumanoidProperties>();
-
         int availablePoints = 12;
         int[] points = new int[4];
 
@@ -228,10 +249,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        
-
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        playerProperties = player.GetComponent<PlayerProperties>();
+        playerProperties = player.GetComponent<HumanoidProperties>();
 
         // Setting up armors for player
         Dictionary<ArmorType, Armor> playerArmors = playerInventory.GetArmorInventory();
@@ -244,11 +263,46 @@ public class GameManager : MonoBehaviour
         Equipment enemyEquipment = enemy.GetComponent<Equipment>();
         enemyEquipment.SetEquippedArmors(enemyArmors);
 
-        equipmentSelectionCanvas.SetActive(false);
+        preFightScreen.SetActive(false);
 
         cinematicCamera.SetActive(false);
 
+        player.transform.position = new Vector3(-16f, 0f, -10f);
+
         combatManager = CombatManager.Instance;
         combatManager.StartCombat();
+    }
+
+    void SetCharacterStatsWindow(GameObject windowParentObject, string name, int health, int stamina, int composure, bool precise, int intelligence = 5)
+    {
+        GameObject windowObject = windowParentObject.transform.GetChild(0).gameObject;
+        CharacterStatsUI characterStatsUI = windowObject.GetComponent<CharacterStatsUI>();
+        characterStatsUI.SetTitle(name);
+
+        if(precise || intelligence == 5) characterStatsUI.SetSlidersValues(health, stamina, composure);
+        else
+        {
+            int range = (5-intelligence) * 20;
+
+            int randomRangeDown = Random.Range(0, range + 1);
+
+            int minHealth = Mathf.Clamp(health - randomRangeDown, 20, 100);
+            int actualReduce = health - minHealth;
+            int maxHealth = Mathf.Clamp(health + range - actualReduce, 20, 100);
+
+            randomRangeDown = Random.Range(0, range + 1);
+
+            int minStamina = Mathf.Clamp(stamina - randomRangeDown, 20, 100);
+            actualReduce = stamina - minStamina;
+            int maxStamina = Mathf.Clamp(stamina + range - actualReduce, 20, 100);
+
+            randomRangeDown = Random.Range(0, range + 1);
+
+            int minComposure = Mathf.Clamp(composure - randomRangeDown, 20, 100);
+            actualReduce = composure - minComposure;
+            int maxComposure = Mathf.Clamp(composure + range - actualReduce, 20, 100);
+
+            characterStatsUI.SetSlidersIntervals(minHealth, maxHealth, minStamina, maxStamina, minComposure, maxComposure);
+        }
     }
 }

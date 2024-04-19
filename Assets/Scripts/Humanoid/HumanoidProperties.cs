@@ -36,10 +36,13 @@ public class HumanoidProperties : MonoBehaviour
         entityOverhead.UpdateHealthSlider(health);
     }
 
-    public float GetStamina()
+    public int GetStamina()
     {
         return stamina;
     }
+    public int GetHealth() { return health; }
+    public int GetComposure() { return composure; }
+    public int GetIntelligence() { return intelligence; }
 
     public void SetStats(int[] points)
     {
@@ -47,5 +50,9 @@ public class HumanoidProperties : MonoBehaviour
         maxStamina = points[1] * 20;
         maxComposure = points[2] * 20;
         intelligence = points[3];
+
+        health = maxHealth;
+        stamina = maxStamina;
+        composure = maxComposure;
     }
 }

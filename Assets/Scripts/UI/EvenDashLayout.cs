@@ -5,14 +5,15 @@ using UnityEngine.UI;
 
 public class EvenDashLayout : MonoBehaviour
 {
-    GridLayoutGroup layout;
-    List<GameObject> dashes = new List<GameObject>();
-
-    float maxValue;
-    int interval = 10;
-    int cellSizeX = 2;
-    void Start()
+    public void SetDashes()
     {
+        GridLayoutGroup layout;
+        List<GameObject> dashes = new List<GameObject>();
+
+        float maxValue;
+        int interval = 10;
+        int cellSizeX = 2;
+
         layout = GetComponent<GridLayoutGroup>();
         maxValue = GetComponentInParent<Slider>().maxValue;
         RectTransform rectTransform = GetComponent<RectTransform>();
@@ -24,11 +25,11 @@ public class EvenDashLayout : MonoBehaviour
         {
             dashes.Add(dash.gameObject);
         }
-       
+
         for (int i = 1; i <= dashes.Count; i++)
         {
             if (i <= dashCount) dashes[i - 1].SetActive(true);
-            else dashes[i-1].SetActive(false);
+            else dashes[i - 1].SetActive(false);
         }
 
         layout.spacing = new Vector2((rectTransform.sizeDelta.x - (dashCount * cellSizeX)) / sections, 0);

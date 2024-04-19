@@ -21,6 +21,7 @@ public class CombatManager : MonoBehaviour
     [SerializeField]
     List <Image> images = new();
 
+    [SerializeField] List<Button> movementButtons = new();
     [SerializeField] List<Button> agileButtons = new();
     [SerializeField] List<Button> offenseButtons = new();
     [SerializeField] List<Button> defenseButtons = new();

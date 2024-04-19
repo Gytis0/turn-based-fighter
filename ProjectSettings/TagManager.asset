@@ -14,8 +14,8 @@ TagManager:
   - Game Manager
   - Main Menu
   - Weapon Inventory
-  - Equipment Selection
   - Cinematic Camera
+  - Pre Fight Screen
   layers:
   - Default
   - TransparentFX

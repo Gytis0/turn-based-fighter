@@ -2426,6 +2426,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2129926534532951282}
   - component: {fileID: 1211438882831875107}
+  - component: {fileID: 6514103035814281927}
   m_Layer: 5
   m_Name: Composure Bar
   m_TagString: Untagged
@@ -2453,10 +2454,10 @@ RectTransform:
   m_Father: {fileID: 2678276877388550566}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -40}
-  m_SizeDelta: {x: 0, y: 5}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -35}
+  m_SizeDelta: {x: 200, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1211438882831875107
 MonoBehaviour:
@@ -2509,6 +2510,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6514103035814281927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5444983294798193424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 448819acfc131c74d94bf2b11e811f23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5523620589559115425
 GameObject:
   m_ObjectHideFlags: 0
@@ -2995,6 +3008,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5009627556039238371}
   - component: {fileID: 5589344849355578548}
+  - component: {fileID: 4268198160662395547}
   m_Layer: 5
   m_Name: Health Bar
   m_TagString: Untagged
@@ -3022,10 +3036,10 @@ RectTransform:
   m_Father: {fileID: 2678276877388550566}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 10}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -5}
+  m_SizeDelta: {x: 200, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5589344849355578548
 MonoBehaviour:
@@ -3078,6 +3092,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4268198160662395547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6894046099576554141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 448819acfc131c74d94bf2b11e811f23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7185299310101693128
 GameObject:
   m_ObjectHideFlags: 0
@@ -3315,9 +3341,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fbd293db13a8fe4d8a382465e8f6b45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthSlider: {fileID: 0}
-  staminaSlider: {fileID: 0}
-  composureSlider: {fileID: 0}
+  healthSlider: {fileID: 5589344849355578548}
+  staminaSlider: {fileID: 8446520319086128721}
+  composureSlider: {fileID: 1211438882831875107}
+  title: {fileID: 6994300000824594809}
 --- !u!1 &7663162174443287020
 GameObject:
   m_ObjectHideFlags: 0
@@ -3759,6 +3786,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6483203065049551875}
   - component: {fileID: 8446520319086128721}
+  - component: {fileID: 6197138093989409129}
   m_Layer: 5
   m_Name: Stamina Bar
   m_TagString: Untagged
@@ -3786,10 +3814,10 @@ RectTransform:
   m_Father: {fileID: 2678276877388550566}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: 0, y: 10}
+  m_SizeDelta: {x: 200, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8446520319086128721
 MonoBehaviour:
@@ -3842,6 +3870,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6197138093989409129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8734727952043298580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 448819acfc131c74d94bf2b11e811f23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8785272732743850123
 GameObject:
   m_ObjectHideFlags: 0
