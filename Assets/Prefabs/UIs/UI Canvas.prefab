@@ -1741,7 +1741,7 @@ GameObject:
   - component: {fileID: 2782807759298766372}
   - component: {fileID: 5507692146292799932}
   - component: {fileID: 2672537173432059366}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2175,7 +2175,7 @@ GameObject:
   - component: {fileID: 8472831527860982089}
   - component: {fileID: 7972644860309904070}
   - component: {fileID: 3029446302577698125}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2844,7 +2844,7 @@ GameObject:
   - component: {fileID: 3849279243115406636}
   - component: {fileID: 1075711586262783413}
   - component: {fileID: 7884286872518934887}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2921,6 +2921,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &7630238725104114359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2936,6 +2937,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: -1
   armorSlot: 0
+  slotType: 0
 --- !u!225 &3849279243115406636
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3379,7 +3381,7 @@ GameObject:
   - component: {fileID: 7770177181486612510}
   - component: {fileID: 8647290280129312638}
   - component: {fileID: 750740473518260440}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3743,7 +3745,7 @@ GameObject:
   - component: {fileID: 6819209032641221669}
   - component: {fileID: 7496602218018222105}
   - component: {fileID: 7501808798373441601}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4273,7 +4275,7 @@ GameObject:
   - component: {fileID: 4496364888306759556}
   - component: {fileID: 4496364888306757754}
   - component: {fileID: 4496364888306757755}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4350,7 +4352,7 @@ GameObject:
   - component: {fileID: 4496364888449795316}
   - component: {fileID: 4496364888449795306}
   - component: {fileID: 4496364888449795307}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4432,7 +4434,7 @@ GameObject:
   - component: {fileID: 4496364888515001467}
   - component: {fileID: 4496364888515001465}
   - component: {fileID: 4496364888515001466}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4509,6 +4511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &4496364888514995076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4524,6 +4527,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: 2
   armorSlot: 0
+  slotType: 0
 --- !u!225 &4496364888515001467
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4590,7 +4594,7 @@ GameObject:
   - component: {fileID: 4496364888573884920}
   - component: {fileID: 4496364888573884926}
   - component: {fileID: 4496364888573884927}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4667,6 +4671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &4496364888573884921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4682,6 +4687,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: 0
   armorSlot: 0
+  slotType: 0
 --- !u!225 &4496364888573884920
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4743,7 +4749,7 @@ GameObject:
   - component: {fileID: 4496364888792936553}
   - component: {fileID: 4496364888792936559}
   - component: {fileID: 4496364888792936552}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4820,7 +4826,7 @@ GameObject:
   - component: {fileID: 4496364889283855909}
   - component: {fileID: 4496364889283855899}
   - component: {fileID: 4496364889283855908}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4897,7 +4903,7 @@ GameObject:
   - component: {fileID: 4496364889334557981}
   - component: {fileID: 4496364889334557971}
   - component: {fileID: 4496364889334557980}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4979,7 +4985,7 @@ GameObject:
   - component: {fileID: 4496364889342577705}
   - component: {fileID: 4496364889342577711}
   - component: {fileID: 4496364889342577704}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5056,6 +5062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &4496364889342577706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5071,6 +5078,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: 4
   armorSlot: 0
+  slotType: 0
 --- !u!225 &4496364889342577705
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5132,7 +5140,7 @@ GameObject:
   - component: {fileID: 4496364889402039377}
   - component: {fileID: 4496364889402039383}
   - component: {fileID: 4496364889402039376}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Slot (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5214,7 +5222,7 @@ GameObject:
   - component: {fileID: 4496364889552761258}
   - component: {fileID: 4496364889552761256}
   - component: {fileID: 4496364889552761257}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5291,6 +5299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &4496364889552761259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5306,6 +5315,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: 1
   armorSlot: 0
+  slotType: 0
 --- !u!225 &4496364889552761258
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5372,7 +5382,7 @@ GameObject:
   - component: {fileID: 4496364889558545441}
   - component: {fileID: 4496364889558545447}
   - component: {fileID: 4496364889558545440}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5449,6 +5459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &4496364889558545442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5464,6 +5475,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: 3
   armorSlot: 0
+  slotType: 0
 --- !u!225 &4496364889558545441
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5530,7 +5542,7 @@ GameObject:
   - component: {fileID: 4496364890103873150}
   - component: {fileID: 4496364890103873148}
   - component: {fileID: 4496364890103873149}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5607,6 +5619,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &4496364890103873151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5622,6 +5635,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: 5
   armorSlot: 0
+  slotType: 0
 --- !u!225 &4496364890103873150
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6111,7 +6125,7 @@ GameObject:
   - component: {fileID: 4384708958777224001}
   - component: {fileID: 4027487968761251832}
   - component: {fileID: 7163438210802398102}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6188,6 +6202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &82650100740941699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6203,6 +6218,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: -1
   armorSlot: 3
+  slotType: 0
 --- !u!225 &4384708958777224001
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6992,7 +7008,7 @@ GameObject:
   - component: {fileID: 6094318056795084417}
   - component: {fileID: 2896469430093138507}
   - component: {fileID: 8487073469263644028}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7069,6 +7085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &6563724193230741395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7084,6 +7101,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: -1
   armorSlot: 2
+  slotType: 0
 --- !u!225 &6094318056795084417
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -8062,7 +8080,7 @@ GameObject:
   - component: {fileID: 3951545775346561158}
   - component: {fileID: 7923235515681506310}
   - component: {fileID: 7822406410333611576}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8139,6 +8157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9394bb4cb4dcd3e429c72e32501c9a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotType: 0
 --- !u!114 &4410074835065851895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8154,6 +8173,7 @@ MonoBehaviour:
   itemData: {fileID: 0}
   index: -1
   armorSlot: 1
+  slotType: 0
 --- !u!225 &3951545775346561158
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -8940,6 +8960,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4496364890201565104}
     m_Modifications:
+    - target: {fileID: 969274778665105346, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1135250173828355806, guid: 074a389dba202454db73559bbdd02f31, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -9196,6 +9220,26 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1735343576281128223, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946399438386416997, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2003645306356443646, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820754092431446545, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3719006089299148158, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3816977221536964572, guid: 074a389dba202454db73559bbdd02f31, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -9220,6 +9264,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4026026214969451156, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4484326929333954495, guid: 074a389dba202454db73559bbdd02f31, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -9244,6 +9292,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5056817594774374491, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5286040159668384663, guid: 074a389dba202454db73559bbdd02f31, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -9291,6 +9343,14 @@ PrefabInstance:
     - target: {fileID: 5338095655975676854, guid: 074a389dba202454db73559bbdd02f31, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6402046235025425545, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7141609522926690125, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7856422661508483906, guid: 074a389dba202454db73559bbdd02f31, type: 3}
       propertyPath: m_SizeDelta.x
@@ -9323,6 +9383,10 @@ PrefabInstance:
     - target: {fileID: 7991921160135094511, guid: 074a389dba202454db73559bbdd02f31, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8002630881311330388, guid: 074a389dba202454db73559bbdd02f31, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8314127759631482080, guid: 074a389dba202454db73559bbdd02f31, type: 3}
       propertyPath: m_AnchorMax.y

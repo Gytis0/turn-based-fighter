@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HumanoidProperties : MonoBehaviour
 {
-    protected EntityOverhead entityOverhead;
+    protected CharacterStatsUI entityOverhead;
 
     protected int maxHealth = 100;
     protected int maxStamina = 100;
@@ -17,7 +17,7 @@ public class HumanoidProperties : MonoBehaviour
 
     protected void Start()
     {
-        entityOverhead = GetComponentInChildren<EntityOverhead>();
+        entityOverhead = GetComponentInChildren<CharacterStatsUI>();
 
         health = maxHealth;
         stamina = maxStamina;

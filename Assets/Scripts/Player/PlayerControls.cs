@@ -20,6 +20,8 @@ public class PlayerControls : MonoBehaviour
     int UILayer;
     bool pointerOverUI = false;
 
+    public bool restrictedMovement = false;
+
     void Awake()
     {
         UILayer = LayerMask.NameToLayer("UI");
@@ -45,6 +47,7 @@ public class PlayerControls : MonoBehaviour
 
     public void LeftClick()
     {
+        if (restrictedMovement) return;
         //if we're pressing on UI, return
         if (pointerOverUI) return;
 
@@ -71,6 +74,8 @@ public class PlayerControls : MonoBehaviour
 
     void RightClick()
     {
+        if (restrictedMovement) return;
+
         //if we're pressing on UI, return
         if (pointerOverUI) return;
 

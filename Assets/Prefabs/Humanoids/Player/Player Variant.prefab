@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6498441460121103831}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6983657312915727681
 MonoBehaviour:
@@ -109,6 +109,10 @@ PrefabInstance:
     - target: {fileID: 1530502777750500553, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1552687210043140010, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1904779547366564386, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -346,6 +350,7 @@ MonoBehaviour:
   mouseRaycastLayers:
     serializedVersion: 2
     m_Bits: 87
+  restrictedMovement: 0
 --- !u!114 &8416967476256079606
 MonoBehaviour:
   m_ObjectHideFlags: 0

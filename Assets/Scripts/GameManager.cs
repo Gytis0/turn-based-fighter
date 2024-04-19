@@ -7,7 +7,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     // References
-    [SerializeField] Camera cinematicCamera;
+    GameObject cinematicCamera;
+    GameObject equipmentSelectionCanvas;
 
     int[] points;
     Dictionary<int, ItemData> allItems = new();
@@ -18,9 +19,10 @@ public class GameManager : MonoBehaviour
     MainMenu menu;
 
     PlayerProperties playerProperties;
-    PlayerInventory inventory;
+    PlayerInventory playerInventory;
 
     ItemManager itemManager;
+    CombatManager combatManager;
 
     private void Awake()
     {
@@ -56,9 +58,26 @@ public class GameManager : MonoBehaviour
         {
             Interactable.onTravel += LoadFightScene;
         }
+
         // TEMPORARY
-        //SetEnemyStats();
-        //SetEnemyItems();
+        cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
+        equipmentSelectionCanvas = GameObject.FindGameObjectWithTag("Equipment Selection");
+
+        StartButton.onStartGame += StartGame;
+
+        SetEnemyStats();
+        SetEnemyItems();
+
+        ItemData hammerItemData = itemManager.GetItem("Sword").GetItemData();
+        ItemData shieldItemData = itemManager.GetItem("Wooden Shield").GetItemData();
+        Armor chestplate = (Armor)(itemManager.GetItem("Iron Chest").GetItemData());
+        allItems.Add(0, hammerItemData);
+        allItems.Add(1, shieldItemData);
+        armorItems.Add(ArmorType.Chestplate, chestplate);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerControls>().restrictedMovement = true;
+
+
+        SetPlayerItems();
 
     }
 
@@ -74,6 +93,11 @@ public class GameManager : MonoBehaviour
         else if(level == 2)
         {
             Interactable.onTravel -= LoadFightScene;
+            StartButton.onStartGame += StartGame;
+
+            cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
+            equipmentSelectionCanvas = GameObject.FindGameObjectWithTag("Equipment Selection");
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerControls>().restrictedMovement = true;
 
             SetPlayerItems();
 
@@ -95,9 +119,9 @@ public class GameManager : MonoBehaviour
 
     public void LoadFightScene()
     {
-        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
-        allItems = inventory.GetItemsInventory();
-        armorItems = inventory.GetArmorInventory();
+        playerInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
+        allItems = playerInventory.GetItemsInventory();
+        armorItems = playerInventory.GetArmorInventory();
 
         SceneManager.LoadScene(2);
     }
@@ -111,9 +135,9 @@ public class GameManager : MonoBehaviour
 
     void SetPlayerItems()
     {
-        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
-        inventory.SetItemInventory(allItems);
-        inventory.SetArmorInventory(armorItems);
+        playerInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
+        playerInventory.SetItemInventory(allItems);
+        playerInventory.SetArmorInventory(armorItems);
     }
     
     void SetEnemyStats()
@@ -200,5 +224,31 @@ public class GameManager : MonoBehaviour
         {
             equipment.EquipHand(itemManager.GetItem(itemsToEquip[1].GetName()), HandSlot.LeftHand);
         }
+    }
+
+    public void StartGame()
+    {
+        
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        playerProperties = player.GetComponent<PlayerProperties>();
+
+        // Setting up armors for player
+        Dictionary<ArmorType, Armor> playerArmors = playerInventory.GetArmorInventory();
+        Equipment playerEquipment = playerProperties.transform.GetComponent<Equipment>();
+        playerEquipment.SetEquippedArmors(playerArmors);
+
+        // Setting up armors for enemy
+        GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
+        Dictionary<ArmorType, Armor> enemyArmors = enemy.GetComponentInChildren<Inventory>().GetArmorInventory();
+        Equipment enemyEquipment = enemy.GetComponent<Equipment>();
+        enemyEquipment.SetEquippedArmors(enemyArmors);
+
+        equipmentSelectionCanvas.SetActive(false);
+
+        cinematicCamera.SetActive(false);
+
+        combatManager = CombatManager.Instance;
+        combatManager.StartCombat();
     }
 }

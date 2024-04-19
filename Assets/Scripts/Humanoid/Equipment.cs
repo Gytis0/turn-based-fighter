@@ -7,6 +7,7 @@ using static UnityEditor.Progress;
 public class Equipment : MonoBehaviour
 {
     public Item[] handSlots;
+    protected Dictionary<ArmorType, Armor> armorItems = new();
 
     // References
     [SerializeField] GameObject rightHand;
@@ -109,5 +110,10 @@ public class Equipment : MonoBehaviour
             return (Weapon)handSlots[1].GetItemData();
         }
         else return null;
+    }
+
+    public void SetEquippedArmors(Dictionary<ArmorType, Armor> armors)
+    {
+        armorItems = armors;
     }
 }

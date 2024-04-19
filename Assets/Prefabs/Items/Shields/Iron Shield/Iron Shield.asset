@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0737770dc230d1d4a9ac35092c25b672, type: 3}
   m_Name: Iron Shield
   m_EditorClassIdentifier: 
-  rightHandOffset: {x: 0, y: 0, z: 0}
-  leftHandOffset: {x: -0.033, y: -0.274, z: 0.018}
-  leftHandRotation: {x: 0, y: 0, z: 0}
-  rightHandRotation: {x: 0, y: 0, z: 0}
+  rightHandOffset: {x: 0.08, y: -0.35, z: -0.085}
+  leftHandOffset: {x: -0.087, y: -0.219, z: 0.011}
+  leftHandRotation: {x: 0.69767106, y: 358.7885, z: 345.05756}
+  rightHandRotation: {x: 0.69799674, y: 180, z: 345.05798}
   dropAngle: {x: 0.70710677, y: 0, z: 0, w: -0.70710677}
   itemName: Iron Shield
   icon: {fileID: 21300000, guid: 63e3da6607ecf124e8c82943433b8398, type: 3}

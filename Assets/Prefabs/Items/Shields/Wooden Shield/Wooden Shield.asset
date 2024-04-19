@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0737770dc230d1d4a9ac35092c25b672, type: 3}
   m_Name: Wooden Shield
   m_EditorClassIdentifier: 
-  rightHandOffset: {x: 0, y: 0, z: 0}
-  leftHandOffset: {x: -0.04, y: -0.18, z: 0.01}
+  rightHandOffset: {x: 0.008, y: -0.24, z: -0.015}
+  leftHandOffset: {x: 0.008, y: -0.24, z: 0.015}
   leftHandRotation: {x: 0, y: 0, z: 0}
-  rightHandRotation: {x: 0, y: 0, z: 0}
+  rightHandRotation: {x: 0, y: 180, z: 0}
   dropAngle: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
   itemName: Wooden Shield
   icon: {fileID: 21300000, guid: 2115beea108b9f548b4cfd53e35ff32e, type: 3}

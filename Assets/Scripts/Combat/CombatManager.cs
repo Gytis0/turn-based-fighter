@@ -50,11 +50,11 @@ public class CombatManager : MonoBehaviour
         UpdateIndicator();
     }
 
-    public void StartCombat(GameObject _enemy)
+    public void StartCombat()
     {
         //parameters should accept all the info about fighters' properties and equipment
         EnableUi(true);
-        enemy = _enemy;
+        enemy = GameObject.FindGameObjectWithTag("Enemy");
         enemyStats = enemy.GetComponent<HumanoidStats>();
         enemyEquipment = enemy.GetComponent<Equipment>();
 
@@ -156,16 +156,6 @@ public class CombatManager : MonoBehaviour
         {
             DisableButtons();
         }
-    }
-
-    private void OnEnable()
-    {
-        Interactable.onAttack += StartCombat;
-    }
-
-    private void OnDisable()
-    {
-        Interactable.onAttack -= StartCombat;
     }
 
     // Actions

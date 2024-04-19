@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spear
   m_EditorClassIdentifier: 
   rightHandOffset: {x: 0.013, y: -0.383, z: 0}
-  leftHandOffset: {x: 0, y: 0, z: 0}
+  leftHandOffset: {x: 0.013, y: -0.383, z: 0}
   leftHandRotation: {x: 0, y: 0, z: 0}
   rightHandRotation: {x: 0, y: 0, z: 0}
   dropAngle: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}

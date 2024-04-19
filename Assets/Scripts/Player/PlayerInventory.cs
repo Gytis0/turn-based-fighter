@@ -331,11 +331,6 @@ public class PlayerInventory : Inventory
         else ironHelmet.SetActive(true);
     }
 
-    public Dictionary<ArmorType, Armor> GetArmorInventory()
-    {
-        return armorItems;
-    }
-
     public void SetArmorInventory(Dictionary<ArmorType, Armor> inventory)
     {
         armorItems = inventory;
