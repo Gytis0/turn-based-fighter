@@ -8,26 +8,24 @@ public class HumanoidMovementController : MonoBehaviour
 {
     protected NavMeshAgent agent;
 
-    HumanoidAnimationController animationController;
     protected HumanoidProperties humanoidProperties;
-    protected HumanoidStats humanoidStats;
 
     public delegate void ChangedState(AnimationStates newState);
     public event ChangedState onChangedState;
 
-    [SerializeField]
-    float walkingSpeed = 1f;
-    [SerializeField]
-    float runningSpeed = 10f;
+    [SerializeField] float walkingSpeed = 1f;
+    [SerializeField] float runningSpeed = 10f;
+
+    public AnimationStates animationState = AnimationStates.IDLE;
+    public Vector3 destination;
+    public bool isFollowing = false;
 
     protected delegate void Followed();
     protected event Followed OnFollowed;
 
     protected virtual void Awake()
     {
-        animationController = transform.GetComponent<HumanoidAnimationController>();
         humanoidProperties = transform.GetComponent<HumanoidProperties>();
-        humanoidStats = transform.GetComponent<HumanoidStats>();
         agent = transform.GetComponent<NavMeshAgent>();
     }
 
@@ -37,8 +35,8 @@ public class HumanoidMovementController : MonoBehaviour
         agent.SetDestination(_destination);
         agent.speed = walkingSpeed;
 
-        humanoidStats.currentState = AnimationStates.WALKING;
-        if (onChangedState != null) onChangedState(humanoidStats.currentState);
+        animationState = AnimationStates.WALKING;
+        if (onChangedState != null) onChangedState(animationState);
     }
 
     protected virtual void Run(Vector3 _destination)
@@ -47,19 +45,19 @@ public class HumanoidMovementController : MonoBehaviour
         agent.SetDestination(_destination);
         agent.speed = runningSpeed;
 
-        humanoidStats.currentState = AnimationStates.RUNNING;
-        if (onChangedState != null) onChangedState(humanoidStats.currentState);
+        animationState = AnimationStates.RUNNING;
+        if (onChangedState != null) onChangedState(animationState);
     }
 
     public void Idle()
     {
-        humanoidStats.currentState = AnimationStates.IDLE;
-        if (onChangedState != null) onChangedState(humanoidStats.currentState);
+        animationState = AnimationStates.IDLE;
+        if (onChangedState != null) onChangedState(animationState);
     }
 
     public void Stop()
     {
-        if (humanoidStats.following)
+        if (isFollowing)
         {
             FinishedFollowing();
         }
@@ -70,16 +68,16 @@ public class HumanoidMovementController : MonoBehaviour
 
     public void Reach(Vector3 destination, float _radius = 0f)
     {
-        humanoidStats.destination = destination;
+        destination = destination;
         agent.stoppingDistance = _radius;
-        humanoidStats.following = true;
+        isFollowing = true;
     }
 
     protected virtual void StopFollowing()
     {
-        humanoidStats.destination = Vector3.zero;
+        destination = Vector3.zero;
         agent.stoppingDistance = 0f;
-        humanoidStats.following = false;
+        isFollowing = false;
     }
 
     void FinishedFollowing()
@@ -92,11 +90,9 @@ public class HumanoidMovementController : MonoBehaviour
 
     protected virtual void Update()
     {
-        
-        
-        if (humanoidStats.following)
+        if (isFollowing)
         {
-            Run(humanoidStats.destination);
+            Run(destination);
         }
 
         // Stop moving if there is no path generating

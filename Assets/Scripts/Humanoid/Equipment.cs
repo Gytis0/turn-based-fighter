@@ -111,6 +111,19 @@ public class Equipment : MonoBehaviour
         }
         else return null;
     }
+    public Shield GetEquippedShield()
+    {
+        if (handSlots[0] != null && handSlots[0].GetItemData().GetType() == typeof(Shield))
+        {
+            return (Shield)handSlots[0].GetItemData();
+        }
+        else if (handSlots[1] != null && handSlots[1].GetItemData().GetType() == typeof(Shield))
+        {
+            return (Shield)handSlots[1].GetItemData();
+        }
+        else return null;
+    }
+
 
     public void SetEquippedArmors(Dictionary<ArmorType, Armor> armors)
     {

@@ -23,7 +23,7 @@ public class CharacterStatsUI : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI title;
 
-    private void Start()
+    private void Awake()
     {
         healthDashLayout = healthSlider.GetComponentInChildren<EvenDashLayout>();
         staminaDashLayout = staminaSlider.GetComponentInChildren<EvenDashLayout>();

@@ -9,22 +9,17 @@ public class CombatManager : MonoBehaviour
     public static CombatManager Instance { get; private set; }
 
     bool playersTurn  = true;
-    GameObject player, enemy;
-    HumanoidStats playerStats, enemyStats;
+    GameObject playerObject, enemyObject;
+    Humanoid player, enemy;
     Equipment playerEquipment, enemyEquipment;
     Timer timer;
 
     // References
-    [SerializeField]
-    Image indicator;
+    [SerializeField] Image indicator;
+    [SerializeField] List<Action> actionList;
+    [SerializeField] List<ActionCombination> combinationList;
 
-    [SerializeField]
-    List <Image> images = new();
-
-    [SerializeField] List<Button> movementButtons = new();
-    [SerializeField] List<Button> agileButtons = new();
-    [SerializeField] List<Button> offenseButtons = new();
-    [SerializeField] List<Button> defenseButtons = new();
+    [SerializeField] List <Image> images = new();
 
     private void Awake()
     {
@@ -37,10 +32,7 @@ public class CombatManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        player = GameObject.FindGameObjectWithTag("Player");
-        playerStats = player.GetComponent<HumanoidStats>();
-        playerEquipment = player.GetComponent<Equipment>();
+       
         timer = transform.GetComponent<Timer>();
 
        EnableUi(false);
@@ -55,12 +47,19 @@ public class CombatManager : MonoBehaviour
     {
         //parameters should accept all the info about fighters' properties and equipment
         EnableUi(true);
-        enemy = GameObject.FindGameObjectWithTag("Enemy");
-        enemyStats = enemy.GetComponent<HumanoidStats>();
-        enemyEquipment = enemy.GetComponent<Equipment>();
+        UpdateIndicator();
 
-        enemyStats.EnableCombatMode(true);
-        playerStats.EnableCombatMode(true);
+        playerObject = GameObject.FindGameObjectWithTag("Player");
+        enemyObject = GameObject.FindGameObjectWithTag("Enemy");
+
+        player = playerObject.GetComponent<Humanoid>();
+        enemy = enemyObject.GetComponent<Humanoid>();
+
+        playerEquipment = playerObject.GetComponent<Equipment>();
+        enemyEquipment = enemyObject.GetComponent<Equipment>();
+
+        enemy.EnableCombatMode(true);
+        player.EnableCombatMode(true);
 
         timer.enableTimer(10f);
     }
@@ -69,55 +68,11 @@ public class CombatManager : MonoBehaviour
     {
         EnableUi(false);
 
-        enemyStats.EnableCombatMode(false);
-        playerStats.EnableCombatMode(false);
+        enemy.EnableCombatMode(false);
+        player.EnableCombatMode(false);
     }
 
-    void EnableButtons()
-    {
-        List<WeaponActions> weaponActions = playerEquipment.GetEquippedWeapon().GetWeaponActions();
-
-        int i = 0, limit = weaponActions.Count;
-
-        foreach (Button button in offenseButtons)
-        {
-            if (i < limit)
-            {
-                button.gameObject.SetActive(true);
-                button.transform.GetComponentInChildren<TextMeshProUGUI>().SetText(weaponActions[i].ToString());
-                if (weaponActions[i] == WeaponActions.Swing)
-                {
-                    button.onClick.AddListener(delegate { SwingWeapon(true); }) ;
-                }
-                else if (weaponActions[i] == WeaponActions.Overhead) 
-                {
-                    button.onClick.AddListener(OverheadWeapon);
-                }
-                else if (weaponActions[i] == WeaponActions.Stab)
-                {
-                    button.onClick.AddListener(StabEnemy);
-                }
-            }
-
-            i++;
-        }
-    }
-
-    void DisableButtons()
-    {
-        foreach (Button button in agileButtons)
-        {
-            button.gameObject.SetActive(false);
-        }
-        foreach (Button button in offenseButtons)
-        {
-            button.gameObject.SetActive(false);
-        }
-        foreach (Button button in defenseButtons)
-        {
-            button.gameObject.SetActive(false);
-        }
-    }
+    
 
     void UpdateIndicator()
     {
@@ -149,29 +104,6 @@ public class CombatManager : MonoBehaviour
     void EnableUi(bool _enable)
     {
         transform.GetChild(0).gameObject.SetActive(_enable);
-        if (_enable)
-        {
-            EnableButtons();
-        }
-        else
-        {
-            DisableButtons();
-        }
-    }
-
-    // Actions
-    public void SwingWeapon(bool left)
-    {
-        // Play an animation for left or right swing
-
-    }
-
-    public void OverheadWeapon()
-    {
-    }
-
-    public void StabEnemy()
-    {
     }
 }
 
