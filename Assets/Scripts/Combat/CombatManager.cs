@@ -10,7 +10,7 @@ public class CombatManager : MonoBehaviour
 
     bool playersTurn  = true;
     GameObject playerObject, enemyObject;
-    Humanoid player, enemy;
+    CombatHumanoid player, enemy;
     Equipment playerEquipment, enemyEquipment;
     Timer timer;
 
@@ -34,13 +34,9 @@ public class CombatManager : MonoBehaviour
         }
        
         timer = transform.GetComponent<Timer>();
+        timer.onTimerDone += ForcefullyEndTurn;
 
-       EnableUi(false);
-    }
-
-    void Start()
-    {
-        UpdateIndicator();
+        EnableUi(false);
     }
 
     public void StartCombat()
@@ -52,16 +48,23 @@ public class CombatManager : MonoBehaviour
         playerObject = GameObject.FindGameObjectWithTag("Player");
         enemyObject = GameObject.FindGameObjectWithTag("Enemy");
 
-        player = playerObject.GetComponent<Humanoid>();
-        enemy = enemyObject.GetComponent<Humanoid>();
+        player = playerObject.GetComponent<CombatPlayer>();
+        enemy = enemyObject.GetComponent<CombatEnemy>();
 
         playerEquipment = playerObject.GetComponent<Equipment>();
         enemyEquipment = enemyObject.GetComponent<Equipment>();
 
-        enemy.EnableCombatMode(true);
-        player.EnableCombatMode(true);
+        player.onTurnDone += HandleTurnEnd;
+        enemy.onTurnDone += HandleTurnEnd;
 
-        timer.enableTimer(10f);
+        player.EnableCombatMode(true);
+        enemy.EnableCombatMode(true);
+
+        player.SetCombinations(combinationList);
+        enemy.SetCombinations(combinationList);
+        Time.timeScale = 0.1f;
+
+        timer.EnableTimer(5f);
     }
 
     public void StopCombat()
@@ -72,10 +75,30 @@ public class CombatManager : MonoBehaviour
         player.EnableCombatMode(false);
     }
 
-    
+    void ForcefullyEndTurn()
+    {
+        Debug.Log("Forcefully ending turn [" + playersTurn + "]");
+        if (playersTurn) player.EndTurn();
+        else enemy.EndTurn();
+    }
+
+    void HandleTurnEnd(Action action)
+    {
+        Debug.Log("Handling turn end [" + playersTurn + "]");
+        SwitchTurn();
+        timer.EnableTimer(3f);
+    }
+
+    void SwitchTurn()
+    {
+        Debug.Log("Switching turn [" + playersTurn + "]");
+        playersTurn = !playersTurn;
+        UpdateIndicator();
+    }
 
     void UpdateIndicator()
     {
+        Debug.Log("Updating indicator [" + playersTurn + "]");
         Color color;
         Vector2 pos;
 

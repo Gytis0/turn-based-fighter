@@ -5,38 +5,43 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
+    public delegate void TimerDone();
+    public event TimerDone onTimerDone;
+
     [SerializeField]
     TextMeshProUGUI timerText;
 
     float remainingTime = 0;
     bool timerEnabled = false;
-
+    float balance;
     // Update is called once per frame
     void Update()
     {
         if (timerEnabled)
         {
-            Debug.Log("Timer enbaled. Time: " + remainingTime);
             if (remainingTime <= 0)
             {
-                disableTimer();
-                Debug.Log("Timer disabled");
-
+                DisableTimer();
+                onTimerDone();
             }
-
-            remainingTime -= Time.deltaTime;
+            balance = 1 / Time.timeScale;
+            remainingTime -= Time.deltaTime * 10;
             timerText.SetText(((int) remainingTime).ToString());
         }
     }
 
-    public void enableTimer(float seconds) { 
-        timerEnabled = true;
+    public void EnableTimer(float seconds) {
+        Debug.Log("Enabling timer");
+
         remainingTime = seconds;
+        timerEnabled = true;
         timerText.gameObject.SetActive(true);
     }
 
-    public void disableTimer()
+    void DisableTimer()
     {
+        Debug.Log("Disabling timer");
+
         timerEnabled = false;
         timerText.gameObject.SetActive(false);
     }

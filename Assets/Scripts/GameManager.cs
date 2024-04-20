@@ -65,7 +65,8 @@ public class GameManager : MonoBehaviour
             Interactable.onTravel += LoadFightScene;
         }
 
-        // TEMPORARY
+        // TEMPORARY //
+        
         cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
         preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
 
@@ -76,6 +77,7 @@ public class GameManager : MonoBehaviour
 
         player = GameObject.FindGameObjectWithTag("Player");
         playerProperties = player.GetComponent<HumanoidProperties>();
+        playerInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
         player.GetComponent<PlayerControls>().restrictedMovement = true;
 
         ItemData hammerItemData = itemManager.GetItem("Sword").GetItemData();
@@ -94,7 +96,7 @@ public class GameManager : MonoBehaviour
 
         SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
         SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
-
+        
     }
 
     private void OnLevelWasLoaded(int level)
@@ -119,6 +121,7 @@ public class GameManager : MonoBehaviour
 
             player = GameObject.FindGameObjectWithTag("Player");
             playerProperties = player.GetComponent<HumanoidProperties>();
+            playerInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
             player.GetComponent<PlayerControls>().restrictedMovement = true;
 
             SetPlayerItems();

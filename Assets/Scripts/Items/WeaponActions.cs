@@ -8,5 +8,5 @@ public enum WeaponActions
 
 public enum ShieldActions
 {
-    Angle
+    Block
 }

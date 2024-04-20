@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Action", menuName = "Actions/Combination")]
+[CreateAssetMenu(fileName = "New Combination", menuName = "Combat/Combination")]
 public class ActionCombination : ScriptableObject
 {
-    public Action[] actions = new Action[3];
+    public Action upgradedAction;
+    public Action[] previousActions = new Action[3];
+
+    public string combinationName;
+    public float durationMultiplier;
     public float staminaMultiplier;
     public float composureMultiplier;
-    
 }
