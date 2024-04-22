@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc27737bd0427a44595b8a2222f12b6f, type: 3}
   m_Name: Get Up
   m_EditorClassIdentifier: 
-  actionName: Get Up
+  actionName: 3
   baseDuration: 0
   baseStaminaDrain: 0
+  baseComposureDrain: 0
   actionType: 1
   availableWhen: 04000000
-  direction: 0
+  directions: 

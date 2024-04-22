@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc27737bd0427a44595b8a2222f12b6f, type: 3}
   m_Name: Overhead
   m_EditorClassIdentifier: 
-  actionName: Overhead
+  actionName: 4
   baseDuration: 0
   baseStaminaDrain: 0
+  baseComposureDrain: 0
   actionType: 2
   availableWhen: 0100000002000000
-  direction: 0
+  directions: 

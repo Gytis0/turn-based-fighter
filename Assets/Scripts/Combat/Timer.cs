@@ -13,7 +13,6 @@ public class Timer : MonoBehaviour
 
     float remainingTime = 0;
     bool timerEnabled = false;
-    float balance;
     // Update is called once per frame
     void Update()
     {
@@ -24,8 +23,8 @@ public class Timer : MonoBehaviour
                 DisableTimer();
                 onTimerDone();
             }
-            balance = 1 / Time.timeScale;
-            remainingTime -= Time.deltaTime * 10;
+           
+            remainingTime -= Time.deltaTime;
             timerText.SetText(((int) remainingTime).ToString());
         }
     }

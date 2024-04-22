@@ -36,10 +36,7 @@ public class HumanoidProperties : MonoBehaviour
         entityOverhead.UpdateHealthSlider(health);
     }
 
-    public int GetStamina()
-    {
-        return stamina;
-    }
+    public int GetStamina() { return stamina; }
     public int GetHealth() { return health; }
     public int GetComposure() { return composure; }
     public int GetIntelligence() { return intelligence; }

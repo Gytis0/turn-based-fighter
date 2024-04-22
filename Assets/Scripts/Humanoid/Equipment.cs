@@ -111,6 +111,7 @@ public class Equipment : MonoBehaviour
         }
         else return null;
     }
+
     public Shield GetEquippedShield()
     {
         if (handSlots[0] != null && handSlots[0].GetItemData().GetType() == typeof(Shield))
@@ -124,9 +125,45 @@ public class Equipment : MonoBehaviour
         else return null;
     }
 
-
     public void SetEquippedArmors(Dictionary<ArmorType, Armor> armors)
     {
         armorItems = armors;
+    }
+
+    public float GetWeaponWeight()
+    {
+        if(GetEquippedWeapon() == null) return 0f;
+        return GetEquippedWeapon().GetWeight();
+    }
+
+    public float GetShieldWeight()
+    {
+        if(GetEquippedShield() == null) return 0f;
+        return GetEquippedShield().GetWeight();
+    }
+
+    public float GetAllWeight()
+    {
+        float sum = 0f;
+        sum += GetWeaponWeight();
+        sum += GetShieldWeight();
+        foreach(var obj in armorItems)
+        {
+            sum += obj.Value.GetWeight();
+        }
+
+        return sum;
+    }
+
+    public List<ActionName> GetShieldActions()
+    {
+        if (GetEquippedShield() == null) return null;
+        return GetEquippedShield().GetShieldActions();
+    }
+
+    public List<ActionName> GetWeaponActions()
+    {
+        if (GetEquippedShield() == null) return null;
+        return GetEquippedWeapon().GetWeaponActions();
     }
 }

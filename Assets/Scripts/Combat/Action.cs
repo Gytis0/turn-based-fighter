@@ -6,44 +6,36 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Action", menuName = "Combat/Action")]
 public class Action : ScriptableObject
 {
-    public Action(ActionType actionType, Direction direction = Direction.None)
+    public Action(ActionType actionType)
     {
         this.actionType = actionType;
-        this.direction = direction;
     }
 
-    public enum ActionType
-    { 
-        Movement,
-        Agile,
-        Offensive,
-        Defensive,
-        Skip
+    public Action(Action action)
+    {
+        actionName = action.actionName;
+        baseDuration = action.baseDuration;
+        baseStaminaDrain = action.baseStaminaDrain;
+        baseComposureDrain = action.baseComposureDrain;
+        actionType = action.actionType;
+        availableWhen = action.availableWhen;
+        directions = new List<Direction>() { Direction.None };
     }
 
-    public enum State
-    {
-        Any,
-        Standing,
-        Walking,
-        Running,
-        Fallen,
-        Dodging
-    }
-    public enum Direction
-    {
-        None,
-        Forward,
-        Backward,
-        Left,
-        Right
-    }
-    public string actionName;
+    
+
+    public ActionName actionName;
     public int baseDuration;
     public int baseStaminaDrain;
     public int baseComposureDrain;
 
     public ActionType actionType;
-    public List<State> availableWhen;
-    public Direction direction;
+    public List<CombatState> availableWhen;
+    public List<Direction> directions;
+
+    public void AddDirection(Direction direction)
+    {
+        directions.Add(direction);
+        directions.Remove(Direction.None);
+    }
 }

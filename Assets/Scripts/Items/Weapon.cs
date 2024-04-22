@@ -7,7 +7,7 @@ public class Weapon : ItemData
     [SerializeField] protected int damage, speed, durability;
     [SerializeField] DamageTypes damageType;
     [SerializeField] WeaponType weaponType;
-    [SerializeField] protected List<WeaponActions> actions;
+    [SerializeField] protected List<ActionName> actions;
 
     protected override ItemType itemType {  get { return ItemType.Weapon; } }
 
@@ -17,5 +17,5 @@ public class Weapon : ItemData
     public DamageTypes GetDamageType() { return damageType; }
     public WeaponType GetWeaponType() { return weaponType; }
     public void AlterDurability(int amount) { durability -= amount; }
-    public List<WeaponActions> GetWeaponActions() { return actions; }
+    public List<ActionName> GetWeaponActions() { return actions; }
 }

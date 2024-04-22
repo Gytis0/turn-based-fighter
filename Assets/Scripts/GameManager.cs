@@ -91,12 +91,17 @@ public class GameManager : MonoBehaviour
         SetEnemyItems();
 
         //SetPlayerStats();
-        playerProperties.SetStats(new int[] { 3, 3, 3, 4 });
+        playerProperties.SetStats(new int[] { 3, 3, 3, 2 });
         SetPlayerItems();
 
         SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
         SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
         
+    }
+
+    private void OnDisable()
+    {
+        StartButton.onStartGame -= StartGame;
     }
 
     private void OnLevelWasLoaded(int level)
