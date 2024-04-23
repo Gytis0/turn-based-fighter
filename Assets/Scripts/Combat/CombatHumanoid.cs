@@ -6,9 +6,6 @@ using UnityEngine.UI;
 
 public class CombatHumanoid : MonoBehaviour
 {
-    public delegate void TurnDone(Action action);
-    public event TurnDone onTurnDone;
-
     protected Equipment equipment;
     protected HumanoidProperties humanoidProperties;
     protected bool inCombat = false;
@@ -31,16 +28,9 @@ public class CombatHumanoid : MonoBehaviour
         this.combinations = combinations;
     }
 
-    public void EndTurn()
+    public virtual void EndTurn()
     {
-        if(actionQueue.Count == 0)
-        {
-            onTurnDone(new Action(ActionType.Skip));
-        }
-        else
-        {
-            onTurnDone(actionQueue.Dequeue());
-        }
+        
     }
 
     public virtual void EnableCombatMode(bool _enable)

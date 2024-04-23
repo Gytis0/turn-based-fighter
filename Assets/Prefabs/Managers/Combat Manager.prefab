@@ -75,6 +75,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6eb7f81f6b6ff664c8f23b11fd5b5996, type: 2}
   - {fileID: 11400000, guid: 9be0f9dd3dac0d14796367bbb88de841, type: 2}
   - {fileID: 11400000, guid: 03e141bfcf0689c41b9e373a4e776d25, type: 2}
+  combatObjects: {fileID: 8825010676434174276}
   images:
   - {fileID: 5031717483606770827}
   - {fileID: 5031717482090555716}
@@ -1289,3 +1290,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &8825010676434174276 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8053424936879950652, guid: 63534be6402b57f438ed2e029b6d592f, type: 3}
+  m_PrefabInstance: {fileID: 1565914820893674104}
+  m_PrefabAsset: {fileID: 0}

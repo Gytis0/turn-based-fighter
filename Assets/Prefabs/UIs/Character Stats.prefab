@@ -1547,6 +1547,7 @@ MonoBehaviour:
   healthSlider: {fileID: 0}
   staminaSlider: {fileID: 0}
   composureSlider: {fileID: 0}
+  title: {fileID: 0}
 --- !u!1 &4040358039883273148
 GameObject:
   m_ObjectHideFlags: 0

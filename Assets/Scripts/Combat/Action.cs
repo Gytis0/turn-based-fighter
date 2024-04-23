@@ -19,10 +19,21 @@ public class Action : ScriptableObject
         baseComposureDrain = action.baseComposureDrain;
         actionType = action.actionType;
         availableWhen = action.availableWhen;
-        directions = new List<Direction>() { Direction.None };
+        directions = action.directions;
     }
 
-    
+    public Action(Action action, Direction direction)
+    {
+        actionName = action.actionName;
+        baseDuration = action.baseDuration;
+        baseStaminaDrain = action.baseStaminaDrain;
+        baseComposureDrain = action.baseComposureDrain;
+        actionType = action.actionType;
+        availableWhen = action.availableWhen;
+        directions = new List<Direction>() { direction };
+    }
+
+
 
     public ActionName actionName;
     public int baseDuration;

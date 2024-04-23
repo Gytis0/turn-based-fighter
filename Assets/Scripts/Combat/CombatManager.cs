@@ -27,7 +27,9 @@ public class CombatManager : MonoBehaviour
     // References
     [SerializeField] UnityEngine.UI.Image indicator;
     [SerializeField] List<Action> actionList;
+    [SerializeField] List<Action> tempActionList;
     [SerializeField] List<ActionCombination> combinationList;
+    [SerializeField] GameObject combatObjects;
 
     [SerializeField] List <UnityEngine.UI.Image> images = new();
 
@@ -71,8 +73,8 @@ public class CombatManager : MonoBehaviour
         playerEquipment = playerObject.GetComponent<Equipment>();
         enemyEquipment = enemyObject.GetComponent<Equipment>();
 
-        player.onTurnDone += HandleTurnEnd;
-        enemy.onTurnDone += HandleTurnEnd;
+        player.onPlayerTurnEnd += ApproveAction;
+        enemy.onEnemyTurnEnd += ApproveAction;
 
         player.EnableCombatMode(true);
         enemy.EnableCombatMode(true);
@@ -80,9 +82,10 @@ public class CombatManager : MonoBehaviour
         player.SetCombinations(combinationList);
         enemy.SetCombinations(combinationList);
 
-        player.EnableButtons(GetAvailableTurns(player));
+        tempActionList = GetAvailableActions(player);
+        player.EnableButtons(tempActionList);
 
-        timer.EnableTimer(5f);
+        timer.EnableTimer(30f);
     }
 
     public void StopCombat()
@@ -100,11 +103,37 @@ public class CombatManager : MonoBehaviour
         else enemy.EndTurn();
     }
 
-    void HandleTurnEnd(Action action)
+    void ApproveAction(Action action, CombatHumanoid character)
     {
-        Debug.Log("Handling turn end [" + playersTurn + "]");
-        SwitchTurn();
-        timer.EnableTimer(3f);
+        bool approved = false;
+
+        foreach (Action availableAction in tempActionList)
+        {
+            if (availableAction.actionName == action.actionName && availableAction.directions.Contains(action.directions[0]))
+            {
+                character.ExecuteAction(action);
+                approved = true;
+                break;
+            }
+        }
+
+        if (!approved && character.GetType() == typeof(CombatPlayer))
+        {
+            ((CombatPlayer)character).EnableButtons(tempActionList);
+            Debug.Log("Turn denied. Prompting UI");
+
+        }
+        else if (!approved && character.GetType() == typeof(CombatEnemy))
+        {
+            // Tell AI to rethink its action
+        }
+
+        if (approved)
+        {
+            Debug.Log("Turn approved. Switching [" + playersTurn + "]");
+            SwitchTurn();
+            timer.EnableTimer(30f);
+        }
     }
 
     void SwitchTurn()
@@ -144,10 +173,9 @@ public class CombatManager : MonoBehaviour
 
     void EnableUi(bool _enable)
     {
-        transform.GetChild(0).gameObject.SetActive(_enable);
+        combatObjects.SetActive(_enable);
     }
-
-    List<Action> GetAvailableTurns(CombatHumanoid humanoid)
+    List<Action> GetAvailableActions(CombatHumanoid humanoid)
     {
         List<Action> result = new List<Action>();
         foreach(Action tempAction in actionList)
@@ -291,9 +319,7 @@ public class CombatManager : MonoBehaviour
         Vector3 endPos3d = new Vector3(endPos.x, 0.5f, endPos.y);
         float length = Vector3.Distance(startPos, endPos3d);
         RaycastHit[] hits = Physics.RaycastAll(startPos, (endPos3d - startPos), length, movementBlockingObjects);
-        // TEMPORARY
-        gizmoStart = startPos;
-        gizmoEnd = endPos3d;
+
         if (endPos.x >= gridBoundaries.Item1.x &&
             endPos.x <= gridBoundaries.Item2.x &&
             endPos.y >= gridBoundaries.Item1.y &&
@@ -311,20 +337,6 @@ public class CombatManager : MonoBehaviour
         }
         Debug.LogError("No action exists with a name " + actionName);
         return null;
-    }
-
-    Vector3 gizmoStart, gizmoEnd;
-    void OnDrawGizmosSelected()
-    {
-        Vector2 position = new Vector2(player.transform.position.x, player.transform.position.z);
-        IsPositionValid(player.transform.position, position + new Vector2(0, gridSpacing * 2));
-
-        if (gizmoEnd != null)
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(gizmoStart, gizmoEnd);
-        }
-       
     }
 }
 

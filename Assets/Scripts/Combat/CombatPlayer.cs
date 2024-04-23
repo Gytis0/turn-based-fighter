@@ -1,13 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CombatPlayer : CombatHumanoid
 {
+    public delegate void PlayerTurnEnd(Action action, CombatHumanoid character);
+    public event PlayerTurnEnd onPlayerTurnEnd;
+
     List<Action> movementActions, agileActions, offenseActions, defenseActions;
+    [SerializeField] List<Button> allButtons = new();
     [SerializeField] List<Button> directionButtons = new();
     [SerializeField] List<Button> movementButtons = new();
     [SerializeField] List<Button> agileButtons = new();
@@ -16,14 +21,17 @@ public class CombatPlayer : CombatHumanoid
     [SerializeField] GameObject combatUI;
 
     [SerializeField] List<TextMeshProUGUI> bubblesTexts;
+    [SerializeField] List<Image> bubblesIndicators;
     [SerializeField] Button resetQueue;
     [SerializeField] Button endTurn;
     [SerializeField] Button skipTurn;
+    [SerializeField] Button addAction;
 
     Action selectedAction;
     Direction selectedDirection;
 
-    
+    [SerializeField] Color notSelectedButton;
+    [SerializeField] Color selectedButton;
 
     void Start()
     {
@@ -44,6 +52,7 @@ public class CombatPlayer : CombatHumanoid
 
     public void EnableButtons(List<Action> availableActions)
     {
+        UpdateBubbles();
         this.availableActions = availableActions;
         int index;
         // Enable buttons based on available actions
@@ -82,31 +91,26 @@ public class CombatPlayer : CombatHumanoid
 
     void DisableButtons()
     {
-        foreach (Button button in agileButtons)
+        foreach (Button button in allButtons)
         {
+            button.transform.parent.GetComponent<Image>().color = notSelectedButton;
             button.transform.parent.gameObject.SetActive(false);
         }
-        foreach (Button button in offenseButtons)
-        {
-            button.transform.parent.gameObject.SetActive(false);
-        }
-        foreach (Button button in defenseButtons)
-        {
-            button.transform.parent.gameObject.SetActive(false);
-        }
-        foreach (Button button in directionButtons)
-        {
-            button.transform.parent.gameObject.SetActive(false);
-        }
-        foreach (Button button in movementButtons)
-        {
-            button.transform.parent.gameObject.SetActive(false);
-        }
+        movementActions.Clear();
+        agileActions.Clear();
+        offenseActions.Clear();
+        defenseActions.Clear();
     }
 
     void ShowActionDirections()
     {
-        foreach(Direction direction in selectedAction.directions)
+        foreach (Button button in directionButtons)
+        {
+            button.transform.parent.GetComponent<Image>().color = notSelectedButton;
+            button.transform.parent.gameObject.SetActive(false);
+        }
+
+        foreach (Direction direction in selectedAction.directions)
         {
             if (direction == Direction.Forward) directionButtons[0].transform.parent.gameObject.SetActive(true);
             else if (direction == Direction.Left) directionButtons[1].transform.parent.gameObject.SetActive(true);
@@ -115,12 +119,18 @@ public class CombatPlayer : CombatHumanoid
         }
     }
 
-    public void SelectAction(int buttonId)
+    void HideActionDirections()
     {
         foreach (Button button in directionButtons)
         {
+            button.transform.parent.GetComponent<Image>().color = notSelectedButton;
             button.transform.parent.gameObject.SetActive(false);
         }
+    }
+
+    public void SelectAction(int buttonId)
+    {
+        DemarkEverything();
 
         if (buttonId == 0) selectedAction = movementActions[0];
         else if(buttonId == 1) selectedAction = movementActions[1];
@@ -141,4 +151,109 @@ public class CombatPlayer : CombatHumanoid
 
         ShowActionDirections();
     }
+
+    public void SelectDirection(int direction)
+    {
+        foreach (Button button in directionButtons)
+        {
+            button.transform.parent.GetComponent<Image>().color = notSelectedButton;
+        }
+        direction++;
+        selectedDirection = (Direction)direction;
+    }
+
+    void UpdateBubbles()
+    {
+        List<Action> actions = new List<Action>();
+        foreach(Action action in actionQueue)
+        {
+            actions.Add(action);
+        }
+
+        for(int i = 0; i < bubblesTexts.Count; i++)
+        {
+            if (actions.Count <= i)
+            {
+                bubblesTexts[i].SetText("");
+                bubblesIndicators[i].enabled = false;
+                bubblesTexts[i].transform.GetComponentInParent<Image>().color = new Color(1, 1, 1, 0.5f);
+            }
+            else
+            {
+                bubblesTexts[i].SetText(actions[i].actionName.ToString());
+                bubblesIndicators[i].enabled = true;
+                if (actions[i].directions[0] == Direction.None) { bubblesIndicators[i].enabled = false; }
+                else if (actions[i].directions[0] == Direction.Left) { bubblesIndicators[i].rectTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 0)); }
+                else if (actions[i].directions[0] == Direction.Backward) { bubblesIndicators[i].rectTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 90)); }
+                else if (actions[i].directions[0] == Direction.Right) { bubblesIndicators[i].rectTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 180)); }
+                else if (actions[i].directions[0] == Direction.Forward) { bubblesIndicators[i].rectTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 270)); }
+                bubblesTexts[i].transform.GetComponentInParent<Image>().color = new Color(1, 1, 1, 1f);
+            }
+        }
+    }
+
+    void DemarkEverything()
+    {
+        foreach (Button button in allButtons)
+        {
+            button.transform.parent.GetComponent<Image>().color = notSelectedButton;
+        }
+    }
+
+    // Four buttons
+
+    public void AddAction()
+    {
+        if (selectedAction == null || (selectedDirection == 0 && selectedAction.directions.Count != 0)) return;
+
+        Action newAction = new Action(selectedAction, selectedDirection);
+        actionQueue.Enqueue(newAction);
+
+        selectedAction = null;
+        selectedDirection = 0;
+
+        HideActionDirections();
+        UpdateBubbles();
+        DemarkEverything();
+    }
+
+    public override void EndTurn()
+    {
+        selectedAction = null;
+        selectedDirection = 0;
+        DemarkEverything();
+
+        DisableButtons();
+
+        if (actionQueue.Count == 0)
+        {
+            onPlayerTurnEnd(new Action(ActionType.Skip), this);
+        }
+        else
+        {
+            onPlayerTurnEnd(actionQueue.Dequeue(), this);
+            UpdateBubbles();
+        }
+
+    }
+
+    public void SkipTurn()
+    {
+        selectedAction = null;
+        selectedDirection = 0;
+        DemarkEverything();
+
+        onPlayerTurnEnd(new Action(ActionType.Skip), this);
+    }
+
+    public void ResetQueue()
+    {
+        selectedAction = null;
+        selectedDirection = 0;
+        DemarkEverything();
+
+        actionQueue.Clear();
+        UpdateBubbles();
+    }
+
 }
