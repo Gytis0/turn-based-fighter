@@ -6,6 +6,7 @@ using TMPro;
 using System;
 using UnityEngine.UIElements;
 using System.Linq;
+using static UnityEngine.GraphicsBuffer;
 
 public class CombatManager : MonoBehaviour
 {
@@ -148,9 +149,13 @@ public class CombatManager : MonoBehaviour
 
     List<Action> GetAvailableTurns(CombatHumanoid humanoid)
     {
-        List<Action> result = new List<Action>(actionList);
+        List<Action> result = new List<Action>();
+        foreach(Action tempAction in actionList)
+        {
+            result.Add(new Action(tempAction));
+        }
         float stamina = humanoid.GetStamina();
-        float requiredStamina;
+        float requiredStamina = 0f;
         CombatState combatState = humanoid.GetCombatState();
 
         for(int i = 0; i < result.Count;)
@@ -163,32 +168,65 @@ public class CombatManager : MonoBehaviour
                 continue;
             }
 
-            // Remove if there is not enough stamina
+            // Remove if there is not enough stamina or equipment does not support the action
             if (action.actionType == ActionType.Movement || action.actionType == ActionType.Agile)
             {
                 requiredStamina = action.baseStaminaDrain * (humanoid.GetAllWeight() / 100);
-                if (requiredStamina > stamina)
-                {
-                    result.RemoveAt(i); continue;
-                }
             }
             else if (action.actionType == ActionType.Offensive)
             {
-                requiredStamina = action.baseStaminaDrain * (humanoid.GetWeaponWeight() / 100);
-                if (requiredStamina > stamina)
+                if (action.actionName == ActionName.Push)
                 {
-                    result.RemoveAt(i); continue;
+                    if (Vector3.Distance(player.transform.position, enemy.transform.position) > 2f)
+                    {
+                        Debug.Log("Removing push. The distance is: " + Vector3.Distance(player.transform.position, enemy.transform.position));
+                        result.RemoveAt(i); continue;
+                    }
+                    requiredStamina = action.baseStaminaDrain * (humanoid.GetAllWeight() / 100);
                 }
+
+                else
+                {
+                    if (humanoid.GetWeaponActions() == null)
+                    {
+                        result.RemoveAt(i); continue;
+                    }
+                    if (!humanoid.GetWeaponActions().Contains(action.actionName))
+                    {
+                        result.RemoveAt(i); continue;
+                    }
+
+                    requiredStamina = action.baseStaminaDrain * (humanoid.GetWeaponWeight() / 100);
+                }
+
+                
             }
             else if (action.actionType == ActionType.Defensive)
             {
-                requiredStamina = action.baseStaminaDrain * (humanoid.GetShieldWeight() / 100);
-                if (requiredStamina > stamina)
+                if (action.actionName == ActionName.Stand_Ground)
+                {
+                    i++;
+                    continue;
+                }
+
+                if (humanoid.GetShieldActions() == null)
                 {
                     result.RemoveAt(i); continue;
                 }
+                if (!humanoid.GetShieldActions().Contains(action.actionName))
+                {
+                    result.RemoveAt(i); continue;
+                }
+
+                requiredStamina = action.baseStaminaDrain * (humanoid.GetShieldWeight() / 100);
             }
 
+            if (requiredStamina > stamina)
+            {
+                result.RemoveAt(i); continue;
+            }
+
+            // Check boundaries and blocking objects for movement
             Vector2 position = new Vector2(humanoid.transform.position.x, humanoid.transform.position.z);
             if (action.actionName == ActionName.Step)
             {
@@ -223,28 +261,25 @@ public class CombatManager : MonoBehaviour
                     result.RemoveAt(i); continue;
                 }
             }
-            else if(action.actionType == ActionType.Defensive)
+            else if (action.actionName == ActionName.Roll)
             {
-                if (humanoid.GetShieldActions() == null)
+                if (humanoid.transform.rotation.y % 180 == 0)
                 {
-                    result.RemoveAt(i); continue;
+                    if (IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing, 0))) action.AddDirection(Direction.Right);
+                    if (IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing, 0))) action.AddDirection(Direction.Left);
                 }
-                if (!humanoid.GetShieldActions().Contains(action.actionName))
+                else
+                {
+                    if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing))) action.AddDirection(Direction.Forward);
+                    if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing))) action.AddDirection(Direction.Backward);
+                }
+                
+                if (action.directions.Count == 0)
                 {
                     result.RemoveAt(i); continue;
                 }
             }
-            else if(action.actionType == ActionType.Offensive)
-            {
-                if (humanoid.GetWeaponActions() == null)
-                {
-                    result.RemoveAt(i); continue;
-                }
-                if (!humanoid.GetWeaponActions().Contains(action.actionName))
-                {
-                    result.RemoveAt(i); continue;
-                }
-            }
+
             i++;
         }
         return result;
@@ -252,12 +287,18 @@ public class CombatManager : MonoBehaviour
 
     bool IsPositionValid(Vector3 startPos, Vector2 endPos)
     {
+        startPos.Set(startPos.x, .5f, startPos.z);
         Vector3 endPos3d = new Vector3(endPos.x, 0.5f, endPos.y);
+        float length = Vector3.Distance(startPos, endPos3d);
+        RaycastHit[] hits = Physics.RaycastAll(startPos, (endPos3d - startPos), length, movementBlockingObjects);
+        // TEMPORARY
+        gizmoStart = startPos;
+        gizmoEnd = endPos3d;
         if (endPos.x >= gridBoundaries.Item1.x &&
             endPos.x <= gridBoundaries.Item2.x &&
             endPos.y >= gridBoundaries.Item1.y &&
             endPos.y <= gridBoundaries.Item2.y &&
-            !Physics.Linecast(startPos, endPos3d, movementBlockingObjects)) return true;
+            hits.Length == 0) return true;
 
         return false;
     }
@@ -270,6 +311,20 @@ public class CombatManager : MonoBehaviour
         }
         Debug.LogError("No action exists with a name " + actionName);
         return null;
+    }
+
+    Vector3 gizmoStart, gizmoEnd;
+    void OnDrawGizmosSelected()
+    {
+        Vector2 position = new Vector2(player.transform.position.x, player.transform.position.z);
+        IsPositionValid(player.transform.position, position + new Vector2(0, gridSpacing * 2));
+
+        if (gizmoEnd != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(gizmoStart, gizmoEnd);
+        }
+       
     }
 }
 

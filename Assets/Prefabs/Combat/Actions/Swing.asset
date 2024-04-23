@@ -18,4 +18,4 @@ MonoBehaviour:
   baseComposureDrain: 0
   actionType: 2
   availableWhen: 0100000002000000
-  directions: 
+  directions: 0300000004000000

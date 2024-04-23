@@ -163,7 +163,7 @@ public class Equipment : MonoBehaviour
 
     public List<ActionName> GetWeaponActions()
     {
-        if (GetEquippedShield() == null) return null;
+        if (GetEquippedWeapon() == null) return null;
         return GetEquippedWeapon().GetWeaponActions();
     }
 }

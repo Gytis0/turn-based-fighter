@@ -15,7 +15,15 @@ public class CombatPlayer : CombatHumanoid
     [SerializeField] List<Button> defenseButtons = new();
     [SerializeField] GameObject combatUI;
 
+    [SerializeField] List<TextMeshProUGUI> bubblesTexts;
+    [SerializeField] Button resetQueue;
+    [SerializeField] Button endTurn;
+    [SerializeField] Button skipTurn;
+
     Action selectedAction;
+    Direction selectedDirection;
+
+    
 
     void Start()
     {
