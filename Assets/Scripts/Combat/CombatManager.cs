@@ -60,7 +60,6 @@ public class CombatManager : MonoBehaviour
 
     public void StartCombat()
     {
-        //parameters should accept all the info about fighters' properties and equipment
         EnableUi(true);
         UpdateIndicator();
 
@@ -76,8 +75,8 @@ public class CombatManager : MonoBehaviour
         player.onPlayerTurnEnd += ApproveAction;
         enemy.onEnemyTurnEnd += ApproveAction;
 
-        player.EnableCombatMode(true);
-        enemy.EnableCombatMode(true);
+        player.EnableCombatMode(true, gridSpacing);
+        enemy.EnableCombatMode(true, gridSpacing);
 
         player.SetCombinations(combinationList);
         enemy.SetCombinations(combinationList);
@@ -92,8 +91,8 @@ public class CombatManager : MonoBehaviour
     {
         EnableUi(false);
 
-        enemy.EnableCombatMode(false);
-        player.EnableCombatMode(false);
+        enemy.EnableCombatMode(false, gridSpacing);
+        player.EnableCombatMode(false, gridSpacing);
     }
 
     void ForcefullyEndTurn()
@@ -109,7 +108,7 @@ public class CombatManager : MonoBehaviour
 
         foreach (Action availableAction in tempActionList)
         {
-            if (availableAction.actionName == action.actionName && availableAction.directions.Contains(action.directions[0]))
+            if (availableAction.actionName == action.actionName && (action.directions[0] == Direction.None || availableAction.directions.Contains(action.directions[0])))
             {
                 character.ExecuteAction(action);
                 approved = true;
@@ -203,11 +202,11 @@ public class CombatManager : MonoBehaviour
             }
             else if (action.actionType == ActionType.Offensive)
             {
-                if (action.actionName == ActionName.Push)
+                if (action.actionName == ActionName.Kick)
                 {
                     if (Vector3.Distance(player.transform.position, enemy.transform.position) > 2f)
                     {
-                        Debug.Log("Removing push. The distance is: " + Vector3.Distance(player.transform.position, enemy.transform.position));
+                        Debug.Log("Removing kick. The distance is: " + Vector3.Distance(player.transform.position, enemy.transform.position));
                         result.RemoveAt(i); continue;
                     }
                     requiredStamina = action.baseStaminaDrain * (humanoid.GetAllWeight() / 100);

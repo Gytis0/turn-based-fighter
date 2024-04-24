@@ -64,39 +64,41 @@ public class GameManager : MonoBehaviour
         {
             Interactable.onTravel += LoadFightScene;
         }
+        if (SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            // TEMPORARY //
 
-        // TEMPORARY //
-        
-        cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
-        preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
 
-        StartButton.onStartGame += StartGame;
+            cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
+            preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
 
-        enemy = GameObject.FindGameObjectWithTag("Enemy");
-        enemyProperties = enemy.GetComponent<HumanoidProperties>();
+            StartButton.onStartGame += StartGame;
 
-        player = GameObject.FindGameObjectWithTag("Player");
-        playerProperties = player.GetComponent<HumanoidProperties>();
-        playerInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
-        player.GetComponent<PlayerControls>().restrictedMovement = true;
+            enemy = GameObject.FindGameObjectWithTag("Enemy");
+            enemyProperties = enemy.GetComponent<HumanoidProperties>();
 
-        ItemData hammerItemData = itemManager.GetItem("Sword").GetItemData();
-        ItemData shieldItemData = itemManager.GetItem("Wooden Shield").GetItemData();
-        Armor chestplate = (Armor)(itemManager.GetItem("Iron Chest").GetItemData());
-        allItems.Add(0, hammerItemData);
-        allItems.Add(1, shieldItemData);
-        armorItems.Add(ArmorType.Chestplate, chestplate);
+            player = GameObject.FindGameObjectWithTag("Player");
+            playerProperties = player.GetComponent<HumanoidProperties>();
+            playerInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
+            player.GetComponent<PlayerControls>().restrictedMovement = true;
 
-        SetEnemyStats();
-        SetEnemyItems();
+            ItemData hammerItemData = itemManager.GetItem("Sword").GetItemData();
+            ItemData shieldItemData = itemManager.GetItem("Wooden Shield").GetItemData();
+            Armor chestplate = (Armor)(itemManager.GetItem("Iron Chest").GetItemData());
+            allItems.Add(0, hammerItemData);
+            allItems.Add(1, shieldItemData);
+            armorItems.Add(ArmorType.Chestplate, chestplate);
 
-        //SetPlayerStats();
-        playerProperties.SetStats(new int[] { 3, 3, 3, 2 });
-        SetPlayerItems();
+            SetEnemyStats();
+            SetEnemyItems();
 
-        SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
-        SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
-        
+            //SetPlayerStats();
+            playerProperties.SetStats(new int[] { 3, 3, 3, 2 });
+            SetPlayerItems();
+
+            SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
+            SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
+        }
     }
 
     private void OnDisable()

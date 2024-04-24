@@ -31,7 +31,7 @@ public enum ActionName
     Duck,
     Get_Up,
     Overhead,
-    Push,
+    Kick,
     Roll,
     Run,
     Skip,

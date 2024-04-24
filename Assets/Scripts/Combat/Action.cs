@@ -19,7 +19,12 @@ public class Action : ScriptableObject
         baseComposureDrain = action.baseComposureDrain;
         actionType = action.actionType;
         availableWhen = action.availableWhen;
-        directions = action.directions;
+        directions = new List<Direction>();
+        
+        foreach(Direction direction in action.directions)
+        {
+            directions.Add(direction);
+        }
     }
 
     public Action(Action action, Direction direction)

@@ -49,6 +49,18 @@ public class HumanoidMovementController : MonoBehaviour
         if (onChangedState != null) onChangedState(animationState);
     }
 
+    public void FaceEnemy()
+    {
+        GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
+        if (enemy != null)
+        {
+            if (transform.tag == "Enemy") enemy = GameObject.FindGameObjectWithTag("Player");
+        }
+
+        Quaternion _lookRotation = Quaternion.LookRotation((enemy.transform.position - transform.position).normalized);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * 5);
+    }
+
     public void Idle()
     {
         animationState = AnimationStates.IDLE;
@@ -68,9 +80,19 @@ public class HumanoidMovementController : MonoBehaviour
 
     public void Reach(Vector3 destination, float _radius = 0f)
     {
-        destination = destination;
+        this.destination = destination;
         agent.stoppingDistance = _radius;
         isFollowing = true;
+    }
+
+    public void Move(Vector3 destination, float speed, AnimationStates animationState, float angularSpeed = 800f)
+    {
+        this.animationState = animationState;
+        agent.isStopped = false;
+        agent.SetDestination(destination);
+        agent.speed = speed;
+        agent.stoppingDistance = 0;
+        agent.angularSpeed = angularSpeed;
     }
 
     protected virtual void StopFollowing()
@@ -97,9 +119,15 @@ public class HumanoidMovementController : MonoBehaviour
 
         // Stop moving if there is no path generating
         // Stop moving if we reached the destination
-        if ((!agent.hasPath && !agent.pathPending) || (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending))
+        if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending && animationState != AnimationStates.IDLE)
         {
             Stop();
+        }
+
+        // Face the enemy whenever we're idling
+        if(animationState == AnimationStates.IDLE)
+        {
+            FaceEnemy();
         }
     }
 }

@@ -43,11 +43,17 @@ public class CombatPlayer : CombatHumanoid
         defenseActions = new List<Action>();
     }
 
-    public override void EnableCombatMode(bool _enable)
+    public override void EnableCombatMode(bool _enable, float gridSpacing)
     {
-        base.EnableCombatMode(_enable);
+        base.EnableCombatMode(_enable, gridSpacing);
         combatUI.SetActive(inCombat);
         DisableButtons();
+    }
+
+    public override void ExecuteAction(Action action)
+    {
+        base.ExecuteAction(action);
+
     }
 
     public void EnableButtons(List<Action> availableActions)
@@ -223,7 +229,7 @@ public class CombatPlayer : CombatHumanoid
         selectedDirection = 0;
         DemarkEverything();
 
-        DisableButtons();
+        //DisableButtons();
 
         if (actionQueue.Count == 0)
         {

@@ -166,4 +166,21 @@ public class Equipment : MonoBehaviour
         if (GetEquippedWeapon() == null) return null;
         return GetEquippedWeapon().GetWeaponActions();
     }
+
+    public bool IsTwoHanded()
+    {
+        return GetEquippedWeapon().GetWeaponType() == WeaponType.TwoHanded;
+    }
+
+    public bool IsLeftHanded()
+    {
+        if (handSlots[0] != null && handSlots[0].GetItemData().GetType() == typeof(Weapon))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

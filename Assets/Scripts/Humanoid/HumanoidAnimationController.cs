@@ -6,10 +6,9 @@ using UnityEngine;
 public class HumanoidAnimationController : MonoBehaviour
 {
     Animator animator;
-    public HumanoidMovementController movementController;
+    HumanoidMovementController movementController;
 
-    string path;
-    AnimationStates animationStates;
+    AnimationStates animationState;
 
     private void Awake()
     {
@@ -17,28 +16,33 @@ public class HumanoidAnimationController : MonoBehaviour
         movementController = transform.GetComponent<HumanoidMovementController>();
     }
     
-    void UpdateStates(AnimationStates newState)
+    public void SetState(AnimationStates newState)
     {
+        animationState = newState;
         foreach (AnimatorControllerParameter state in animator.parameters)
         {
             if(state.name.ToLower() == newState.ToString().ToLower())
             {
-                animator.SetBool(state.name, true);
-            }
-            else
-            {
-                animator.SetBool(state.name, false);
+                animator.SetTrigger(state.name);
+                break;
             }
         }
     }
 
+    public void SetAnimationModes(bool isTwoHanded, bool isLeftHanded, bool inCombat)
+    {
+        animator.SetBool("Two Handed", isTwoHanded);
+        animator.SetBool("Left Handed", isLeftHanded);
+        animator.SetBool("In Combat", inCombat);
+    }
+
     private void OnEnable()
     {
-        movementController.onChangedState += UpdateStates;
+        movementController.onChangedState += SetState;
     }
 
     private void OnDisable()
     {
-        movementController.onChangedState -= UpdateStates;
+        movementController.onChangedState -= SetState;
     }
 }
