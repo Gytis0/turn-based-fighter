@@ -11,9 +11,9 @@ public class HumanoidProperties : MonoBehaviour
     protected int maxComposure = 100;
     protected int intelligence = 5;
 
-    protected int health;
-    protected int stamina;
-    protected int composure;
+    protected float health;
+    protected float stamina;
+    protected float composure;
 
     protected void Start()
     {
@@ -24,21 +24,27 @@ public class HumanoidProperties : MonoBehaviour
         composure = maxComposure;
     }
 
-    public void DrainStamina(int change)
-    {
-        stamina += change;
-        entityOverhead.UpdateStaminaSlider(stamina);
-    }
+    
 
     public void AlterHealth(int change)
     {
         health += change;
         entityOverhead.UpdateHealthSlider(health);
     }
+    public void AlterStamina(float change)
+    {
+        stamina += change;
+        entityOverhead.UpdateStaminaSlider(stamina);
+    }
+    public void AlterComposure(float change)
+    {
+        composure += change;
+        entityOverhead.UpdateComposureSlider(composure);
+    }
 
-    public int GetStamina() { return stamina; }
-    public int GetHealth() { return health; }
-    public int GetComposure() { return composure; }
+    public float GetStamina() { return stamina; }
+    public float GetHealth() { return health; }
+    public float GetComposure() { return composure; }
     public int GetMaxComposure() { return maxComposure; }
     public int GetIntelligence() { return intelligence; }
 

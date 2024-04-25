@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.XInput;
+using static PlasticGui.PlasticTableCell;
 using static UnityEditor.Progress;
 
 public class Equipment : MonoBehaviour
@@ -93,13 +94,21 @@ public class Equipment : MonoBehaviour
         handSlots[(int)slot] = null;
     }
 
+    void Drop(HandSlot slot)
+    {
+        Item item = new Item(handSlots[(int)slot]);
+        UnequipHand(slot);
+
+        item.AppearInWorld(transform.position);
+    }
+
     public bool IsHandEquipped(HandSlot slot)
     {
         if (handSlots[(int)slot] == null) return false;
         else return true;
     }
 
-    public Weapon GetEquippedWeapon()
+    public Weapon GetEquippedWeaponData()
     {
         if (handSlots[0] != null && handSlots[0].GetItemData().GetType() == typeof(Weapon))
         {
@@ -112,7 +121,20 @@ public class Equipment : MonoBehaviour
         else return null;
     }
 
-    public Shield GetEquippedShield()
+    public GameObject GetEquippedWeaponObject()
+    {
+        if (handSlots[0] != null && handSlots[0].GetItemData().GetType() == typeof(Weapon))
+        {
+            return leftHand.transform.GetChild(0).gameObject;
+        }
+        else if (handSlots[1] != null && handSlots[1].GetItemData().GetType() == typeof(Weapon))
+        {
+            return rightHand.transform.GetChild(0).gameObject;
+        }
+        else return null;
+    }
+
+    public Shield GetEquippedShieldData()
     {
         if (handSlots[0] != null && handSlots[0].GetItemData().GetType() == typeof(Shield))
         {
@@ -132,14 +154,14 @@ public class Equipment : MonoBehaviour
 
     public float GetWeaponWeight()
     {
-        if(GetEquippedWeapon() == null) return 0f;
-        return GetEquippedWeapon().GetWeight();
+        if(GetEquippedWeaponData() == null) return 0f;
+        return GetEquippedWeaponData().GetWeight();
     }
 
     public float GetShieldWeight()
     {
-        if(GetEquippedShield() == null) return 0f;
-        return GetEquippedShield().GetWeight();
+        if(GetEquippedShieldData() == null) return 0f;
+        return GetEquippedShieldData().GetWeight();
     }
 
     public float GetAllWeight()
@@ -157,19 +179,19 @@ public class Equipment : MonoBehaviour
 
     public List<ActionName> GetShieldActions()
     {
-        if (GetEquippedShield() == null) return null;
-        return GetEquippedShield().GetShieldActions();
+        if (GetEquippedShieldData() == null) return null;
+        return GetEquippedShieldData().GetShieldActions();
     }
 
     public List<ActionName> GetWeaponActions()
     {
-        if (GetEquippedWeapon() == null) return null;
-        return GetEquippedWeapon().GetWeaponActions();
+        if (GetEquippedWeaponData() == null) return null;
+        return GetEquippedWeaponData().GetWeaponActions();
     }
 
     public bool IsTwoHanded()
     {
-        return GetEquippedWeapon().GetWeaponType() == WeaponType.TwoHanded;
+        return GetEquippedWeaponData().GetWeaponType() == WeaponType.TwoHanded;
     }
 
     public bool IsLeftHanded()
@@ -182,5 +204,52 @@ public class Equipment : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public void DamageShield(Weapon weapon)
+    {
+        Shield shield = GetEquippedShieldData();
+        if (weapon.GetDamage() > 30) shield.Damage(2);
+        else shield.Damage(1);
+
+        if(shield.GetDurability() <= 0)
+        {
+            if (handSlots[0] != null && handSlots[0].GetItemData().GetType() == typeof(Shield))
+            {
+                Drop(HandSlot.LeftHand);
+            }
+            else if (handSlots[1] != null && handSlots[1].GetItemData().GetType() == typeof(Shield))
+            {
+                Drop(HandSlot.RightHand);
+            }
+        }
+    }
+
+    public void DamageWeapon()
+    {
+        GetEquippedWeaponData().AlterDurability(-1);
+    }
+
+    public void DamageArmors(Weapon weapon)
+    {
+        int damage = 0;
+        if (weapon.GetDamage() > 30) damage = 2;
+        else damage = 1;
+
+        foreach (Armor armor in armorItems.Values)
+        {
+            armor.AlterDurability(-damage);
+        }
+    }
+
+    public int GetArmorDamageReduction(DamageTypes damageType)
+    {
+        int sum = 0;
+        foreach(Armor armor in armorItems.Values)
+        {
+            sum += armor.GetArmorPoints();
+            sum += armor.GetResistance(damageType);
+        }
+        return sum;
     }
 }

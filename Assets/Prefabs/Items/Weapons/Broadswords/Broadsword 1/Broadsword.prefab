@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4734023149966278481}
   - component: {fileID: 2104181680330294969}
   - component: {fileID: 5127484210543446128}
+  - component: {fileID: -1258152446318340665}
   m_Layer: 0
   m_Name: Broadsword
   m_TagString: Untagged
@@ -131,3 +132,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &-1258152446318340665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131420377864247828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec3c2a1c4dcf7e7419106091fc566b54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

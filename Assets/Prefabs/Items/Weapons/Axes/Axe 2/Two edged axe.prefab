@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5240636665241404378}
   - component: {fileID: 5240636665241404377}
   - component: {fileID: 889616367267000125}
+  - component: {fileID: -2674778191813666927}
   m_Layer: 0
   m_Name: Two edged axe
   m_TagString: Untagged
@@ -132,3 +133,15 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 6279080039571952389, guid: 9fcc9cb70cf42544b824b85a941e5e93, type: 3}
+--- !u!114 &-2674778191813666927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2940538162897820173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec3c2a1c4dcf7e7419106091fc566b54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

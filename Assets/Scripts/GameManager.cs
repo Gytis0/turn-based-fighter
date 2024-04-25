@@ -283,7 +283,7 @@ public class GameManager : MonoBehaviour
         combatManager.StartCombat();
     }
 
-    void SetCharacterStatsWindow(GameObject windowParentObject, string name, int health, int stamina, int composure, bool precise, int intelligence = 5)
+    void SetCharacterStatsWindow(GameObject windowParentObject, string name, float health, float stamina, float composure, bool precise, int intelligence = 5)
     {
         GameObject windowObject = windowParentObject.transform.GetChild(0).gameObject;
         CharacterStatsUI characterStatsUI = windowObject.GetComponent<CharacterStatsUI>();
@@ -296,21 +296,21 @@ public class GameManager : MonoBehaviour
 
             int randomRangeDown = Random.Range(0, range + 1);
 
-            int minHealth = Mathf.Clamp(health - randomRangeDown, 20, 100);
-            int actualReduce = health - minHealth;
-            int maxHealth = Mathf.Clamp(health + range - actualReduce, 20, 100);
+            float minHealth = Mathf.Clamp(health - randomRangeDown, 20, 100);
+            float actualReduce = health - minHealth;
+            float maxHealth = Mathf.Clamp(health + range - actualReduce, 20, 100);
 
             randomRangeDown = Random.Range(0, range + 1);
 
-            int minStamina = Mathf.Clamp(stamina - randomRangeDown, 20, 100);
+            float minStamina = Mathf.Clamp(stamina - randomRangeDown, 20, 100);
             actualReduce = stamina - minStamina;
-            int maxStamina = Mathf.Clamp(stamina + range - actualReduce, 20, 100);
+            float maxStamina = Mathf.Clamp(stamina + range - actualReduce, 20, 100);
 
             randomRangeDown = Random.Range(0, range + 1);
 
-            int minComposure = Mathf.Clamp(composure - randomRangeDown, 20, 100);
+            float minComposure = Mathf.Clamp(composure - randomRangeDown, 20, 100);
             actualReduce = composure - minComposure;
-            int maxComposure = Mathf.Clamp(composure + range - actualReduce, 20, 100);
+            float maxComposure = Mathf.Clamp(composure + range - actualReduce, 20, 100);
 
             characterStatsUI.SetSlidersIntervals(minHealth, maxHealth, minStamina, maxStamina, minComposure, maxComposure);
         }

@@ -38,7 +38,7 @@ public class CharacterStatsUI : MonoBehaviour
         composureText = composureSlider.transform.GetComponentInChildren<TextMeshProUGUI>();
 
     }
-    public void UpdateHealthSlider(int newHealth)
+    public void UpdateHealthSlider(float newHealth)
     {
         healthSlider.value = newHealth;
     }
@@ -58,7 +58,7 @@ public class CharacterStatsUI : MonoBehaviour
         this.title.SetText(title);
     }
 
-    public void SetSlidersValues(int health,  int stamina, int composure)
+    public void SetSlidersValues(float health, float stamina, float composure)
     {
         healthSlider.maxValue = health;
         healthSlider.value = health;
@@ -76,7 +76,7 @@ public class CharacterStatsUI : MonoBehaviour
         composureDashLayout.SetDashes();
     }
 
-    public void SetSlidersIntervals(int minHealth, int maxHealth, int minStamina, int maxStamina, int minComposure, int maxComposure)
+    public void SetSlidersIntervals(float minHealth, float maxHealth, float minStamina, float maxStamina, float minComposure, float maxComposure)
     {
         healthIntervalSlider.SetInterval(minHealth, maxHealth);
         staminaIntervalSlider.SetInterval(minStamina, maxStamina);

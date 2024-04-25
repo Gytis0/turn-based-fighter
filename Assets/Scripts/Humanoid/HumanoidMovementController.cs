@@ -58,6 +58,7 @@ public class HumanoidMovementController : MonoBehaviour
         }
 
         Quaternion _lookRotation = Quaternion.LookRotation((enemy.transform.position - transform.position).normalized);
+        _lookRotation.Set(0f, _lookRotation.y, 0f, _lookRotation.w);
         transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * 5);
     }
 

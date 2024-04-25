@@ -6,8 +6,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Action", menuName = "Combat/Action")]
 public class Action : ScriptableObject
 {
-    public Action(ActionType actionType)
+    public Action(ActionName actionName, ActionType actionType)
     {
+        this.actionName = actionName;
         this.actionType = actionType;
     }
 
@@ -44,6 +45,9 @@ public class Action : ScriptableObject
     public int baseDuration;
     public int baseStaminaDrain;
     public int baseComposureDrain;
+
+    public float staminaDrain;
+    public float composureDrain;
 
     public ActionType actionType;
     public List<CombatStance> availableWhen;

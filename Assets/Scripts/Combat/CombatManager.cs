@@ -73,7 +73,9 @@ public class CombatManager : MonoBehaviour
         enemyEquipment = enemyObject.GetComponent<Equipment>();
 
         player.onPlayerTurnEnd += ApproveAction;
+        playerEquipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>().onEnemyHit += ApproveAttack;
         enemy.onEnemyTurnEnd += ApproveAction;
+        enemyEquipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>().onEnemyHit += ApproveAttack;
 
         player.EnableCombatMode(true, gridSpacing);
         enemy.EnableCombatMode(true, gridSpacing);
@@ -84,7 +86,7 @@ public class CombatManager : MonoBehaviour
         tempActionList = GetAvailableActions(player);
         player.EnableButtons(tempActionList);
 
-        timer.EnableTimer(30f);
+        timer.EnableTimer(3f);
     }
 
     public void StopCombat()
@@ -108,7 +110,7 @@ public class CombatManager : MonoBehaviour
 
         foreach (Action availableAction in tempActionList)
         {
-            if (availableAction.actionName == action.actionName && (action.directions[0] == Direction.None || availableAction.directions.Contains(action.directions[0])))
+            if (action.actionName == ActionName.Skip || (availableAction.actionName == action.actionName && (action.directions[0] == Direction.None || availableAction.directions.Contains(action.directions[0]))))
             {
                 character.ExecuteAction(action);
                 approved = true;
@@ -131,8 +133,35 @@ public class CombatManager : MonoBehaviour
         {
             Debug.Log("Turn approved. Switching [" + playersTurn + "]");
             SwitchTurn();
-            timer.EnableTimer(30f);
+            timer.EnableTimer(3f);
         }
+    }
+
+    void ApproveAttack(Weapon weapon, Action action, bool isPlayer)
+    {
+        CombatHumanoid targetCombatHumanoid;
+        Equipment targetEquipment;
+        if (isPlayer)
+        {
+            targetCombatHumanoid = player;
+            targetEquipment = playerEquipment;
+        }
+        else
+        {
+            targetCombatHumanoid = enemy;
+            targetEquipment = enemyEquipment;
+        }
+
+        // Check if the block is successful
+        if (targetCombatHumanoid.GetCombatState() == CombatState.Blocking && action.actionName == ActionName.Overhead) targetEquipment.DamageShield(weapon);
+        else if (targetCombatHumanoid.GetCombatState() == CombatState.Blocking && action.actionName == ActionName.Stab) targetEquipment.DamageShield(weapon);
+        else if (targetCombatHumanoid.GetCombatState() == CombatState.Blocking_Left && action.actionName == ActionName.Swing && action.directions[0] == Direction.Right) targetEquipment.DamageShield(weapon);
+        else if(targetCombatHumanoid.GetCombatState() == CombatState.Blocking_Right && action.actionName == ActionName.Swing && action.directions[0] == Direction.Left) targetEquipment.DamageShield(weapon);
+        else
+        {
+            targetCombatHumanoid.TakeDamage(weapon);
+        }
+
     }
 
     void SwitchTurn()
@@ -185,12 +214,13 @@ public class CombatManager : MonoBehaviour
         float stamina = humanoid.GetStamina();
         float composure = humanoid.GetComposure();
         float maxComposure = humanoid.GetMaxComposure();
-        float requiredStamina = 0f;
-        float requiredComposure = 0f;
+        float requiredStamina;
+        float requiredComposure;
         CombatStance combatStance = humanoid.GetCombatStance();
 
         for (int i = 0; i < result.Count;)
         {
+            requiredStamina = requiredComposure = 0f;
             Action action = result[i];
             // Remove if the state is not suitable
             if (!action.availableWhen.Contains(combatStance) && !action.availableWhen.Contains(CombatStance.Any))
@@ -233,21 +263,8 @@ public class CombatManager : MonoBehaviour
 
 
             }
-            else if (action.actionType == ActionType.Defensive)
+            else if (action.actionType == ActionType.Defensive && action.actionName != ActionName.Stand_Ground)
             {
-                if (action.actionName == ActionName.Stand_Ground)
-                {
-                    if (composure >= maxComposure)
-                    {
-                        result.RemoveAt(i); continue;
-                    }
-                    else
-                    {
-                        i++;
-                        continue;
-                    }
-                }
-
                 if (humanoid.GetShieldActions() == null)
                 {
                     result.RemoveAt(i); continue;
@@ -261,6 +278,19 @@ public class CombatManager : MonoBehaviour
                 requiredComposure = action.baseComposureDrain * (humanoid.GetShieldWeight() / 100);
             }
 
+            // One off for stand ground
+            if (action.actionName == ActionName.Stand_Ground)
+            {
+                if (composure >= maxComposure)
+                {
+                    result.RemoveAt(i); continue;
+                }
+
+                requiredStamina = action.baseStaminaDrain;
+                requiredComposure = action.baseComposureDrain;
+            }
+
+            // Discard everything that cannot be performed because of composure or stamina
             if (requiredStamina > stamina || requiredComposure > composure)
             {
                 result.RemoveAt(i); continue;
@@ -303,7 +333,8 @@ public class CombatManager : MonoBehaviour
             }
             else if (action.actionName == ActionName.Roll)
             {
-                if (humanoid.transform.rotation.y % 180 == 0)
+                Direction direction = GetRollDirection(humanoid.transform.rotation);
+                if (direction == Direction.Forward || direction == Direction.Backward)
                 {
                     if (IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing, 0))) action.AddDirection(Direction.Right);
                     if (IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing, 0))) action.AddDirection(Direction.Left);
@@ -320,6 +351,8 @@ public class CombatManager : MonoBehaviour
                 }
             }
 
+            result[i].staminaDrain = requiredStamina;
+            result[i].composureDrain = requiredComposure;
             i++;
         }
         return result;
@@ -349,6 +382,15 @@ public class CombatManager : MonoBehaviour
         }
         Debug.LogError("No action exists with a name " + actionName);
         return null;
+    }
+
+    Direction GetRollDirection(Quaternion rotation)
+    {
+        float normalized = rotation.normalized.y;
+        if (normalized <= 0.125 || normalized > 0.875) return Direction.Forward;
+        else if (normalized <= 0.375 && normalized > 0.125) return Direction.Right;
+        else if (normalized <= 0.625 && normalized > 0.375) return Direction.Backward;
+        else return Direction.Left;
     }
 }
 

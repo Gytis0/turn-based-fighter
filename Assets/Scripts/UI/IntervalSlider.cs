@@ -9,7 +9,7 @@ public class IntervalSlider : MonoBehaviour
     RectTransform fillArea;
     float sliderSize;
 
-    public void SetInterval(int min, int max)
+    public void SetInterval(float min, float max)
     {
         slider = GetComponent<Slider>();
         fillArea = transform.Find("Fill Area").GetComponent<RectTransform>();

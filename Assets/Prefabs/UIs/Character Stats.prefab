@@ -1544,9 +1544,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fbd293db13a8fe4d8a382465e8f6b45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthSlider: {fileID: 0}
-  staminaSlider: {fileID: 0}
-  composureSlider: {fileID: 0}
+  healthSlider: {fileID: 1374880968886427977}
+  staminaSlider: {fileID: 3151895253215826860}
+  composureSlider: {fileID: 5641387783980188126}
   title: {fileID: 0}
 --- !u!1 &4040358039883273148
 GameObject:

@@ -36,13 +36,14 @@ public class Item : Interactable
         gameObject.SetActive(true);
     }
 
-    public void AppearInWorld()
+    public void AppearInWorld(Vector3 position)
     {
         if (rigid == null) Start();
 
         rigid.isKinematic = false;
         rigid.useGravity = true;
         transform.localPosition = Vector3.zero;
+        transform.position = position;
         transform.eulerAngles = Vector3.zero;
         gameObject.SetActive(true);
         transform.parent = null;

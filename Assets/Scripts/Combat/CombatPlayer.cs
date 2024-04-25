@@ -206,6 +206,8 @@ public class CombatPlayer : CombatHumanoid
         }
     }
 
+  
+
     // Four buttons
 
     public void AddAction()
@@ -233,7 +235,7 @@ public class CombatPlayer : CombatHumanoid
 
         if (actionQueue.Count == 0)
         {
-            onPlayerTurnEnd(new Action(ActionType.Skip), this);
+            onPlayerTurnEnd(new Action(ActionName.Skip, ActionType.Skip), this);
         }
         else
         {
@@ -249,7 +251,7 @@ public class CombatPlayer : CombatHumanoid
         selectedDirection = 0;
         DemarkEverything();
 
-        onPlayerTurnEnd(new Action(ActionType.Skip), this);
+        onPlayerTurnEnd(new Action(ActionName.Skip, ActionType.Skip), this);
     }
 
     public void ResetQueue()

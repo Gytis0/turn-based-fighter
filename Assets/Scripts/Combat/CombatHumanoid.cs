@@ -11,6 +11,8 @@ public class CombatHumanoid : MonoBehaviour
     protected HumanoidProperties humanoidProperties;
     protected HumanoidAnimationController humanoidAnimationController;
     protected HumanoidMovementController humanoidMovementController;
+    protected Collider weaponCollider;
+    protected OffensiveTrigger offensiveTrigger;
 
     // States
     protected bool inCombat = false;
@@ -46,7 +48,7 @@ public class CombatHumanoid : MonoBehaviour
 
     public virtual void EndTurn()
     {
-        
+
     }
 
     public virtual void EnableCombatMode(bool _enable, float gridSpacing)
@@ -55,10 +57,16 @@ public class CombatHumanoid : MonoBehaviour
         humanoidAnimationController.SetAnimationModes(equipment.IsTwoHanded(), equipment.IsLeftHanded(), inCombat);
         this.gridSpacing = gridSpacing;
         humanoidAnimationController.SetState(AnimationStates.IDLE);
+        weaponCollider = equipment.GetEquippedWeaponObject().GetComponent<Collider>();
+        offensiveTrigger = equipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>();
     }
 
     public virtual void ExecuteAction(Action action)
     {
+        weaponCollider.isTrigger = false;
+        humanoidProperties.AlterStamina(-action.staminaDrain);
+        humanoidProperties.AlterComposure(-action.composureDrain);
+
         if (action.actionName == ActionName.Block)
         {
             if (action.directions[0] == Direction.Left)
@@ -110,6 +118,8 @@ public class CombatHumanoid : MonoBehaviour
         }
         else if (action.actionName == ActionName.Overhead)
         {
+            weaponCollider.isTrigger = true;
+            offensiveTrigger.SetAction(action);
             humanoidAnimationController.SetState(AnimationStates.OVERHEAD);
         }
         else if (action.actionName == ActionName.Kick)
@@ -118,8 +128,12 @@ public class CombatHumanoid : MonoBehaviour
         }
         else if (action.actionName == ActionName.Roll)
         {
-            if (action.directions[0] == Direction.Left) humanoidAnimationController.SetState(AnimationStates.ROLLING_LEFT);
-            else if (action.directions[0] == Direction.Right) humanoidAnimationController.SetState(AnimationStates.ROLLING_RIGHT);
+            Direction direction = GetRollDirection(transform.rotation);
+            if ((action.directions[0] == Direction.Left && direction == Direction.Forward) ||
+                (action.directions[0] == Direction.Forward && direction == Direction.Right) ||
+                (action.directions[0] == Direction.Right && direction == Direction.Backward) ||
+                (action.directions[0] == Direction.Backward && direction == Direction.Left)) humanoidAnimationController.SetState(AnimationStates.ROLLING_LEFT);
+            else humanoidAnimationController.SetState(AnimationStates.ROLLING_RIGHT);
         }
         else if (action.actionName == ActionName.Run)
         {
@@ -132,6 +146,8 @@ public class CombatHumanoid : MonoBehaviour
         }
         else if (action.actionName == ActionName.Stab)
         {
+            weaponCollider.isTrigger = true;
+            offensiveTrigger.SetAction(action);
             humanoidAnimationController.SetState(AnimationStates.STABBING);
         }
         else if (action.actionName == ActionName.Stand_Ground)
@@ -149,14 +165,19 @@ public class CombatHumanoid : MonoBehaviour
         }
         else if (action.actionName == ActionName.Swing)
         {
+            weaponCollider.isTrigger = true;
+            offensiveTrigger.SetAction(action);
+
             if (action.directions[0] == Direction.Left) humanoidAnimationController.SetState(AnimationStates.SWINGING_LEFT);
             else if (action.directions[0] == Direction.Right) humanoidAnimationController.SetState(AnimationStates.SWINGING_RIGHT);
         }
-        else if(action.actionName == ActionName.Throw)
+        else if (action.actionName == ActionName.Throw)
         {
+            weaponCollider.isTrigger = true;
             humanoidAnimationController.SetState(AnimationStates.THROWING);
         }
     }
+
 
     void AddActionsToQueue(List<Action> actions)
     {
@@ -167,10 +188,11 @@ public class CombatHumanoid : MonoBehaviour
     {
         return humanoidProperties.GetStamina();
     }
-    public float GetComposure() { return humanoidProperties.GetComposure();}
-    public float GetMaxComposure() { return humanoidProperties.GetMaxComposure();}
+    public float GetComposure() { return humanoidProperties.GetComposure(); }
+    public float GetMaxComposure() { return humanoidProperties.GetMaxComposure(); }
 
     public CombatStance GetCombatStance() { return combatStance; }
+    public CombatState GetCombatState() { return combatState; }
 
     public float GetWeaponWeight()
     {
@@ -195,5 +217,26 @@ public class CombatHumanoid : MonoBehaviour
     public List<ActionName> GetWeaponActions()
     {
         return equipment.GetWeaponActions();
+    }
+
+    public void TakeDamage(Weapon weapon)
+    {
+        int damage = weapon.GetDamage();
+        int damageReduction = equipment.GetArmorDamageReduction(weapon.GetDamageType());
+
+        damage = damage * (damageReduction / 100);
+
+        humanoidProperties.AlterHealth(-damage);
+        equipment.DamageArmors(weapon);
+
+    }
+
+    Direction GetRollDirection(Quaternion rotation)
+    {
+        float normalized = rotation.normalized.y;
+        if (normalized <= 0.125 || normalized > 0.875) return Direction.Forward;
+        else if (normalized <= 0.375 && normalized > 0.125) return Direction.Right;
+        else if (normalized <= 0.625 && normalized > 0.375) return Direction.Backward;
+        else return Direction.Left;
     }
 }

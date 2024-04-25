@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2945054820267389241}
   - component: {fileID: 1332761600475542064}
   - component: {fileID: 1332761600475542067}
+  - component: {fileID: -1971698428139577170}
   m_Layer: 0
   m_Name: Two sided spear
   m_TagString: Untagged
@@ -131,3 +132,15 @@ MonoBehaviour:
   radius: 1
   radiusOffset: {x: 0, y: 0, z: 0}
   itemData: {fileID: 11400000, guid: d0d4ed7523c6a624295e808c67f13583, type: 2}
+--- !u!114 &-1971698428139577170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6060961019156095107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec3c2a1c4dcf7e7419106091fc566b54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
