@@ -174,28 +174,32 @@ public class CombatManager : MonoBehaviour
     {
         combatObjects.SetActive(_enable);
     }
+
     List<Action> GetAvailableActions(CombatHumanoid humanoid)
     {
         List<Action> result = new List<Action>();
-        foreach(Action tempAction in actionList)
+        foreach (Action tempAction in actionList)
         {
             result.Add(new Action(tempAction));
         }
         float stamina = humanoid.GetStamina();
+        float composure = humanoid.GetComposure();
+        float maxComposure = humanoid.GetMaxComposure();
         float requiredStamina = 0f;
-        CombatState combatState = humanoid.GetCombatState();
+        float requiredComposure = 0f;
+        CombatStance combatStance = humanoid.GetCombatStance();
 
-        for(int i = 0; i < result.Count;)
+        for (int i = 0; i < result.Count;)
         {
             Action action = result[i];
             // Remove if the state is not suitable
-            if (!action.availableWhen.Contains(combatState) && !action.availableWhen.Contains(CombatState.Any))
+            if (!action.availableWhen.Contains(combatStance) && !action.availableWhen.Contains(CombatStance.Any))
             {
                 result.RemoveAt(i);
                 continue;
             }
 
-            // Remove if there is not enough stamina or equipment does not support the action
+            // Remove if there is not enough stamina or composure or equipment does not support the action
             if (action.actionType == ActionType.Movement || action.actionType == ActionType.Agile)
             {
                 requiredStamina = action.baseStaminaDrain * (humanoid.GetAllWeight() / 100);
@@ -210,8 +214,8 @@ public class CombatManager : MonoBehaviour
                         result.RemoveAt(i); continue;
                     }
                     requiredStamina = action.baseStaminaDrain * (humanoid.GetAllWeight() / 100);
+                    requiredComposure = action.baseComposureDrain * (humanoid.GetAllWeight() / 100);
                 }
-
                 else
                 {
                     if (humanoid.GetWeaponActions() == null)
@@ -224,16 +228,24 @@ public class CombatManager : MonoBehaviour
                     }
 
                     requiredStamina = action.baseStaminaDrain * (humanoid.GetWeaponWeight() / 100);
+                    requiredComposure = action.baseComposureDrain * (humanoid.GetWeaponWeight() / 100);
                 }
 
-                
+
             }
             else if (action.actionType == ActionType.Defensive)
             {
                 if (action.actionName == ActionName.Stand_Ground)
                 {
-                    i++;
-                    continue;
+                    if (composure >= maxComposure)
+                    {
+                        result.RemoveAt(i); continue;
+                    }
+                    else
+                    {
+                        i++;
+                        continue;
+                    }
                 }
 
                 if (humanoid.GetShieldActions() == null)
@@ -246,9 +258,10 @@ public class CombatManager : MonoBehaviour
                 }
 
                 requiredStamina = action.baseStaminaDrain * (humanoid.GetShieldWeight() / 100);
+                requiredComposure = action.baseComposureDrain * (humanoid.GetShieldWeight() / 100);
             }
 
-            if (requiredStamina > stamina)
+            if (requiredStamina > stamina || requiredComposure > composure)
             {
                 result.RemoveAt(i); continue;
             }

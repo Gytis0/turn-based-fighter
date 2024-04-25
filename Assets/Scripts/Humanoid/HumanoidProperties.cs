@@ -39,6 +39,7 @@ public class HumanoidProperties : MonoBehaviour
     public int GetStamina() { return stamina; }
     public int GetHealth() { return health; }
     public int GetComposure() { return composure; }
+    public int GetMaxComposure() { return maxComposure; }
     public int GetIntelligence() { return intelligence; }
 
     public void SetStats(int[] points)

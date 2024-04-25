@@ -46,7 +46,7 @@ public class Action : ScriptableObject
     public int baseComposureDrain;
 
     public ActionType actionType;
-    public List<CombatState> availableWhen;
+    public List<CombatStance> availableWhen;
     public List<Direction> directions;
 
     public void AddDirection(Direction direction)

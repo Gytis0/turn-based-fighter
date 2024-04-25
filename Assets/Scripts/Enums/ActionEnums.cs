@@ -7,7 +7,7 @@ public enum ActionType
     Skip
 }
 
-public enum CombatState
+public enum CombatStance
 {
     Any,
     Standing,
@@ -15,6 +15,14 @@ public enum CombatState
     Running,
     Fallen,
     Dodging
+}
+
+public enum CombatState
+{
+    None,
+    Blocking,
+    Blocking_Right,
+    Blocking_Left
 }
 public enum Direction
 {

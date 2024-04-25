@@ -6,25 +6,29 @@ using UnityEngine.UI;
 
 public class CombatHumanoid : MonoBehaviour
 {
+    // References
     protected Equipment equipment;
     protected HumanoidProperties humanoidProperties;
     protected HumanoidAnimationController humanoidAnimationController;
     protected HumanoidMovementController humanoidMovementController;
 
+    // States
     protected bool inCombat = false;
     protected bool isOneHanded = false;
+    protected CombatStance combatStance = CombatStance.Standing;
+    protected CombatState combatState = CombatState.None;
 
+    // Actions
     protected Queue<Action> actionQueue = new Queue<Action>();
     protected List<ActionCombination> combinations = new List<ActionCombination>();
-
     protected List<Action> availableActions = new List<Action>();
 
-    protected CombatState combatState = CombatState.Standing;
-
+    // Configuration
     [SerializeField] protected float dodgeSpeed = 5f;
     [SerializeField] protected float runSpeed = 3f;
     [SerializeField] protected float walkSpeed = 1f;
 
+    // Values
     protected float gridSpacing;
 
     protected void Start()
@@ -57,7 +61,21 @@ public class CombatHumanoid : MonoBehaviour
     {
         if (action.actionName == ActionName.Block)
         {
-            humanoidAnimationController.SetState(AnimationStates.BLOCKING);
+            if (action.directions[0] == Direction.Left)
+            {
+                humanoidAnimationController.SetState(AnimationStates.BLOCKING_LEFT);
+                combatState = CombatState.Blocking_Left;
+            }
+            else if (action.directions[0] == Direction.Right)
+            {
+                humanoidAnimationController.SetState(AnimationStates.BLOCKING_RIGHT);
+                combatState = CombatState.Blocking_Right;
+            }
+            else if (action.directions[0] == Direction.Left)
+            {
+                humanoidAnimationController.SetState(AnimationStates.BLOCKING);
+                combatState = CombatState.Blocking;
+            }
         }
         else if (action.actionName == ActionName.Dodge)
         {
@@ -149,8 +167,10 @@ public class CombatHumanoid : MonoBehaviour
     {
         return humanoidProperties.GetStamina();
     }
+    public float GetComposure() { return humanoidProperties.GetComposure();}
+    public float GetMaxComposure() { return humanoidProperties.GetMaxComposure();}
 
-    public CombatState GetCombatState() { return combatState; }
+    public CombatStance GetCombatStance() { return combatStance; }
 
     public float GetWeaponWeight()
     {
