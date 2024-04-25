@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Kick
   m_EditorClassIdentifier: 
   actionName: 5
-  baseDuration: 0
-  baseStaminaDrain: 0
-  baseComposureDrain: 0
+  baseDuration: 6
+  baseStaminaDrain: 7
+  baseComposureDrain: 2
+  staminaDrain: 0
+  composureDrain: 0
   actionType: 2
   availableWhen: 01000000
   directions: 

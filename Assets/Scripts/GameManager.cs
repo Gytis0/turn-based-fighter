@@ -82,11 +82,17 @@ public class GameManager : MonoBehaviour
             playerInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
             player.GetComponent<PlayerControls>().restrictedMovement = true;
 
-            ItemData hammerItemData = itemManager.GetItem("Sword").GetItemData();
+            ItemData item1 = itemManager.GetItem("One Edged Axe").GetItemData();
+            ItemData item2 = itemManager.GetItem("Broadsword").GetItemData();
+            ItemData item3 = itemManager.GetItem("Hammer").GetItemData();
+            ItemData item4 = itemManager.GetItem("Spear").GetItemData();
             ItemData shieldItemData = itemManager.GetItem("Wooden Shield").GetItemData();
             Armor chestplate = (Armor)(itemManager.GetItem("Iron Chest").GetItemData());
-            allItems.Add(0, hammerItemData);
-            allItems.Add(1, shieldItemData);
+            allItems.Add(0, item1);
+            allItems.Add(1, item2);
+            allItems.Add(2, item3);
+            allItems.Add(3, item4);
+            allItems.Add(4, shieldItemData);
             armorItems.Add(ArmorType.Chestplate, chestplate);
 
             SetEnemyStats();
@@ -286,7 +292,7 @@ public class GameManager : MonoBehaviour
     void SetCharacterStatsWindow(GameObject windowParentObject, string name, float health, float stamina, float composure, bool precise, int intelligence = 5)
     {
         GameObject windowObject = windowParentObject.transform.GetChild(0).gameObject;
-        CharacterStatsUI characterStatsUI = windowObject.GetComponent<CharacterStatsUI>();
+        CharacterStatsWindow characterStatsUI = windowObject.GetComponent<CharacterStatsWindow>();
         characterStatsUI.SetTitle(name);
 
         if(precise || intelligence == 5) characterStatsUI.SetSlidersValues(health, stamina, composure);

@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Skip
   m_EditorClassIdentifier: 
   actionName: 8
-  baseDuration: 0
-  baseStaminaDrain: 0
-  baseComposureDrain: 0
+  baseDuration: 10
+  baseStaminaDrain: -10
+  baseComposureDrain: -5
+  staminaDrain: 0
+  composureDrain: 0
   actionType: 4
   availableWhen: 00000000
   directions: 

@@ -21,8 +21,8 @@ public class Action : ScriptableObject
         actionType = action.actionType;
         availableWhen = action.availableWhen;
         directions = new List<Direction>();
-        
-        foreach(Direction direction in action.directions)
+
+        foreach (Direction direction in action.directions)
         {
             directions.Add(direction);
         }
@@ -34,6 +34,8 @@ public class Action : ScriptableObject
         baseDuration = action.baseDuration;
         baseStaminaDrain = action.baseStaminaDrain;
         baseComposureDrain = action.baseComposureDrain;
+        staminaDrain = action.staminaDrain;
+        composureDrain = action.composureDrain;
         actionType = action.actionType;
         availableWhen = action.availableWhen;
         directions = new List<Direction>() { direction };
@@ -46,8 +48,8 @@ public class Action : ScriptableObject
     public int baseStaminaDrain;
     public int baseComposureDrain;
 
-    public float staminaDrain;
-    public float composureDrain;
+    [HideInInspector] public float staminaDrain;
+    [HideInInspector] public float composureDrain;
 
     public ActionType actionType;
     public List<CombatStance> availableWhen;

@@ -232,7 +232,7 @@ public class Equipment : MonoBehaviour
 
     public void DamageArmors(Weapon weapon)
     {
-        int damage = 0;
+        int damage;
         if (weapon.GetDamage() > 30) damage = 2;
         else damage = 1;
 

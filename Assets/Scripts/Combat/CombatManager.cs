@@ -86,7 +86,7 @@ public class CombatManager : MonoBehaviour
         tempActionList = GetAvailableActions(player);
         player.EnableButtons(tempActionList);
 
-        timer.EnableTimer(3f);
+        timer.EnableTimer(60f);
     }
 
     public void StopCombat()
@@ -133,7 +133,7 @@ public class CombatManager : MonoBehaviour
         {
             Debug.Log("Turn approved. Switching [" + playersTurn + "]");
             SwitchTurn();
-            timer.EnableTimer(3f);
+            timer.EnableTimer(60f);
         }
     }
 
@@ -233,6 +233,7 @@ public class CombatManager : MonoBehaviour
             if (action.actionType == ActionType.Movement || action.actionType == ActionType.Agile)
             {
                 requiredStamina = action.baseStaminaDrain * (humanoid.GetAllWeight() / 100);
+                requiredComposure = action.baseComposureDrain;
             }
             else if (action.actionType == ActionType.Offensive)
             {

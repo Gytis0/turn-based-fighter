@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HumanoidProperties : MonoBehaviour
 {
-    protected CharacterStatsUI entityOverhead;
+    protected CharacterStatsOverhead characterStats;
 
     protected int maxHealth = 100;
     protected int maxStamina = 100;
@@ -15,31 +15,32 @@ public class HumanoidProperties : MonoBehaviour
     protected float stamina;
     protected float composure;
 
+    protected void Awake()
+    {
+        characterStats = GetComponentInChildren<CharacterStatsOverhead>();
+
+    }
     protected void Start()
     {
-        entityOverhead = GetComponentInChildren<CharacterStatsUI>();
-
         health = maxHealth;
         stamina = maxStamina;
         composure = maxComposure;
     }
 
-    
-
-    public void AlterHealth(int change)
+    public void AlterHealth(float change)
     {
         health += change;
-        entityOverhead.UpdateHealthSlider(health);
+        characterStats.UpdateHealthSlider(health);
     }
     public void AlterStamina(float change)
     {
         stamina += change;
-        entityOverhead.UpdateStaminaSlider(stamina);
+        characterStats.UpdateStaminaSlider(stamina);
     }
     public void AlterComposure(float change)
     {
         composure += change;
-        entityOverhead.UpdateComposureSlider(composure);
+        characterStats.UpdateComposureSlider(composure);
     }
 
     public float GetStamina() { return stamina; }
@@ -58,5 +59,11 @@ public class HumanoidProperties : MonoBehaviour
         health = maxHealth;
         stamina = maxStamina;
         composure = maxComposure;
+
+        characterStats.SetSlidersValues(health, stamina, composure);
+    }
+    public void EnableCharacterStatsOverhead(bool enable)
+    {
+        characterStats.gameObject.GetComponent<Canvas>().enabled = enable;
     }
 }

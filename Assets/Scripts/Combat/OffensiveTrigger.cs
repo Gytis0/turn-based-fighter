@@ -10,6 +10,7 @@ public class OffensiveTrigger : MonoBehaviour
     Weapon weapon;
     Collider collider;
     Action action;
+    public bool isThisPlayer;
 
     void Start()
     {
@@ -25,9 +26,13 @@ public class OffensiveTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player Hitbox") || other.CompareTag("Enemy Hitbox")) 
+        if(other.CompareTag("Player Hitbox") && !isThisPlayer) 
         {
-            onEnemyHit(weapon, action, other.CompareTag("Player"));
+            onEnemyHit(weapon, action, !isThisPlayer);
+        }
+        else if (other.CompareTag("Enemy Hitbox") && isThisPlayer)
+        {
+            onEnemyHit(weapon, action, !isThisPlayer);
         }
     }
 }

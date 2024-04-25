@@ -1440,7 +1440,8 @@ GameObject:
   - component: {fileID: 1118406493726536260}
   - component: {fileID: 4707207539707553236}
   - component: {fileID: 7847794217203217865}
-  - component: {fileID: 6448760159842900293}
+  - component: {fileID: 2674656095763031193}
+  - component: {fileID: 8079304644187003497}
   m_Layer: 5
   m_Name: Character Stats
   m_TagString: Untagged
@@ -1532,7 +1533,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &6448760159842900293
+--- !u!114 &2674656095763031193
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1541,13 +1542,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 3904954601435110184}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fbd293db13a8fe4d8a382465e8f6b45, type: 3}
+  m_Script: {fileID: 11500000, guid: c8026b11fa7b41148814e9d87b119dba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8079304644187003497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3904954601435110184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5253eb379c6da143a64115c46d7a39d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 1374880968886427977}
   staminaSlider: {fileID: 3151895253215826860}
   composureSlider: {fileID: 5641387783980188126}
-  title: {fileID: 0}
 --- !u!1 &4040358039883273148
 GameObject:
   m_ObjectHideFlags: 0

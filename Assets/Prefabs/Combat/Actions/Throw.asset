@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Throw
   m_EditorClassIdentifier: 
   actionName: 13
-  baseDuration: 0
-  baseStaminaDrain: 0
-  baseComposureDrain: 0
+  baseDuration: 8
+  baseStaminaDrain: 8
+  baseComposureDrain: 3
+  staminaDrain: 0
+  composureDrain: 0
   actionType: 2
   availableWhen: 010000000200000003000000
   directions: 

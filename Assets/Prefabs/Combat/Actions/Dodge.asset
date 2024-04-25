@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Dodge
   m_EditorClassIdentifier: 
   actionName: 1
-  baseDuration: 0
-  baseStaminaDrain: 0
-  baseComposureDrain: 0
+  baseDuration: 2
+  baseStaminaDrain: 4
+  baseComposureDrain: 10
+  staminaDrain: 0
+  composureDrain: 0
   actionType: 1
   availableWhen: 010000000200000005000000
   directions: 

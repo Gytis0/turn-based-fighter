@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Overhead
   m_EditorClassIdentifier: 
   actionName: 4
-  baseDuration: 0
-  baseStaminaDrain: 0
-  baseComposureDrain: 0
+  baseDuration: 7
+  baseStaminaDrain: 5
+  baseComposureDrain: 1
+  staminaDrain: 0
+  composureDrain: 0
   actionType: 2
   availableWhen: 0100000002000000
   directions: 

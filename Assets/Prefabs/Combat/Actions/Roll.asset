@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Roll
   m_EditorClassIdentifier: 
   actionName: 6
-  baseDuration: 0
-  baseStaminaDrain: 0
+  baseDuration: 4
+  baseStaminaDrain: 3
   baseComposureDrain: 0
+  staminaDrain: 0
+  composureDrain: 0
   actionType: 1
   availableWhen: 04000000
   directions: 

@@ -59,6 +59,9 @@ public class CombatHumanoid : MonoBehaviour
         humanoidAnimationController.SetState(AnimationStates.IDLE);
         weaponCollider = equipment.GetEquippedWeaponObject().GetComponent<Collider>();
         offensiveTrigger = equipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>();
+        if (this.GetType() == typeof(CombatPlayer)) offensiveTrigger.isThisPlayer = true;
+        else offensiveTrigger.isThisPlayer = false;
+        humanoidProperties.EnableCharacterStatsOverhead(true);
     }
 
     public virtual void ExecuteAction(Action action)
@@ -221,8 +224,8 @@ public class CombatHumanoid : MonoBehaviour
 
     public void TakeDamage(Weapon weapon)
     {
-        int damage = weapon.GetDamage();
-        int damageReduction = equipment.GetArmorDamageReduction(weapon.GetDamageType());
+        float damage = weapon.GetDamage();
+        float damageReduction = equipment.GetArmorDamageReduction(weapon.GetDamageType());
 
         damage = damage * (damageReduction / 100);
 

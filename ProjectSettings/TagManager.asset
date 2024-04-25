@@ -16,6 +16,8 @@ TagManager:
   - Weapon Inventory
   - Cinematic Camera
   - Pre Fight Screen
+  - Player Hitbox
+  - Enemy Hitbox
   layers:
   - Default
   - TransparentFX
