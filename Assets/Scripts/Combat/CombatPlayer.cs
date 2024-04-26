@@ -23,9 +23,9 @@ public class CombatPlayer : CombatHumanoid
     [SerializeField] List<TextMeshProUGUI> bubblesTexts;
     [SerializeField] List<Image> bubblesIndicators;
     [SerializeField] Button resetQueue;
-    [SerializeField] Button endTurn;
-    [SerializeField] Button skipTurn;
-    [SerializeField] Button addAction;
+    [SerializeField] Button endTurnButton;
+    [SerializeField] Button skipTurnButton;
+    [SerializeField] Button addActionButton;
 
     Action selectedAction;
     Direction selectedDirection;
@@ -46,7 +46,7 @@ public class CombatPlayer : CombatHumanoid
     public override void EnableCombatMode(bool _enable, float gridSpacing)
     {
         base.EnableCombatMode(_enable, gridSpacing);
-        combatUI.SetActive(inCombat);
+        combatUI.SetActive(_enable);
         DisableButtons();
     }
 
@@ -235,7 +235,7 @@ public class CombatPlayer : CombatHumanoid
 
         if (actionQueue.Count == 0)
         {
-            onPlayerTurnEnd(new Action(ActionName.Skip, ActionType.Skip), this);
+            SkipTurn();
         }
         else
         {
@@ -251,7 +251,7 @@ public class CombatPlayer : CombatHumanoid
         selectedDirection = 0;
         DemarkEverything();
 
-        onPlayerTurnEnd(new Action(ActionName.Skip, ActionType.Skip), this);
+        onPlayerTurnEnd(skipTurnAction, this);
     }
 
     public void ResetQueue()

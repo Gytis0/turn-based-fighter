@@ -18,6 +18,7 @@ TagManager:
   - Pre Fight Screen
   - Player Hitbox
   - Enemy Hitbox
+  - End Screen
   layers:
   - Default
   - TransparentFX

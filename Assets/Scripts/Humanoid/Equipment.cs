@@ -58,8 +58,11 @@ public class Equipment : MonoBehaviour
             if (((Weapon)handSlots[1].GetItemData()).GetWeaponType() == WeaponType.TwoHanded) return false;
         }
 
+        Weapon weapon = new Weapon((Weapon)item.GetItemData());
 
         Item itemToEquip = Instantiate(item);
+        itemToEquip.SetItemData(weapon);
+
         handSlots[(int)slot] = itemToEquip;
         if (slot == HandSlot.RightHand) { itemToEquip.transform.parent = rightHand.transform; }
         else if (slot == HandSlot.LeftHand) { itemToEquip.transform.parent = leftHand.transform; }
@@ -78,9 +81,11 @@ public class Equipment : MonoBehaviour
         {
             if (((Weapon)handSlots[1].GetItemData()).GetWeaponType() == WeaponType.TwoHanded) return false;
         }
-
+        Shield shield = (Shield)item.GetItemData();
 
         Item itemToEquip = Instantiate(item);
+        itemToEquip.SetItemData(shield);
+
         handSlots[(int)slot] = itemToEquip;
         if (slot == HandSlot.RightHand) { itemToEquip.transform.parent = rightHand.transform; }
         else if (slot == HandSlot.LeftHand) { itemToEquip.transform.parent = leftHand.transform; }
@@ -96,7 +101,7 @@ public class Equipment : MonoBehaviour
 
     void Drop(HandSlot slot)
     {
-        Item item = new Item(handSlots[(int)slot]);
+        Item item = new Item(handSlots[(int)slot], handSlots[(int)slot].GetItemData());
         UnequipHand(slot);
 
         item.AppearInWorld(transform.position);
@@ -149,7 +154,10 @@ public class Equipment : MonoBehaviour
 
     public void SetEquippedArmors(Dictionary<ArmorType, Armor> armors)
     {
-        armorItems = armors;
+        foreach(ArmorType key in armors.Keys)
+        {
+            armorItems.Add(key, new Armor(armors[key]));
+        }
     }
 
     public float GetWeaponWeight()
@@ -208,6 +216,7 @@ public class Equipment : MonoBehaviour
 
     public void DamageShield(Weapon weapon)
     {
+        weapon.AlterDurability(-1);
         Shield shield = GetEquippedShieldData();
         if (weapon.GetDamage() > 30) shield.Damage(2);
         else shield.Damage(1);
@@ -225,13 +234,9 @@ public class Equipment : MonoBehaviour
         }
     }
 
-    public void DamageWeapon()
-    {
-        GetEquippedWeaponData().AlterDurability(-1);
-    }
-
     public void DamageArmors(Weapon weapon)
     {
+        weapon.AlterDurability(-1);
         int damage;
         if (weapon.GetDamage() > 30) damage = 2;
         else damage = 1;

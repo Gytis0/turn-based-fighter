@@ -1,16 +1,13 @@
 using UnityEngine;
-using UnityEngine.UI;
-using Unity.Collections;
 using System.Collections.Generic;
-using TMPro;
 using System;
-using UnityEngine.UIElements;
-using System.Linq;
-using static UnityEngine.GraphicsBuffer;
 
 public class CombatManager : MonoBehaviour
 {
     public static CombatManager Instance { get; private set; }
+
+    public delegate void GameEnd(bool isPlayerWinner, HumanoidProperties playerProperties, HumanoidProperties enemyProperties);
+    public event GameEnd onCombatEnd;
 
     bool playersTurn  = true;
     GameObject playerObject, enemyObject;
@@ -76,6 +73,8 @@ public class CombatManager : MonoBehaviour
         playerEquipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>().onEnemyHit += ApproveAttack;
         enemy.onEnemyTurnEnd += ApproveAction;
         enemyEquipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>().onEnemyHit += ApproveAttack;
+        player.onDeath += StopCombat;
+        enemy.onDeath += StopCombat;
 
         player.EnableCombatMode(true, gridSpacing);
         enemy.EnableCombatMode(true, gridSpacing);
@@ -89,12 +88,19 @@ public class CombatManager : MonoBehaviour
         timer.EnableTimer(60f);
     }
 
-    public void StopCombat()
+    public void StopCombat(CombatHumanoid loser)
     {
         EnableUi(false);
 
         enemy.EnableCombatMode(false, gridSpacing);
         player.EnableCombatMode(false, gridSpacing);
+
+        bool isPlayerWinner;
+        HumanoidProperties playerProperties = player.GetComponent<HumanoidProperties>();
+        HumanoidProperties enemyProperties = enemy.GetComponent<HumanoidProperties>();
+        isPlayerWinner = loser.GetType() == typeof(CombatEnemy);
+
+        onCombatEnd(isPlayerWinner, playerProperties, enemyProperties);
     }
 
     void ForcefullyEndTurn()
@@ -157,6 +163,7 @@ public class CombatManager : MonoBehaviour
         else if (targetCombatHumanoid.GetCombatState() == CombatState.Blocking && action.actionName == ActionName.Stab) targetEquipment.DamageShield(weapon);
         else if (targetCombatHumanoid.GetCombatState() == CombatState.Blocking_Left && action.actionName == ActionName.Swing && action.directions[0] == Direction.Right) targetEquipment.DamageShield(weapon);
         else if(targetCombatHumanoid.GetCombatState() == CombatState.Blocking_Right && action.actionName == ActionName.Swing && action.directions[0] == Direction.Left) targetEquipment.DamageShield(weapon);
+        else if(action.actionName == ActionName.Kick) { targetCombatHumanoid.GetKicked(); }
         else
         {
             targetCombatHumanoid.TakeDamage(weapon);
@@ -232,7 +239,7 @@ public class CombatManager : MonoBehaviour
             // Remove if there is not enough stamina or composure or equipment does not support the action
             if (action.actionType == ActionType.Movement || action.actionType == ActionType.Agile)
             {
-                requiredStamina = action.baseStaminaDrain * (humanoid.GetAllWeight() / 100);
+                requiredStamina = action.baseStaminaDrain * (1 + humanoid.GetAllWeight() / 100);
                 requiredComposure = action.baseComposureDrain;
             }
             else if (action.actionType == ActionType.Offensive)
@@ -244,8 +251,8 @@ public class CombatManager : MonoBehaviour
                         Debug.Log("Removing kick. The distance is: " + Vector3.Distance(player.transform.position, enemy.transform.position));
                         result.RemoveAt(i); continue;
                     }
-                    requiredStamina = action.baseStaminaDrain * (humanoid.GetAllWeight() / 100);
-                    requiredComposure = action.baseComposureDrain * (humanoid.GetAllWeight() / 100);
+                    requiredStamina = action.baseStaminaDrain * (1 + humanoid.GetAllWeight() / 100);
+                    requiredComposure = action.baseComposureDrain * (1 + humanoid.GetAllWeight() / 100);
                 }
                 else
                 {
@@ -258,8 +265,8 @@ public class CombatManager : MonoBehaviour
                         result.RemoveAt(i); continue;
                     }
 
-                    requiredStamina = action.baseStaminaDrain * (humanoid.GetWeaponWeight() / 100);
-                    requiredComposure = action.baseComposureDrain * (humanoid.GetWeaponWeight() / 100);
+                    requiredStamina = action.baseStaminaDrain * (1 + humanoid.GetWeaponWeight() / 100);
+                    requiredComposure = action.baseComposureDrain * (1 + humanoid.GetWeaponWeight() / 100);
                 }
 
 
@@ -275,11 +282,11 @@ public class CombatManager : MonoBehaviour
                     result.RemoveAt(i); continue;
                 }
 
-                requiredStamina = action.baseStaminaDrain * (humanoid.GetShieldWeight() / 100);
-                requiredComposure = action.baseComposureDrain * (humanoid.GetShieldWeight() / 100);
+                requiredStamina = action.baseStaminaDrain * (1 + humanoid.GetShieldWeight() / 100);
+                requiredComposure = action.baseComposureDrain * (1 + humanoid.GetShieldWeight() / 100);
             }
 
-            // One off for stand ground
+            // One off for stand ground and skip
             if (action.actionName == ActionName.Stand_Ground)
             {
                 if (composure >= maxComposure)
@@ -290,6 +297,13 @@ public class CombatManager : MonoBehaviour
                 requiredStamina = action.baseStaminaDrain;
                 requiredComposure = action.baseComposureDrain;
             }
+
+            if (action.actionName == ActionName.Skip)
+            {
+                requiredStamina = action.baseStaminaDrain;
+                requiredComposure = action.baseComposureDrain;
+            }
+
 
             // Discard everything that cannot be performed because of composure or stamina
             if (requiredStamina > stamina || requiredComposure > composure)

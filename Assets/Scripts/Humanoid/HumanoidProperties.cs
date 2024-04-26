@@ -34,18 +34,20 @@ public class HumanoidProperties : MonoBehaviour
     }
     public void AlterStamina(float change)
     {
-        stamina += change;
+        stamina = Mathf.Clamp(stamina + change, 0, maxStamina);
         characterStats.UpdateStaminaSlider(stamina);
     }
     public void AlterComposure(float change)
     {
-        composure += change;
+        composure = Mathf.Clamp(composure + change, 0, maxComposure);
         characterStats.UpdateComposureSlider(composure);
     }
 
     public float GetStamina() { return stamina; }
     public float GetHealth() { return health; }
     public float GetComposure() { return composure; }
+    public int GetMaxHealth() { return maxHealth; }
+    public int GetMaxStamina() { return maxStamina; }
     public int GetMaxComposure() { return maxComposure; }
     public int GetIntelligence() { return intelligence; }
 

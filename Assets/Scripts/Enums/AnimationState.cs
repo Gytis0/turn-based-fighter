@@ -20,5 +20,7 @@ public enum AnimationStates
     STAND_GROUND,
     SWINGING_LEFT,
     SWINGING_RIGHT,
-    THROWING
+    THROWING,
+    FALLING,
+    STABBING_DOWN
 }

@@ -20,7 +20,7 @@ MonoBehaviour:
   itemName: Iron Pants
   icon: {fileID: 21300000, guid: 5eaea643fa771e44abdbe350fe0a9539, type: 3}
   weight: 6
-  durability: 10
+  durability: 15
   armorPoints: 15
   resistances:
   - damageType: 1

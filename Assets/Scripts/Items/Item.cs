@@ -10,12 +10,12 @@ public class Item : Interactable
     
     Rigidbody rigid;
 
-    public Item(Item item)
+    public Item(Item item, ItemData itemData)
     {
         interactions = item.interactions;
         radius = item.radius;
         radiusOffset = item.radiusOffset;
-        itemData = item.itemData;
+        this.itemData = itemData;
     }
 
     public void Start()
@@ -25,6 +25,7 @@ public class Item : Interactable
     }
 
     public ItemData GetItemData() { return itemData; }
+    public void SetItemData(ItemData itemData) { this.itemData = itemData; }
     public void AppearInHand(HandSlot slot)
     {
         if (rigid == null) Start();

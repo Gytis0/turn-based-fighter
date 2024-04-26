@@ -14,6 +14,14 @@ public class Armor : ItemData
     [SerializeField]
     ArmorType type;
 
+    public Armor(Armor armor) : base(armor)
+    {
+        durability = armor.durability;
+        armorPoints = armor.armorPoints;
+        resistances = armor.resistances;
+        type = armor.type;
+    }
+
     protected override ItemType itemType { get { return ItemType.Armor; } }
 
     public void AlterDurability(int change) { durability += change; }

@@ -104,6 +104,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2717169495151309177, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4196283215977600883, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -210,9 +214,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25bd6946ae9984f43844a2f3eab555fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skipTurnAction: {fileID: 11400000, guid: 61a319a69a8cf2643823f610861279d4, type: 2}
   dodgeSpeed: 5
   runSpeed: 3
   walkSpeed: 1
+  fallingSpeed: 2
 --- !u!1 &8293899379647937739 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5433548002447408738, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}

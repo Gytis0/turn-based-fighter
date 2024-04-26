@@ -28,10 +28,12 @@ public class OffensiveTrigger : MonoBehaviour
     {
         if(other.CompareTag("Player Hitbox") && !isThisPlayer) 
         {
+            collider.isTrigger = false;
             onEnemyHit(weapon, action, !isThisPlayer);
         }
         else if (other.CompareTag("Enemy Hitbox") && isThisPlayer)
         {
+            collider.isTrigger = false;
             onEnemyHit(weapon, action, !isThisPlayer);
         }
     }

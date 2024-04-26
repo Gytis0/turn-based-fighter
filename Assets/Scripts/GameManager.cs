@@ -8,17 +8,17 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    // References
     GameObject cinematicCamera;
     GameObject preFightScreen;
+    GameObject menuObject;
+    MainMenu menu;
+
+    // End screen
+    GameObject endScreen;
 
     int[] points;
     Dictionary<int, ItemData> allItems = new();
     Dictionary<ArmorType, Armor> armorItems = new();
-
-
-    GameObject menuObject;
-    MainMenu menu;
 
     GameObject enemy;
     HumanoidProperties enemyProperties;
@@ -29,6 +29,9 @@ public class GameManager : MonoBehaviour
 
     ItemManager itemManager;
     CombatManager combatManager;
+
+    Color redColor = new Color(0.564f, 0.243f, 0.27f, 1f);
+    Color greenColor = new Color(0.243f, 0.564f, 0.27f, 1f);
 
     private void Awake()
     {
@@ -46,7 +49,10 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         itemManager = ItemManager.Instance;
+        combatManager = CombatManager.Instance;
         menuObject = GameObject.FindGameObjectWithTag("Main Menu");
+        endScreen = GameObject.FindGameObjectWithTag("End Screen");
+
         if(menuObject != null)
         {
             menu = menuObject.GetComponent<MainMenu>();
@@ -67,12 +73,10 @@ public class GameManager : MonoBehaviour
         if (SceneManager.GetActiveScene().buildIndex == 2)
         {
             // TEMPORARY //
-
-
             cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
             preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
 
-            StartButton.onStartGame += StartGame;
+            StateChanger.onStartGame += StartGame;
 
             enemy = GameObject.FindGameObjectWithTag("Enemy");
             enemyProperties = enemy.GetComponent<HumanoidProperties>();
@@ -104,28 +108,38 @@ public class GameManager : MonoBehaviour
 
             SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
             SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
+
+            combatManager.onCombatEnd += EndGame;
+            StateChanger.onContinueGame += LoadMainMenu;
+
         }
     }
 
     private void OnDisable()
     {
-        StartButton.onStartGame -= StartGame;
+        StateChanger.onStartGame -= StartGame;
     }
 
     private void OnLevelWasLoaded(int level)
     {
-        if(level == 1)
+        if(level == 0)
         {
+            MainMenu.onGameStart += LoadEquipmentScene;
+        }
+        else if(level == 1)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+            playerProperties = player.GetComponent<HumanoidProperties>();
             Interactable.onTravel += LoadFightScene;
-            MainMenu.onGameStart -= LoadEquipmentScene;
 
             SetPlayerStats();
         }
         else if(level == 2)
         {
-            Interactable.onTravel -= LoadFightScene;
-            StartButton.onStartGame += StartGame;
+            StateChanger.onStartGame += StartGame;
+            StateChanger.onContinueGame += LoadMainMenu;
 
+            combatManager.onCombatEnd += EndGame;
             cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
             preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
 
@@ -149,11 +163,11 @@ public class GameManager : MonoBehaviour
             SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
 
         }
-
     }
 
     public void LoadEquipmentScene()
     {
+        MainMenu.onGameStart -= LoadEquipmentScene;
         menu.GetPoints().CopyTo(points, 0);
         
         SceneManager.LoadScene(1);
@@ -164,8 +178,19 @@ public class GameManager : MonoBehaviour
         playerInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
         allItems = playerInventory.GetItemsInventory();
         armorItems = playerInventory.GetArmorInventory();
+        Interactable.onTravel -= LoadFightScene;
 
         SceneManager.LoadScene(2);
+    }
+
+    public void LoadMainMenu()
+    {
+        combatManager.onCombatEnd -= EndGame;
+        StateChanger.onStartGame -= StartGame;
+        StateChanger.onContinueGame -= LoadMainMenu;
+        endScreen.transform.GetChild(0).gameObject.SetActive(false);
+
+        SceneManager.LoadScene(0);
     }
 
     void SetPlayerStats()
@@ -265,6 +290,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         playerProperties = player.GetComponent<HumanoidProperties>();
 
@@ -285,7 +312,6 @@ public class GameManager : MonoBehaviour
 
         player.transform.position = new Vector3(-16f, 0f, -10f);
 
-        combatManager = CombatManager.Instance;
         combatManager.StartCombat();
     }
 
@@ -320,5 +346,41 @@ public class GameManager : MonoBehaviour
 
             characterStatsUI.SetSlidersIntervals(minHealth, maxHealth, minStamina, maxStamina, minComposure, maxComposure);
         }
+    }
+
+    public void EndGame(bool isPlayerWinner, HumanoidProperties playerProperties, HumanoidProperties enemyProperties)
+    {
+        Transform root = endScreen.transform.GetChild(0);
+        root.gameObject.SetActive(true);
+        TextMeshProUGUI title = root.Find("Header").GetChild(0).GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI score = root.Find("Score").GetComponent<TextMeshProUGUI>();
+        Image headerImage = root.Find("Header").GetComponent<Image>();
+        Image footerImage = root.Find("Footer").GetComponent<Image>();
+        CharacterStatsWindow playerStats = root.Find("Stats").GetChild(0).GetComponent<CharacterStatsWindow>();
+        CharacterStatsWindow enemyStats = root.Find("Stats").GetChild(1).GetComponent<CharacterStatsWindow>();
+
+        if (isPlayerWinner)
+        {
+            title.SetText("Victory");
+            headerImage.color = footerImage.color = greenColor;
+        }
+        else
+        {
+            title.SetText("Defeat");
+            headerImage.color = footerImage.color = redColor;
+        }
+
+        score.SetText("Score: " + CalculateScore(playerProperties));
+
+        playerStats.SetTitle("Player");
+        playerStats.SetSlidersValues(playerProperties.GetHealth(), playerProperties.GetMaxHealth(), playerProperties.GetStamina(), playerProperties.GetMaxStamina(), playerProperties.GetComposure(), playerProperties.GetMaxComposure()) ;
+
+        enemyStats.SetTitle("Enemy");
+        enemyStats.SetSlidersValues(enemyProperties.GetHealth(), enemyProperties.GetMaxHealth(), enemyProperties.GetStamina(), enemyProperties.GetMaxStamina(), enemyProperties.GetComposure(), enemyProperties.GetMaxComposure());
+    }
+
+    int CalculateScore(HumanoidProperties properties)
+    {
+        return (int)((properties.GetHealth() / properties.GetMaxHealth()) * 500 + (properties.GetStamina() / properties.GetMaxStamina()) * 300 + (properties.GetComposure() / properties.GetMaxComposure()) * 100);
     }
 }

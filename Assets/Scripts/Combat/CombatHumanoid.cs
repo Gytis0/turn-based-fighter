@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class CombatHumanoid : MonoBehaviour
 {
+    public delegate void Death(CombatHumanoid character);
+    public event Death onDeath;
+
     // References
     protected Equipment equipment;
     protected HumanoidProperties humanoidProperties;
@@ -13,6 +16,7 @@ public class CombatHumanoid : MonoBehaviour
     protected HumanoidMovementController humanoidMovementController;
     protected Collider weaponCollider;
     protected OffensiveTrigger offensiveTrigger;
+    [SerializeField]  protected Action skipTurnAction;
 
     // States
     protected bool inCombat = false;
@@ -29,9 +33,11 @@ public class CombatHumanoid : MonoBehaviour
     [SerializeField] protected float dodgeSpeed = 5f;
     [SerializeField] protected float runSpeed = 3f;
     [SerializeField] protected float walkSpeed = 1f;
+    [SerializeField] protected float fallingSpeed = 1f;
 
     // Values
     protected float gridSpacing;
+    protected float fallOverThreshold = 15f;
 
     protected void Start()
     {
@@ -39,6 +45,9 @@ public class CombatHumanoid : MonoBehaviour
         humanoidProperties = transform.GetComponent<HumanoidProperties>();
         humanoidAnimationController = transform.GetComponent<HumanoidAnimationController>();
         humanoidMovementController = transform.GetComponent<HumanoidMovementController>();
+
+        skipTurnAction.staminaDrain = skipTurnAction.baseStaminaDrain;
+        skipTurnAction.composureDrain = skipTurnAction.baseComposureDrain;
     }
 
     public void SetCombinations(List<ActionCombination> combinations)
@@ -54,14 +63,19 @@ public class CombatHumanoid : MonoBehaviour
     public virtual void EnableCombatMode(bool _enable, float gridSpacing)
     {
         inCombat = _enable;
-        humanoidAnimationController.SetAnimationModes(equipment.IsTwoHanded(), equipment.IsLeftHanded(), inCombat);
-        this.gridSpacing = gridSpacing;
+        humanoidProperties.EnableCharacterStatsOverhead(_enable);
+        humanoidMovementController.inCombat = _enable;
         humanoidAnimationController.SetState(AnimationStates.IDLE);
-        weaponCollider = equipment.GetEquippedWeaponObject().GetComponent<Collider>();
-        offensiveTrigger = equipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>();
-        if (this.GetType() == typeof(CombatPlayer)) offensiveTrigger.isThisPlayer = true;
-        else offensiveTrigger.isThisPlayer = false;
-        humanoidProperties.EnableCharacterStatsOverhead(true);
+
+        if (_enable)
+        {
+            humanoidAnimationController.SetAnimationModes(equipment.IsTwoHanded(), equipment.IsLeftHanded(), inCombat);
+            this.gridSpacing = gridSpacing;
+            weaponCollider = equipment.GetEquippedWeaponObject().GetComponent<Collider>();
+            offensiveTrigger = equipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>();
+            if (GetType() == typeof(CombatPlayer)) offensiveTrigger.isThisPlayer = true;
+            else offensiveTrigger.isThisPlayer = false;
+        }
     }
 
     public virtual void ExecuteAction(Action action)
@@ -131,7 +145,7 @@ public class CombatHumanoid : MonoBehaviour
         }
         else if (action.actionName == ActionName.Roll)
         {
-            Direction direction = GetRollDirection(transform.rotation);
+            Direction direction = GetFacingDirection(transform.rotation);
             if ((action.directions[0] == Direction.Left && direction == Direction.Forward) ||
                 (action.directions[0] == Direction.Forward && direction == Direction.Right) ||
                 (action.directions[0] == Direction.Right && direction == Direction.Backward) ||
@@ -151,7 +165,8 @@ public class CombatHumanoid : MonoBehaviour
         {
             weaponCollider.isTrigger = true;
             offensiveTrigger.SetAction(action);
-            humanoidAnimationController.SetState(AnimationStates.STABBING);
+            if (action.directions[0] == Direction.Forward) humanoidAnimationController.SetState(AnimationStates.STABBING);
+            else if (action.directions[0] == Direction.Backward) humanoidAnimationController.SetState(AnimationStates.STABBING_DOWN);
         }
         else if (action.actionName == ActionName.Stand_Ground)
         {
@@ -230,16 +245,43 @@ public class CombatHumanoid : MonoBehaviour
         damage = damage * (damageReduction / 100);
 
         humanoidProperties.AlterHealth(-damage);
+        humanoidProperties.AlterComposure(-15);
         equipment.DamageArmors(weapon);
+
+        if(humanoidProperties.GetHealth() <= 0)
+        {
+            onDeath(this);
+            return;
+        }
+
+        if(combatStance != CombatStance.Fallen && humanoidProperties.GetComposure() <= fallOverThreshold)
+        {
+            humanoidAnimationController.SetState(AnimationStates.FALLING);
+            Direction facingDirection = GetFacingDirection(transform.rotation);
+
+            if(facingDirection == Direction.Left) { humanoidMovementController.Move(transform.position + Vector3.right * gridSpacing, fallingSpeed, AnimationStates.FALLING, 0f, true); }
+            else if(facingDirection == Direction.Backward) { humanoidMovementController.Move(transform.position + Vector3.forward * gridSpacing, fallingSpeed, AnimationStates.FALLING, 0f, true); }
+            else if(facingDirection == Direction.Right) { humanoidMovementController.Move(transform.position + Vector3.left * gridSpacing, fallingSpeed, AnimationStates.FALLING, 0f, true); }
+            else if(facingDirection == Direction.Forward) { humanoidMovementController.Move(transform.position + Vector3.back * gridSpacing, fallingSpeed, AnimationStates.FALLING, 0f, true); }
+
+            combatStance = CombatStance.Fallen;
+        }
 
     }
 
-    Direction GetRollDirection(Quaternion rotation)
+    public void GetKicked()
     {
-        float normalized = rotation.normalized.y;
-        if (normalized <= 0.125 || normalized > 0.875) return Direction.Forward;
-        else if (normalized <= 0.375 && normalized > 0.125) return Direction.Right;
-        else if (normalized <= 0.625 && normalized > 0.375) return Direction.Backward;
+        humanoidProperties.AlterComposure(-5);
+        Weapon kick = new Weapon(1);
+        TakeDamage(kick);
+    }
+
+    Direction GetFacingDirection(Quaternion rotation)
+    {
+        float y = rotation.eulerAngles.y;
+        if (y <= 45 || y > 315) return Direction.Forward;
+        else if (y <= 135 && y > 45) return Direction.Right;
+        else if (y <= 225 && y > 135) return Direction.Backward;
         else return Direction.Left;
     }
 }

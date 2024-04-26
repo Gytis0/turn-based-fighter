@@ -74,6 +74,24 @@ public class CharacterStatsWindow : MonoBehaviour
         composureText.SetText("Composure: " + composure);
         composureDashLayout.SetDashes();
     }
+    public void SetSlidersValues(float health, float maxHealth, float stamina, float maxStamina, float composure, float maxComposure)
+    {
+        healthSlider.maxValue = maxHealth;
+        healthSlider.value = health;
+        healthText.SetText("Health: " + health);
+        healthDashLayout.SetDashes();
+
+        staminaSlider.maxValue = maxStamina;
+        staminaSlider.value = stamina;
+        staminaText.SetText("Stamina: " + stamina);
+        staminaDashLayout.SetDashes();
+
+        composureSlider.maxValue = maxComposure;
+        composureSlider.value = composure;
+        composureText.SetText("Composure: " + composure);
+        composureDashLayout.SetDashes();
+    }
+
 
     public void SetSlidersIntervals(float minHealth, float maxHealth, float minStamina, float maxStamina, float minComposure, float maxComposure)
     {

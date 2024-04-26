@@ -20,7 +20,7 @@ MonoBehaviour:
   itemName: Iron Chest
   icon: {fileID: 21300000, guid: 2d5c852ee935cd54f94abec69a8b7b24, type: 3}
   weight: 10
-  durability: 15
+  durability: 20
   armorPoints: 25
   resistances:
   - damageType: 1

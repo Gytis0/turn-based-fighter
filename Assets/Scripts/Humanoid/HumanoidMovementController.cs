@@ -19,6 +19,8 @@ public class HumanoidMovementController : MonoBehaviour
     public AnimationStates animationState = AnimationStates.IDLE;
     public Vector3 destination;
     public bool isFollowing = false;
+    bool isFallen = false;
+    public bool inCombat = false;
 
     protected delegate void Followed();
     protected event Followed OnFollowed;
@@ -86,7 +88,7 @@ public class HumanoidMovementController : MonoBehaviour
         isFollowing = true;
     }
 
-    public void Move(Vector3 destination, float speed, AnimationStates animationState, float angularSpeed = 800f)
+    public void Move(Vector3 destination, float speed, AnimationStates animationState, float angularSpeed = 800f, bool isFallen = false)
     {
         this.animationState = animationState;
         agent.isStopped = false;
@@ -94,6 +96,7 @@ public class HumanoidMovementController : MonoBehaviour
         agent.speed = speed;
         agent.stoppingDistance = 0;
         agent.angularSpeed = angularSpeed;
+        this.isFallen = isFallen;
     }
 
     protected virtual void StopFollowing()
@@ -113,6 +116,14 @@ public class HumanoidMovementController : MonoBehaviour
 
     protected virtual void Update()
     {
+        // Face the enemy whenever we're idling
+        if (inCombat && animationState == AnimationStates.IDLE)
+        {
+            FaceEnemy();
+        }
+
+        if (isFallen) return;
+
         if (isFollowing)
         {
             Run(destination);
@@ -125,10 +136,6 @@ public class HumanoidMovementController : MonoBehaviour
             Stop();
         }
 
-        // Face the enemy whenever we're idling
-        if(animationState == AnimationStates.IDLE)
-        {
-            FaceEnemy();
-        }
+        
     }
 }
