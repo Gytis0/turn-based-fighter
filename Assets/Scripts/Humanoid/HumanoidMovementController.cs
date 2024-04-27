@@ -97,6 +97,7 @@ public class HumanoidMovementController : MonoBehaviour
         agent.stoppingDistance = 0;
         agent.angularSpeed = angularSpeed;
         this.isFallen = isFallen;
+
     }
 
     protected virtual void StopFollowing()
@@ -114,7 +115,7 @@ public class HumanoidMovementController : MonoBehaviour
         }
     }
 
-    protected virtual void Update()
+    protected void Update()
     {
         // Face the enemy whenever we're idling
         if (inCombat && animationState == AnimationStates.IDLE)
@@ -122,7 +123,10 @@ public class HumanoidMovementController : MonoBehaviour
             FaceEnemy();
         }
 
-        if (isFallen) return;
+        if (isFallen)
+        {
+            return;
+        }
 
         if (isFollowing && animationState != AnimationStates.RUNNING)
         {

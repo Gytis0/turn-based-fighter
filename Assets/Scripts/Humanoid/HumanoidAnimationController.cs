@@ -44,4 +44,11 @@ public class HumanoidAnimationController : MonoBehaviour
     {
         movementController.onChangedState -= SetState;
     }
+
+    public string GetCurrentAnimationName()
+    {
+        if (animator.GetCurrentAnimatorClipInfoCount(0) == 0) return "";
+        return animator.GetCurrentAnimatorClipInfo(0)[0].clip.ToString();
+    }
+    public AnimationStates GetCurrentAnimationState() { return animationState; }
 }

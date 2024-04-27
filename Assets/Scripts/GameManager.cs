@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
             SetEnemyItems();
 
             //SetPlayerStats();
-            playerProperties.SetStats(new int[] { 3, 3, 3, 2 });
+            playerProperties.SetStats(new int[] { 3, 3, 1, 2 });
             SetPlayerItems();
 
             SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
@@ -310,7 +310,7 @@ public class GameManager : MonoBehaviour
 
         cinematicCamera.SetActive(false);
 
-        player.transform.position = new Vector3(-16f, 0f, -10f);
+        player.transform.position = new Vector3(-16f, 0f, -6f);
 
         combatManager.StartCombat();
     }

@@ -61,34 +61,34 @@ public class CharacterStatsWindow : MonoBehaviour
     {
         healthSlider.maxValue = health;
         healthSlider.value = health;
-        healthText.SetText("Health: " + health);
+        healthText.SetText("Health: " + health.ToString("0.00"));
         healthDashLayout.SetDashes();
 
         staminaSlider.maxValue = stamina;
         staminaSlider.value = stamina;
-        staminaText.SetText("Stamina: " + stamina);
+        staminaText.SetText("Stamina: " + stamina.ToString("0.00"));
         staminaDashLayout.SetDashes();
 
         composureSlider.maxValue = composure;
         composureSlider.value = composure;
-        composureText.SetText("Composure: " + composure);
+        composureText.SetText("Composure: " + composure.ToString("0.00"));
         composureDashLayout.SetDashes();
     }
     public void SetSlidersValues(float health, float maxHealth, float stamina, float maxStamina, float composure, float maxComposure)
     {
         healthSlider.maxValue = maxHealth;
         healthSlider.value = health;
-        healthText.SetText("Health: " + health);
+        healthText.SetText("Health: " + health.ToString("0.00"));
         healthDashLayout.SetDashes();
 
         staminaSlider.maxValue = maxStamina;
         staminaSlider.value = stamina;
-        staminaText.SetText("Stamina: " + stamina);
+        staminaText.SetText("Stamina: " + stamina.ToString("0.00"));
         staminaDashLayout.SetDashes();
 
         composureSlider.maxValue = maxComposure;
         composureSlider.value = composure;
-        composureText.SetText("Composure: " + composure);
+        composureText.SetText("Composure: " + composure.ToString("0.00"));
         composureDashLayout.SetDashes();
     }
 

@@ -10,6 +10,7 @@ public class Action : ScriptableObject
     {
         this.actionName = actionName;
         this.actionType = actionType;
+        directions = new List<Direction>() { Direction.None};
     }
 
     public Action(Action action)
@@ -59,5 +60,11 @@ public class Action : ScriptableObject
     {
         directions.Add(direction);
         directions.Remove(Direction.None);
+    }
+
+    public void SetDirection(Direction direction)
+    {
+        directions.Clear();
+        directions.Add(direction);
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class CombatPlayer : CombatHumanoid
 {
-    public delegate void PlayerTurnEnd(Action action, CombatHumanoid character);
+    public delegate void PlayerTurnEnd(Action action);
     public event PlayerTurnEnd onPlayerTurnEnd;
 
     List<Action> movementActions, agileActions, offenseActions, defenseActions;
@@ -56,10 +56,22 @@ public class CombatPlayer : CombatHumanoid
 
     }
 
-    public void EnableButtons(List<Action> availableActions)
+    public override void PromptAction(List<Action> availableActions)
     {
+        if (actionQueue.Count == 0) EnableButtons(availableActions);
+        else EndTurn();
+    }
+
+    public override void DenyAction()
+    {
+        DisableButtons();
+
+    }
+
+    void EnableButtons(List<Action> availableActions)
+    {
+        ClearActionsLists();
         UpdateBubbles();
-        this.availableActions = availableActions;
         int index;
         // Enable buttons based on available actions
         for(int i = 0; i < availableActions.Count; i++)
@@ -102,10 +114,7 @@ public class CombatPlayer : CombatHumanoid
             button.transform.parent.GetComponent<Image>().color = notSelectedButton;
             button.transform.parent.gameObject.SetActive(false);
         }
-        movementActions.Clear();
-        agileActions.Clear();
-        offenseActions.Clear();
-        defenseActions.Clear();
+        ClearActionsLists();
     }
 
     void ShowActionDirections()
@@ -205,8 +214,14 @@ public class CombatPlayer : CombatHumanoid
             button.transform.parent.GetComponent<Image>().color = notSelectedButton;
         }
     }
-
   
+    void ClearActionsLists()
+    {
+        movementActions.Clear();
+        agileActions.Clear();
+        offenseActions.Clear();
+        defenseActions.Clear();
+    }
 
     // Four buttons
 
@@ -239,13 +254,13 @@ public class CombatPlayer : CombatHumanoid
         }
         else
         {
-            onPlayerTurnEnd(actionQueue.Dequeue(), this);
+            onPlayerTurnEnd(actionQueue.Dequeue());
             UpdateBubbles();
         }
 
     }
 
-    public void SkipTurn()
+    public override void SkipTurn()
     {
         selectedAction = null;
         selectedDirection = 0;
@@ -253,7 +268,7 @@ public class CombatPlayer : CombatHumanoid
 
         DisableButtons();
 
-        onPlayerTurnEnd(skipTurnAction, this);
+        onPlayerTurnEnd(skipTurnAction);
     }
 
     public void ResetQueue()

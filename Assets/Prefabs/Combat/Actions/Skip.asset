@@ -16,8 +16,8 @@ MonoBehaviour:
   baseDuration: 10
   baseStaminaDrain: -10
   baseComposureDrain: -5
-  staminaDrain: 0
-  composureDrain: 0
+  staminaDrain: -10
+  composureDrain: -5
   actionType: 4
   availableWhen: 00000000
-  directions: 
+  directions: 00000000

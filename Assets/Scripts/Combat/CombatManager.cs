@@ -9,12 +9,16 @@ public class CombatManager : MonoBehaviour
     public delegate void GameEnd(bool isPlayerWinner, HumanoidProperties playerProperties, HumanoidProperties enemyProperties);
     public event GameEnd onCombatEnd;
 
-    bool playersTurn  = true;
+    bool inCombat = false;
+    bool isPlayersTurn  = true;
     GameObject playerObject, enemyObject;
     CombatPlayer player;
     CombatEnemy enemy;
     Equipment playerEquipment, enemyEquipment;
     Timer timer;
+
+    Queue<Action> playerActionsQueue = new Queue<Action>();
+    Queue<Action> enemyActionsQueue = new Queue<Action>();
 
     // Grid
     Tuple<Vector2, Vector2> gridBoundaries;
@@ -24,7 +28,6 @@ public class CombatManager : MonoBehaviour
     // References
     [SerializeField] UnityEngine.UI.Image indicator;
     [SerializeField] List<Action> actionList;
-    [SerializeField] List<Action> tempActionList;
     [SerializeField] List<ActionCombination> combinationList;
     [SerializeField] GameObject combatObjects;
 
@@ -57,6 +60,7 @@ public class CombatManager : MonoBehaviour
 
     public void StartCombat()
     {
+        inCombat = true;
         EnableUi(true);
         UpdateIndicator();
 
@@ -69,12 +73,14 @@ public class CombatManager : MonoBehaviour
         playerEquipment = playerObject.GetComponent<Equipment>();
         enemyEquipment = enemyObject.GetComponent<Equipment>();
 
-        player.onPlayerTurnEnd += ApproveAction;
+        player.onPlayerTurnEnd += AddActionToPlayerQueue;
         playerEquipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>().onEnemyHit += ApproveAttack;
-        enemy.onEnemyTurnEnd += ApproveAction;
+        enemy.onEnemyTurnEnd += AddActionToEnemyQueue;
         enemyEquipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>().onEnemyHit += ApproveAttack;
         player.onDeath += StopCombat;
         enemy.onDeath += StopCombat;
+        player.onFallen += PromptActionWhenFallen;
+        enemy.onFallen += PromptActionWhenFallen;
 
         player.EnableCombatMode(true, gridSpacing);
         enemy.EnableCombatMode(true, gridSpacing);
@@ -82,14 +88,14 @@ public class CombatManager : MonoBehaviour
         player.SetCombinations(combinationList);
         enemy.SetCombinations(combinationList);
 
-        tempActionList = GetAvailableActions(player);
-        player.EnableButtons(tempActionList);
+        player.PromptAction(GetAvailableActions(player));
 
         timer.EnableTimer(60f);
     }
 
     public void StopCombat(CombatHumanoid loser)
     {
+        inCombat = false;
         EnableUi(false);
 
         enemy.EnableCombatMode(false, gridSpacing);
@@ -105,15 +111,26 @@ public class CombatManager : MonoBehaviour
 
     void ForcefullyEndTurn()
     {
-        Debug.Log("Forcefully ending turn [" + playersTurn + "]");
-        if (playersTurn) player.EndTurn();
+        //Debug.Log("Forcefully ending turn [" + playersTurn + "]");
+        if (isPlayersTurn) player.EndTurn();
         else enemy.EndTurn();
+    }
+
+    void AddActionToPlayerQueue(Action action)
+    {
+        playerActionsQueue.Enqueue(action);
+    }
+
+    void AddActionToEnemyQueue(Action action)
+    {
+        enemyActionsQueue.Enqueue(action);
     }
 
     void ApproveAction(Action action, CombatHumanoid character)
     {
+        Debug.Log("Approving " + action.actionName);
         bool approved = false;
-
+        List<Action> tempActionList = GetAvailableActions(character);
         foreach (Action availableAction in tempActionList)
         {
             if (action.actionName == ActionName.Skip || (availableAction.actionName == action.actionName && (action.directions[0] == Direction.None || availableAction.directions.Contains(action.directions[0]))))
@@ -124,30 +141,24 @@ public class CombatManager : MonoBehaviour
             }
         }
 
-        if (!approved && character.GetType() == typeof(CombatPlayer))
+        if (!approved)
         {
-            ((CombatPlayer)character).EnableButtons(tempActionList);
-            Debug.Log("Turn denied. Prompting UI");
-
-        }
-        else if (!approved && character.GetType() == typeof(CombatEnemy))
-        {
-            // Tell AI to rethink its action
+            Debug.Log("Action " + action.actionName.ToString() + " got denied from " + character.name);
         }
 
         if (approved)
         {
-            Debug.Log("Turn approved. Switching [" + playersTurn + "]");
+            character.ExecuteAction(action);
             SwitchTurn();
             timer.EnableTimer(60f);
         }
     }
 
-    void ApproveAttack(Weapon weapon, Action action, bool isPlayer)
+    void ApproveAttack(Weapon weapon, Action action, bool isTargetPlayer)
     {
         CombatHumanoid targetCombatHumanoid;
         Equipment targetEquipment;
-        if (isPlayer)
+        if (isTargetPlayer)
         {
             targetCombatHumanoid = player;
             targetEquipment = playerEquipment;
@@ -167,24 +178,39 @@ public class CombatManager : MonoBehaviour
         else
         {
             targetCombatHumanoid.TakeDamage(weapon);
+            if(targetCombatHumanoid.GetCombatStance() == CombatStance.Fallen)
+            {
+                targetCombatHumanoid.DenyAction();
+                if (isTargetPlayer)
+                {
+                    playerActionsQueue.Clear();
+                }
+                else
+                {
+                    enemyActionsQueue.Clear();
+                }
+            }
         }
 
     }
 
     void SwitchTurn()
     {
-        Debug.Log("Switching turn [" + playersTurn + "]");
-        playersTurn = !playersTurn;
+        //Debug.Log("Switching turn [" + playersTurn + "]");
+        isPlayersTurn = !isPlayersTurn;
         UpdateIndicator();
+
+        if(isPlayersTurn) { player.PromptAction(GetAvailableActions(player)); }
+        else { enemy.PromptAction(GetAvailableActions(enemy)); }
     }
 
     void UpdateIndicator()
     {
-        Debug.Log("Updating indicator [" + playersTurn + "]");
+        //Debug.Log("Updating indicator [" + playersTurn + "]");
         Color color;
         Vector2 pos;
 
-        if (playersTurn)
+        if (isPlayersTurn)
         {
             color = Color.green;
             pos = new Vector2(-20, 0);
@@ -246,9 +272,9 @@ public class CombatManager : MonoBehaviour
             {
                 if (action.actionName == ActionName.Kick)
                 {
-                    if (Vector3.Distance(player.transform.position, enemy.transform.position) > 2f)
+                    if (Vector3.Distance(player.transform.position, enemy.transform.position) > 2.5f)
                     {
-                        Debug.Log("Removing kick. The distance is: " + Vector3.Distance(player.transform.position, enemy.transform.position));
+                        //Debug.Log("Removing kick. The distance is: " + Vector3.Distance(player.transform.position, enemy.transform.position));
                         result.RemoveAt(i); continue;
                     }
                     requiredStamina = action.baseStaminaDrain * (1 + humanoid.GetAllWeight() / 100);
@@ -325,7 +351,7 @@ public class CombatManager : MonoBehaviour
                 }
             }
             else if (action.actionName == ActionName.Run)
-            {   
+            {
                 if (IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing * 2, 0))) action.AddDirection(Direction.Right);
                 if (IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing * 2, 0))) action.AddDirection(Direction.Left);
                 if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing * 2))) action.AddDirection(Direction.Forward);
@@ -359,7 +385,7 @@ public class CombatManager : MonoBehaviour
                     if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing))) action.AddDirection(Direction.Forward);
                     if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing))) action.AddDirection(Direction.Backward);
                 }
-                
+
                 if (action.directions.Count == 0)
                 {
                     result.RemoveAt(i); continue;
@@ -406,6 +432,33 @@ public class CombatManager : MonoBehaviour
         else if (normalized <= 0.375 && normalized > 0.125) return Direction.Right;
         else if (normalized <= 0.625 && normalized > 0.375) return Direction.Backward;
         else return Direction.Left;
+    }
+
+    void PromptActionWhenFallen(CombatHumanoid character)
+    {
+        if(isPlayersTurn && character.GetType() == typeof(CombatPlayer)){
+            character.PromptAction(GetAvailableActions(character));
+        }
+        else if(!isPlayersTurn && character.GetType() == typeof(CombatEnemy))
+        {
+            character.PromptAction(GetAvailableActions(character));
+        }
+    }
+
+    private void Update()
+    {
+        if (!inCombat) return;
+
+        string playerAnimation = player.GetCurrentAnimationName().ToLower();
+        if (playerAnimation.Contains("idle") && playerActionsQueue.Count != 0){
+            ApproveAction(playerActionsQueue.Dequeue(), player);
+        }
+
+        string enemyAnimation = enemy.GetCurrentAnimationName().ToLower();
+        if (enemyAnimation.Contains("idle") && enemyActionsQueue.Count != 0)
+        {
+            ApproveAction(enemyActionsQueue.Dequeue(), enemy);
+        }
     }
 }
 

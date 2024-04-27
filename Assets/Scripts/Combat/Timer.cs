@@ -30,8 +30,6 @@ public class Timer : MonoBehaviour
     }
 
     public void EnableTimer(float seconds) {
-        Debug.Log("Enabling timer");
-
         remainingTime = seconds;
         timerEnabled = true;
         timerText.gameObject.SetActive(true);
