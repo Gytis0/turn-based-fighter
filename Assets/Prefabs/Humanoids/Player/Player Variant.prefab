@@ -2695,7 +2695,7 @@ MonoBehaviour:
   pauseMenu: {fileID: 4386858403416701964}
   mouseRaycastLayers:
     serializedVersion: 2
-    m_Bits: 87
+    m_Bits: 83
   restrictedMovement: 0
 --- !u!114 &8416967476256079606
 MonoBehaviour:
@@ -2714,6 +2714,7 @@ MonoBehaviour:
   animationState: 0
   destination: {x: 0, y: 0, z: 0}
   isFollowing: 0
+  inCombat: 0
 --- !u!114 &8796106822507686264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2730,6 +2731,7 @@ MonoBehaviour:
   dodgeSpeed: 5
   runSpeed: 3
   walkSpeed: 1
+  fallingSpeed: 1
   allButtons:
   - {fileID: 4644924624192433253}
   - {fileID: 7354052316842206706}

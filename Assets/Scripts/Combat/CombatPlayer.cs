@@ -231,7 +231,7 @@ public class CombatPlayer : CombatHumanoid
         selectedDirection = 0;
         DemarkEverything();
 
-        //DisableButtons();
+        DisableButtons();
 
         if (actionQueue.Count == 0)
         {
@@ -250,6 +250,8 @@ public class CombatPlayer : CombatHumanoid
         selectedAction = null;
         selectedDirection = 0;
         DemarkEverything();
+
+        DisableButtons();
 
         onPlayerTurnEnd(skipTurnAction, this);
     }

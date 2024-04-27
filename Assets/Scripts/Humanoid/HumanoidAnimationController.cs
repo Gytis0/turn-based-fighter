@@ -24,7 +24,6 @@ public class HumanoidAnimationController : MonoBehaviour
             if(state.name.ToLower() == newState.ToString().ToLower())
             {
                 animator.SetTrigger(state.name);
-                break;
             }
         }
     }

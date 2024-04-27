@@ -124,7 +124,7 @@ public class HumanoidMovementController : MonoBehaviour
 
         if (isFallen) return;
 
-        if (isFollowing)
+        if (isFollowing && animationState != AnimationStates.RUNNING)
         {
             Run(destination);
         }
