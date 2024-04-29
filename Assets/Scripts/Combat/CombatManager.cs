@@ -23,7 +23,7 @@ public class CombatManager : MonoBehaviour
     // Grid
     Tuple<Vector2, Vector2> gridBoundaries;
     float gridSpacing;
-    [SerializeField] LayerMask movementBlockingObjects;
+
 
     // References
     [SerializeField] UnityEngine.UI.Image indicator;
@@ -55,7 +55,6 @@ public class CombatManager : MonoBehaviour
     {
         gridBoundaries = ObjectGrid.Instance.GetGridBoundaries();
         gridSpacing = ObjectGrid.Instance.GetObjectSpacing();
-
     }
 
     public void StartCombat()
@@ -75,15 +74,18 @@ public class CombatManager : MonoBehaviour
 
         player.onPlayerTurnEnd += AddActionToPlayerQueue;
         playerEquipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>().onEnemyHit += ApproveAttack;
+        player.GetLegTrigger().onEnemyHit += ApproveAttack;
+        player.onDeath += StopCombat;
+        player.onFallen += PromptActionWhenFallen;
+
         enemy.onEnemyTurnEnd += AddActionToEnemyQueue;
         enemyEquipment.GetEquippedWeaponObject().GetComponent<OffensiveTrigger>().onEnemyHit += ApproveAttack;
-        player.onDeath += StopCombat;
+        enemy.GetLegTrigger().onEnemyHit += ApproveAttack;
         enemy.onDeath += StopCombat;
-        player.onFallen += PromptActionWhenFallen;
         enemy.onFallen += PromptActionWhenFallen;
 
-        player.EnableCombatMode(true, gridSpacing);
-        enemy.EnableCombatMode(true, gridSpacing);
+        player.EnableCombatMode(true, gridSpacing, gridBoundaries);
+        enemy.EnableCombatMode(true, gridSpacing, gridBoundaries);
 
         player.SetCombinations(combinationList);
         enemy.SetCombinations(combinationList);
@@ -98,8 +100,8 @@ public class CombatManager : MonoBehaviour
         inCombat = false;
         EnableUi(false);
 
-        enemy.EnableCombatMode(false, gridSpacing);
-        player.EnableCombatMode(false, gridSpacing);
+        enemy.EnableCombatMode(false, gridSpacing, gridBoundaries);
+        player.EnableCombatMode(false, gridSpacing, gridBoundaries);
 
         bool isPlayerWinner;
         HumanoidProperties playerProperties = player.GetComponent<HumanoidProperties>();
@@ -173,14 +175,16 @@ public class CombatManager : MonoBehaviour
 
         // Check if the block is successful
         if (targetCombatHumanoid.GetCombatState() == CombatState.Blocking && action.actionName == ActionName.Overhead) targetEquipment.DamageShield(weapon);
-        else if (targetCombatHumanoid.GetCombatState() == CombatState.Blocking && action.actionName == ActionName.Stab) targetEquipment.DamageShield(weapon);
+        else if ((targetCombatHumanoid.GetCombatState() == CombatState.Blocking) && action.actionName == ActionName.Stab) targetEquipment.DamageShield(weapon);
         else if (targetCombatHumanoid.GetCombatState() == CombatState.Blocking_Left && action.actionName == ActionName.Swing && action.directions[0] == Direction.Right) targetEquipment.DamageShield(weapon);
-        else if(targetCombatHumanoid.GetCombatState() == CombatState.Blocking_Right && action.actionName == ActionName.Swing && action.directions[0] == Direction.Left) targetEquipment.DamageShield(weapon);
-        else if(action.actionName == ActionName.Kick) { targetCombatHumanoid.GetKicked(); }
+        else if (targetCombatHumanoid.GetCombatState() == CombatState.Blocking_Right && action.actionName == ActionName.Swing && action.directions[0] == Direction.Left) targetEquipment.DamageShield(weapon);
+        // Check if the duck was successful
+        else if (targetCombatHumanoid.GetCombatState() == CombatState.Ducking && (action.actionName == ActionName.Swing || (action.actionName == ActionName.Stab && action.directions[0] != Direction.Backward))) return;
+        else if (action.actionName == ActionName.Kick) { targetCombatHumanoid.GetKicked(weapon); }
         else
         {
             targetCombatHumanoid.TakeDamage(weapon);
-            if(targetCombatHumanoid.GetCombatStance() == CombatStance.Fallen)
+            if (targetCombatHumanoid.GetCombatStance() == CombatStance.Fallen)
             {
                 DenyAction(targetCombatHumanoid);
             }
@@ -342,10 +346,10 @@ public class CombatManager : MonoBehaviour
             Vector2 position = new Vector2(humanoid.transform.position.x, humanoid.transform.position.z);
             if (action.actionName == ActionName.Step)
             {
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing, 0))) action.AddDirection(Direction.Right);
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing, 0))) action.AddDirection(Direction.Left);
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing))) action.AddDirection(Direction.Forward);
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing))) action.AddDirection(Direction.Backward);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing, 0), gridBoundaries)) action.AddDirection(Direction.Right);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing, 0), gridBoundaries)) action.AddDirection(Direction.Left);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing), gridBoundaries)) action.AddDirection(Direction.Forward);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing), gridBoundaries)) action.AddDirection(Direction.Backward);
                 if (action.directions.Count == 0)
                 {
                     result.RemoveAt(i); continue;
@@ -353,10 +357,10 @@ public class CombatManager : MonoBehaviour
             }
             else if (action.actionName == ActionName.Run)
             {
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing * 2, 0))) action.AddDirection(Direction.Right);
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing * 2, 0))) action.AddDirection(Direction.Left);
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing * 2))) action.AddDirection(Direction.Forward);
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing * 2))) action.AddDirection(Direction.Backward);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing * 2, 0), gridBoundaries)) action.AddDirection(Direction.Right);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing * 2, 0), gridBoundaries)) action.AddDirection(Direction.Left);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing * 2), gridBoundaries)) action.AddDirection(Direction.Forward);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing * 2), gridBoundaries)) action.AddDirection(Direction.Backward);
                 if (action.directions.Count == 0)
                 {
                     result.RemoveAt(i); continue;
@@ -364,10 +368,10 @@ public class CombatManager : MonoBehaviour
             }
             else if (action.actionName == ActionName.Dodge)
             {
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing, 0))) action.AddDirection(Direction.Right);
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing, 0))) action.AddDirection(Direction.Left);
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing))) action.AddDirection(Direction.Forward);
-                if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing))) action.AddDirection(Direction.Backward);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing, 0), gridBoundaries)) action.AddDirection(Direction.Right);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing, 0), gridBoundaries)) action.AddDirection(Direction.Left);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing), gridBoundaries)) action.AddDirection(Direction.Forward);
+                if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing), gridBoundaries)) action.AddDirection(Direction.Backward);
                 if (action.directions.Count == 0)
                 {
                     result.RemoveAt(i); continue;
@@ -375,17 +379,18 @@ public class CombatManager : MonoBehaviour
             }
             else if (action.actionName == ActionName.Roll)
             {
-                Direction direction = GetRollDirection(humanoid.transform.rotation);
+                Direction direction = UtilityScripts.GetFacingDirection(humanoid.transform.rotation);
                 if (direction == Direction.Forward || direction == Direction.Backward)
                 {
-                    if (IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing, 0))) action.AddDirection(Direction.Right);
-                    if (IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing, 0))) action.AddDirection(Direction.Left);
+                    if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(gridSpacing, 0), gridBoundaries)) action.AddDirection(Direction.Right);
+                    if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(-gridSpacing, 0), gridBoundaries)) action.AddDirection(Direction.Left);
                 }
                 else
                 {
-                    if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing))) action.AddDirection(Direction.Forward);
-                    if (IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing))) action.AddDirection(Direction.Backward);
+                    if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(0, gridSpacing), gridBoundaries)) action.AddDirection(Direction.Forward);
+                    if (UtilityScripts.IsPositionValid(humanoid.transform.position, position + new Vector2(0, -gridSpacing), gridBoundaries)) action.AddDirection(Direction.Backward);
                 }
+
 
                 if (action.directions.Count == 0)
                 {
@@ -400,22 +405,6 @@ public class CombatManager : MonoBehaviour
         return result;
     }
 
-    bool IsPositionValid(Vector3 startPos, Vector2 endPos)
-    {
-        startPos.Set(startPos.x, .5f, startPos.z);
-        Vector3 endPos3d = new Vector3(endPos.x, 0.5f, endPos.y);
-        float length = Vector3.Distance(startPos, endPos3d);
-        RaycastHit[] hits = Physics.RaycastAll(startPos, (endPos3d - startPos), length, movementBlockingObjects);
-
-        if (endPos.x >= gridBoundaries.Item1.x &&
-            endPos.x <= gridBoundaries.Item2.x &&
-            endPos.y >= gridBoundaries.Item1.y &&
-            endPos.y <= gridBoundaries.Item2.y &&
-            hits.Length == 0) return true;
-
-        return false;
-    }
-
     Action GetAction(ActionName actionName)
     {
         foreach(Action action in actionList)
@@ -424,15 +413,6 @@ public class CombatManager : MonoBehaviour
         }
         Debug.LogError("No action exists with a name " + actionName);
         return null;
-    }
-
-    Direction GetRollDirection(Quaternion rotation)
-    {
-        float normalized = rotation.normalized.y;
-        if (normalized <= 0.125 || normalized > 0.875) return Direction.Forward;
-        else if (normalized <= 0.375 && normalized > 0.125) return Direction.Right;
-        else if (normalized <= 0.625 && normalized > 0.375) return Direction.Backward;
-        else return Direction.Left;
     }
 
     void PromptActionWhenFallen(CombatHumanoid character)

@@ -8,46 +8,43 @@ public class HumanoidMovementController : MonoBehaviour
 {
     protected NavMeshAgent agent;
     protected HumanoidProperties humanoidProperties;
-
-    public delegate void ChangedState(AnimationStates newState);
-    public event ChangedState onChangedState;
+    protected HumanoidAnimationController animationController;
 
     [SerializeField] float walkingSpeed = 1f;
     [SerializeField] float runningSpeed = 10f;
 
-    public AnimationStates animationState = AnimationStates.IDLE;
     public Vector3 destination;
     public bool isFollowing = false;
     bool isFallen = false;
     public bool inCombat = false;
+    bool moving = false;
 
     protected delegate void Followed();
     protected event Followed OnFollowed;
 
     protected virtual void Awake()
     {
-        humanoidProperties = transform.GetComponent<HumanoidProperties>();
-        agent = transform.GetComponent<NavMeshAgent>();
+        humanoidProperties = GetComponent<HumanoidProperties>();
+        animationController = GetComponent<HumanoidAnimationController>();
+        agent = GetComponent<NavMeshAgent>();
     }
 
     protected virtual void Walk(Vector3 _destination)
     {
-        agent.isStopped = false;
+        moving = false;
         agent.SetDestination(_destination);
         agent.speed = walkingSpeed;
 
-        animationState = AnimationStates.WALKING;
-        if (onChangedState != null) onChangedState(animationState);
+        animationController.SetState(AnimationStates.WALKING);
     }
 
     protected virtual void Run(Vector3 _destination)
     {
-        agent.isStopped = false;
+        moving = false;
         agent.SetDestination(_destination);
         agent.speed = runningSpeed;
 
-        animationState = AnimationStates.RUNNING;
-        if (onChangedState != null) onChangedState(animationState);
+        animationController.SetState(AnimationStates.RUNNING);
     }
 
     public void FaceEnemy()
@@ -65,8 +62,7 @@ public class HumanoidMovementController : MonoBehaviour
 
     public void Idle()
     {
-        animationState = AnimationStates.IDLE;
-        if (onChangedState != null) onChangedState(animationState);
+        animationController.SetState(AnimationStates.IDLE);
     }
 
     public void Stop()
@@ -75,7 +71,7 @@ public class HumanoidMovementController : MonoBehaviour
         {
             FinishedFollowing();
         }
-        agent.isStopped = true;
+        moving = false;
         Idle();
         StopFollowing();
     }
@@ -84,19 +80,19 @@ public class HumanoidMovementController : MonoBehaviour
     {
         this.destination = destination;
         agent.stoppingDistance = _radius;
+        moving = true;
         isFollowing = true;
     }
 
     public void Move(Vector3 destination, float speed, AnimationStates animationState, float angularSpeed = 800f, bool isFallen = false)
     {
-        this.animationState = animationState;
-        agent.isStopped = false;
+        animationController.SetState(animationState);
+        moving = true;
         agent.SetDestination(destination);
         agent.speed = speed;
         agent.stoppingDistance = 0;
         agent.angularSpeed = angularSpeed;
         this.isFallen = isFallen;
-
     }
 
     protected virtual void StopFollowing()
@@ -117,24 +113,26 @@ public class HumanoidMovementController : MonoBehaviour
     protected void Update()
     {
         // Face the enemy whenever we're idling
-        if (inCombat && animationState == AnimationStates.IDLE)
+        if (inCombat && !moving)
         {
             FaceEnemy();
         }
+
+        if (animationController.GetCurrentAnimationName().ToLower().Contains("fallen_idle")) moving = false;
 
         if (isFallen)
         {
             return;
         }
 
-        if (isFollowing && animationState != AnimationStates.RUNNING)
+        if (isFollowing && animationController.GetCurrentAnimationState() != AnimationStates.RUNNING)
         {
             Run(destination);
         }
 
         // Stop moving if there is no path generating
         // Stop moving if we reached the destination
-        if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending && animationState != AnimationStates.IDLE)
+        if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending && moving)
         {
             Stop();
         }

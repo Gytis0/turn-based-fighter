@@ -6,26 +6,25 @@ using UnityEngine;
 public class HumanoidAnimationController : MonoBehaviour
 {
     Animator animator;
-    HumanoidMovementController movementController;
 
     AnimationStates animationState;
 
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
-        movementController = transform.GetComponent<HumanoidMovementController>();
     }
     
     public void SetState(AnimationStates newState)
     {
-        animationState = newState;
         foreach (AnimatorControllerParameter state in animator.parameters)
         {
             if(state.name.ToLower() == newState.ToString().ToLower())
             {
                 animator.SetTrigger(state.name);
+                break;
             }
         }
+        animationState = newState;
     }
 
     public void SetAnimationModes(bool isTwoHanded, bool isLeftHanded, bool inCombat)
@@ -35,20 +34,15 @@ public class HumanoidAnimationController : MonoBehaviour
         animator.SetBool("In Combat", inCombat);
     }
 
-    private void OnEnable()
-    {
-        movementController.onChangedState += SetState;
-    }
-
-    private void OnDisable()
-    {
-        movementController.onChangedState -= SetState;
-    }
-
     public string GetCurrentAnimationName()
     {
         if (animator.GetCurrentAnimatorClipInfoCount(0) == 0) return "";
         return animator.GetCurrentAnimatorClipInfo(0)[0].clip.ToString();
     }
     public AnimationStates GetCurrentAnimationState() { return animationState; }
+
+    private void Update()
+    {
+        //if (GetCurrentAnimationName().ToLower().Contains("idle")) animationState = AnimationStates.IDLE;
+    }
 }

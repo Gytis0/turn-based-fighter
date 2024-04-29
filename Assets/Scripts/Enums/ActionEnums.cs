@@ -22,7 +22,8 @@ public enum CombatState
     None,
     Blocking,
     Blocking_Right,
-    Blocking_Left
+    Blocking_Left,
+    Ducking
 }
 public enum Direction
 {

@@ -20,4 +20,4 @@ MonoBehaviour:
   composureDrain: 0
   actionType: 1
   availableWhen: 010000000200000005000000
-  directions: 
+  directions: 00000000

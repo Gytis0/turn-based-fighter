@@ -44,16 +44,47 @@ public class CombatEnemy : CombatHumanoid
     void GenerateAction()
     {
         Action action = new Action(ActionName.Skip, ActionType.Skip);
+        foreach (Action actionTemp in availableActions)
+        {
+            if (actionTemp.actionName == ActionName.Skip)
+            {
+                action = actionTemp;
+                break;
+            }
+        }
         path.ClearCorners();
 
+        // Actions if we're fallen
+        if (combatStance == CombatStance.Fallen)
+        {
+            if(Vector3.Distance(transform.position, playerObject.transform.position) <= 2.5f)
+            {
+                List<Action> agileActions = new List<Action>();
+                foreach (Action tempAction in availableActions)
+                    if (tempAction.actionType == ActionType.Movement || tempAction.actionType == ActionType.Agile && tempAction.actionName != ActionName.Get_Up) agileActions.Add(tempAction);
+                action = agileActions[Random.Range(0, availableActions.Count)];
+            }
+            else
+            {
+                int randomActionNumber = Random.Range(0, 1);
+                if(randomActionNumber == 0)
+                {
+                    action = new Action(ActionName.Get_Up, ActionType.Agile);
+                }
+                else
+                {
+                    action = new Action(ActionName.Skip, ActionType.Skip);
+                }
+            }
+        }
         // If player is far, move to it    
-        if (Vector3.Distance(transform.position, playerObject.transform.position) > 2.5f)
+        else if (Vector3.Distance(transform.position, playerObject.transform.position) > 2.5f)
         {
             action = new Action(ActionName.Step, ActionType.Movement);
             StartCoroutine(FindNextWaypoint());
 
             Vector3 waypoint = path.corners[1];
-            Dictionary<Direction, Vector3> fourDirections = GetFourDirections();
+            Dictionary<Direction, Vector3> fourDirections = UtilityScripts.GetFourDirections(transform.position);
             List<Direction> availableDirections = GetAvailableDirections(ActionName.Step);
             float shortestDistance = 99f;
 
@@ -61,9 +92,27 @@ public class CombatEnemy : CombatHumanoid
             {
                 float distance = Vector3.Distance(fourDirections[direction], waypoint);
                 if (distance > shortestDistance) continue;
-                else shortestDistance = distance;
+                shortestDistance = distance;
                 action.SetDirection(direction);
             }
+        }
+        else if(playerObject.GetComponent<CombatPlayer>().GetCombatStance() == CombatStance.Fallen)
+        {
+            ActionName actionName;
+            if (equipment.GetEquippedWeaponData().GetWeaponType() == WeaponType.OneHanded)
+                actionName = ActionName.Stab;
+            else
+                actionName = ActionName.Overhead;
+            foreach (Action actionTemp in availableActions)
+            {
+                if (actionTemp.actionName == actionName)
+                {
+                    action = actionTemp;
+                    action.SetDirection(Direction.Backward);
+                    break;
+                }
+            }
+
         }
         // Else decide whether to be defensive or offensive or retreat
         else
@@ -104,10 +153,14 @@ public class CombatEnemy : CombatHumanoid
                     if (tempAction.actionType == ActionType.Offensive) actionListOfType.Add(tempAction);
             }
 
-            action = actionListOfType[Random.Range(0, actionListOfType.Count)];
-            action.SetDirection(action.directions[Random.Range(0, action.directions.Count)]);
+            if(actionListOfType.Count == 0)
+                action = new Action(ActionName.Skip, ActionType.Skip);
+            else
+                action = actionListOfType[Random.Range(0, actionListOfType.Count)];
         }
 
+        Debug.Log("Bot decided on action: " + action.actionName);
+        if(action.directions.Count > 0) action.SetDirection(action.directions[Random.Range(0, action.directions.Count)]);
         actionQueue.Enqueue(action);
         EndTurn();
     }
@@ -120,17 +173,6 @@ public class CombatEnemy : CombatHumanoid
         {
             yield return new WaitForSeconds(1);
         }
-    }
-
-    Dictionary<Direction, Vector3> GetFourDirections()
-    {
-        return new Dictionary<Direction, Vector3>
-        {
-            { Direction.Forward, transform.position + Vector3.forward },
-            { Direction.Backward, transform.position + Vector3.back },
-            { Direction.Left, transform.position + Vector3.left },
-            { Direction.Right, transform.position + Vector3.right }
-        };
     }
 
     List<Direction> GetAvailableDirections(ActionName actionName)

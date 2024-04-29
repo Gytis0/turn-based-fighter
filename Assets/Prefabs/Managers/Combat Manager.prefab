@@ -49,6 +49,9 @@ MonoBehaviour:
   movementBlockingObjects:
     serializedVersion: 2
     m_Bits: 512
+  charactersMask:
+    serializedVersion: 2
+    m_Bits: 1152
   indicator: {fileID: 5031717482324987924}
   actionList:
   - {fileID: 11400000, guid: abb836c37917d2e4382b5485a8f9e4f6, type: 2}

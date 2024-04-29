@@ -1923,6 +1923,10 @@ PrefabInstance:
       propertyPath: m_PresetInfoIsWorld
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1829277673638755767, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
+      propertyPath: isThisPlayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1904779547366564386, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -2711,7 +2715,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkingSpeed: 1.8
   runningSpeed: 4
-  animationState: 0
   destination: {x: 0, y: 0, z: 0}
   isFollowing: 0
   inCombat: 0
@@ -2727,10 +2730,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4158ff9f90306c041b699056649a9fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  legTrigger: {fileID: 6012807205296417549}
   skipTurnAction: {fileID: 11400000, guid: 61a319a69a8cf2643823f610861279d4, type: 2}
   dodgeSpeed: 5
   runSpeed: 3
   walkSpeed: 1
+  rollSpeed: 3
   fallingSpeed: 1
   allButtons:
   - {fileID: 4644924624192433253}
@@ -2808,6 +2813,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1943996167745949031, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
   m_PrefabInstance: {fileID: 5337660637844625082}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6012807205296417549 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1829277673638755767, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
+  m_PrefabInstance: {fileID: 5337660637844625082}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec3c2a1c4dcf7e7419106091fc566b54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6498441460121103831 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1169867186443926381, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}

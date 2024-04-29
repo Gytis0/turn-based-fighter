@@ -311,7 +311,7 @@ public class GameManager : MonoBehaviour
 
         cinematicCamera.SetActive(false);
 
-        player.transform.position = new Vector3(-16f, 0f, -6f);
+        player.transform.position = new Vector3(-14f, 0f, -8f);
 
         combatManager.StartCombat();
     }
@@ -371,7 +371,7 @@ public class GameManager : MonoBehaviour
             headerImage.color = footerImage.color = redColor;
         }
 
-        score.SetText("Score: " + CalculateScore(playerProperties));
+        score.SetText("Score: " + CalculateScore(playerProperties, isPlayerWinner));
 
         playerStats.SetTitle("Player");
         playerStats.SetSlidersValues(playerProperties.GetHealth(), playerProperties.GetMaxHealth(), playerProperties.GetStamina(), playerProperties.GetMaxStamina(), playerProperties.GetComposure(), playerProperties.GetMaxComposure()) ;
@@ -380,8 +380,13 @@ public class GameManager : MonoBehaviour
         enemyStats.SetSlidersValues(enemyProperties.GetHealth(), enemyProperties.GetMaxHealth(), enemyProperties.GetStamina(), enemyProperties.GetMaxStamina(), enemyProperties.GetComposure(), enemyProperties.GetMaxComposure());
     }
 
-    int CalculateScore(HumanoidProperties properties)
+    int CalculateScore(HumanoidProperties properties, bool isPlayerWinner)
     {
-        return (int)((properties.GetHealth() / properties.GetMaxHealth()) * 500 + (properties.GetStamina() / properties.GetMaxStamina()) * 300 + (properties.GetComposure() / properties.GetMaxComposure()) * 100);
+        int result = (int)((properties.GetHealth() / properties.GetMaxHealth()) * 500 + (properties.GetStamina() / properties.GetMaxStamina()) * 300 + (properties.GetComposure() / properties.GetMaxComposure()) * 200);
+        if (!isPlayerWinner)
+        {
+            result /= 2;
+        }
+        return result;
     }
 }

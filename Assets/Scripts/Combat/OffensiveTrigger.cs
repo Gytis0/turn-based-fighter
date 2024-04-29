@@ -14,7 +14,15 @@ public class OffensiveTrigger : MonoBehaviour
 
     void Start()
     {
-        weapon = (Weapon)GetComponent<Item>().GetItemData();
+        Item item;
+        if(TryGetComponent<Item>(out item))
+        {
+            weapon = (Weapon)(item.GetItemData());
+        }
+        else
+        {
+            weapon = new Weapon(5);
+        }
         collider = GetComponent<Collider>();
         collider.isTrigger = false;
     }
