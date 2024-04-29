@@ -143,6 +143,8 @@ public class CombatManager : MonoBehaviour
 
         if (!approved)
         {
+            DenyAction(character);
+            character.PromptAction(tempActionList);
             Debug.Log("Action " + action.actionName.ToString() + " got denied from " + character.name);
         }
 
@@ -180,18 +182,17 @@ public class CombatManager : MonoBehaviour
             targetCombatHumanoid.TakeDamage(weapon);
             if(targetCombatHumanoid.GetCombatStance() == CombatStance.Fallen)
             {
-                targetCombatHumanoid.DenyAction();
-                if (isTargetPlayer)
-                {
-                    playerActionsQueue.Clear();
-                }
-                else
-                {
-                    enemyActionsQueue.Clear();
-                }
+                DenyAction(targetCombatHumanoid);
             }
         }
 
+    }
+
+    void DenyAction(CombatHumanoid character)
+    {
+        character.DenyAction();
+        if (character.GetType() == typeof(CombatPlayer)) playerActionsQueue.Clear();
+        else enemyActionsQueue.Clear();
     }
 
     void SwitchTurn()

@@ -257,6 +257,7 @@ public class GameManager : MonoBehaviour
             for (int j = i + 1; j < selectedArmors.Count; j++)
             {
                 if (selectedArmors[i].GetArmorType() == selectedArmors[j].GetArmorType())
+
                 {
                     if (selectedArmors[i].GetArmorPoints() > selectedArmors[j].GetArmorPoints())
                     {

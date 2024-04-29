@@ -121,6 +121,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4550317516304200125, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4550317516304200125, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
       propertyPath: m_TagString
       value: Enemy Hitbox
       objectReference: {fileID: 0}
@@ -218,6 +222,7 @@ MonoBehaviour:
   dodgeSpeed: 5
   runSpeed: 3
   walkSpeed: 1
+  rollSpeed: 1
   fallingSpeed: 2
 --- !u!1 &8293899379647937739 stripped
 GameObject:

@@ -7,7 +7,6 @@ using UnityEngine.AI;
 public class HumanoidMovementController : MonoBehaviour
 {
     protected NavMeshAgent agent;
-
     protected HumanoidProperties humanoidProperties;
 
     public delegate void ChangedState(AnimationStates newState);
