@@ -61,7 +61,7 @@ public class CombatEnemy : CombatHumanoid
             {
                 List<Action> agileActions = new List<Action>();
                 foreach (Action tempAction in availableActions)
-                    if (tempAction.actionType == ActionType.Movement || tempAction.actionType == ActionType.Agile && tempAction.actionName != ActionName.Get_Up) agileActions.Add(tempAction);
+                    if (tempAction.actionType == ActionType.Agile && tempAction.actionName != ActionName.Get_Up) agileActions.Add(tempAction);
                 action = agileActions[Random.Range(0, availableActions.Count)];
             }
             else
@@ -80,20 +80,24 @@ public class CombatEnemy : CombatHumanoid
         // If player is far, move to it    
         else if (Vector3.Distance(transform.position, playerObject.transform.position) > 2.5f)
         {
-            action = new Action(ActionName.Step, ActionType.Movement);
             StartCoroutine(FindNextWaypoint());
 
             Vector3 waypoint = path.corners[1];
             Dictionary<Direction, Vector3> fourDirections = UtilityScripts.GetFourDirections(transform.position);
             List<Direction> availableDirections = GetAvailableDirections(ActionName.Step);
-            float shortestDistance = 99f;
-
-            foreach (Direction direction in availableDirections)
+            if(availableDirections.Count > 0)
             {
-                float distance = Vector3.Distance(fourDirections[direction], waypoint);
-                if (distance > shortestDistance) continue;
-                shortestDistance = distance;
-                action.SetDirection(direction);
+                action = new Action(ActionName.Step, ActionType.Movement);
+
+                float shortestDistance = 99f;
+
+                foreach (Direction direction in availableDirections)
+                {
+                    float distance = Vector3.Distance(fourDirections[direction], waypoint);
+                    if (distance > shortestDistance) continue;
+                    shortestDistance = distance;
+                    action.SetDirection(direction);
+                }
             }
         }
         else if(playerObject.GetComponent<CombatPlayer>().GetCombatStance() == CombatStance.Fallen)

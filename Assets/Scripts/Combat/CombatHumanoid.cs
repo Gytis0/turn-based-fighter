@@ -27,6 +27,7 @@ public class CombatHumanoid : MonoBehaviour
     protected bool inCombat = false;
     protected bool isOneHanded = false;
     protected bool fallen = false;
+    protected bool blocken = false;
     protected CombatStance combatStance = CombatStance.Standing;
     protected CombatState combatState = CombatState.None;
     public CharacterState newestState;
@@ -119,7 +120,7 @@ public class CombatHumanoid : MonoBehaviour
                 humanoidAnimationController.SetState(AnimationStates.BLOCKING_RIGHT);
                 combatState = CombatState.Blocking_Right;
             }
-            else if (action.directions[0] == Direction.Left)
+            else if (action.directions[0] == Direction.Forward)
             {
                 humanoidAnimationController.SetState(AnimationStates.BLOCKING);
                 combatState = CombatState.Blocking;
@@ -353,6 +354,7 @@ public class CombatHumanoid : MonoBehaviour
     
     private void Update()
     {
+        Debug.Log("[" + name + "] Current state: " + combatState);
         if (GetCurrentAnimationName().ToLower().Contains("getting_up"))
         {
             fallen = false;
@@ -361,6 +363,16 @@ public class CombatHumanoid : MonoBehaviour
         {
             fallen = true;
             onFallen(this);
+            combatState = CombatState.None;
         }
+        if (GetCurrentAnimationName().ToLower().Contains("block_left"))
+            combatState = CombatState.Blocking_Left;
+        else if (GetCurrentAnimationName().ToLower().Contains("block_right"))
+            combatState = CombatState.Blocking_Right;
+        else if (GetCurrentAnimationName().ToLower().Contains("block"))
+            combatState = CombatState.Blocking;
+        else if (GetCurrentAnimationName().ToLower().Contains("duck_"))
+            combatState = CombatState.Ducking;
+        else combatState = CombatState.None;
     }
 }
