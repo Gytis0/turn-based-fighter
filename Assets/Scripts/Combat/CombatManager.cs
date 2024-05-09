@@ -137,7 +137,6 @@ public class CombatManager : MonoBehaviour
         {
             if (action.actionName == ActionName.Skip || (availableAction.actionName == action.actionName && (action.directions[0] == Direction.None || availableAction.directions.Contains(action.directions[0]))))
             {
-                character.ExecuteAction(action);
                 approved = true;
                 break;
             }
@@ -154,7 +153,7 @@ public class CombatManager : MonoBehaviour
         {
             character.ExecuteAction(action);
             SwitchTurn();
-            timer.EnableTimer(60f);
+            timer.EnableTimer(10f);
         }
     }
 
@@ -195,8 +194,16 @@ public class CombatManager : MonoBehaviour
     void DenyAction(CombatHumanoid character)
     {
         character.DenyAction();
-        if (character.GetType() == typeof(CombatPlayer)) playerActionsQueue.Clear();
-        else enemyActionsQueue.Clear();
+        if (character.GetType() == typeof(CombatPlayer))
+        {
+            playerActionsQueue.Clear();
+            if (isPlayersTurn) character.PromptAction(GetAvailableActions(character));
+        }
+        else
+        {
+            enemyActionsQueue.Clear();
+            if (!isPlayersTurn) character.PromptAction(GetAvailableActions(character));
+        }
     }
 
     void SwitchTurn()

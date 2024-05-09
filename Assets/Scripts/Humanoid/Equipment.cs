@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.XInput;
-using static PlasticGui.PlasticTableCell;
-using static UnityEditor.Progress;
 
 public class Equipment : MonoBehaviour
 {

@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
-using UnityEngine.InputSystem.HID;
-using System;
 
 public class PlayerControls : MonoBehaviour
 {
@@ -95,9 +93,9 @@ public class PlayerControls : MonoBehaviour
                 focus = interactable;
 
                 //check if the player is in the radius
-                if (focus.radius < Vector3.Distance(gameObject.transform.position, focus.transform.position + focus.GetRadiusOffset()))
+                if (focus.radius < Vector3.Distance(gameObject.transform.position, focus.transform.position))
                 {
-                    playerMovementController.Reach(focus.transform.position + focus.GetRadiusOffset(), focus.radius);
+                    playerMovementController.ReachInteractable(focus.transform.position, focus.radius);
                     waitingToGetInRadius = true;
                 }
                 else

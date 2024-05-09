@@ -2,14 +2,11 @@
     "name": "HumanoidAssembly",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c",
         "GUID:86d5c9409e9f9be41a6c4ab25310dff3",
-        "GUID:bdacbd96d0c41ab4ca83886ae90f3656",
-        "GUID:d793ec8ca4e913f4e8b9285ffc026332",
-        "GUID:5e4ca9c26a293d84992e0257eab3d7a1",
         "GUID:c9fcfa8234e8a6e4aaa23fb8af4ecf75",
         "GUID:8c4dd21966739024fbd72155091d199e",
-        "GUID:b4835c9878595834aadf0a1ebad519d6"
+        "GUID:5e4ca9c26a293d84992e0257eab3d7a1",
+        "GUID:d793ec8ca4e913f4e8b9285ffc026332"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -15,13 +15,13 @@ public class PlayerMovementController : HumanoidMovementController
 
     public void StartWalking(Vector3 _destination)
     {
-        StopFollowing();
+        StopReaching();
         Walk(_destination);
     }
 
     public void StartRunning(Vector3 _destination)
     {
-        StopFollowing();
+        StopReaching();
         Run(_destination);
     }
 

@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactions: 02000000
-  radius: 1
+  radius: 1.5
   radiusOffset: {x: 0, y: 0, z: 0}
   itemData: {fileID: 11400000, guid: e6c6576d819667442a99b2b538882ba9, type: 2}
 --- !u!54 &-1643190363205457074

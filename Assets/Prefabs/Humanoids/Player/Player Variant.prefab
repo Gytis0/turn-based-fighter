@@ -2719,8 +2719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkingSpeed: 1.8
   runningSpeed: 4
-  destination: {x: 0, y: 0, z: 0}
-  isFollowing: 0
+  isReachingInteractable: 0
   inCombat: 0
 --- !u!114 &8796106822507686264
 MonoBehaviour:

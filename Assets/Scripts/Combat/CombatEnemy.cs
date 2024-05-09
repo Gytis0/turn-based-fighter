@@ -13,7 +13,8 @@ public class CombatEnemy : CombatHumanoid
     GameObject playerObject;
 
     // Values to determine bot style
-    float baseDefensiveFactor, baseRetreatFactor, baseWildcardFactor;
+    float baseDefensiveFactor, baseRetreatFactor;
+    float thinkingSpeed;
 
     private void Start()
     {
@@ -25,7 +26,7 @@ public class CombatEnemy : CombatHumanoid
 
         baseDefensiveFactor = Random.Range(0.1f, 0.3f);
         baseRetreatFactor = Random.Range(0.2f, 0.4f);
-        baseWildcardFactor = Random.Range(0.01f, 0.1f);
+        thinkingSpeed = Random.Range(1.5f, 4f);
     }
 
     public override void ExecuteAction(Action action)
@@ -37,12 +38,15 @@ public class CombatEnemy : CombatHumanoid
     public override void PromptAction(List<Action> availableActions)
     {
         this.availableActions = availableActions;
-        if (actionQueue.Count == 0) GenerateAction();
+        if (actionQueue.Count == 0) StartCoroutine(GenerateAction());
         else EndTurn();
     }
 
-    void GenerateAction()
+    IEnumerator GenerateAction()
     {
+        float randomWaitTime = thinkingSpeed * Random.Range(1f, 1.75f);
+        yield return new WaitForSeconds(randomWaitTime);
+
         Action action = new Action(ActionName.Skip, ActionType.Skip);
         foreach (Action actionTemp in availableActions)
         {
@@ -67,13 +71,9 @@ public class CombatEnemy : CombatHumanoid
             else
             {
                 int randomActionNumber = Random.Range(0, 1);
-                if(randomActionNumber == 0)
+                if(randomActionNumber == 0 && IsActionAvailable(ActionName.Get_Up, availableActions))
                 {
                     action = new Action(ActionName.Get_Up, ActionType.Agile);
-                }
-                else
-                {
-                    action = new Action(ActionName.Skip, ActionType.Skip);
                 }
             }
         }
@@ -166,6 +166,8 @@ public class CombatEnemy : CombatHumanoid
         Debug.Log("Bot decided on action: " + action.actionName);
         if(action.directions.Count > 0) action.SetDirection(action.directions[Random.Range(0, action.directions.Count)]);
         actionQueue.Enqueue(action);
+
+        
         EndTurn();
     }
 
@@ -173,7 +175,7 @@ public class CombatEnemy : CombatHumanoid
     {
         agent.stoppingDistance = gridSpacing;
         agent.CalculatePath(playerObject.transform.position, path);
-        while(path.status != NavMeshPathStatus.PathComplete)
+        while (path.status != NavMeshPathStatus.PathComplete)
         {
             yield return new WaitForSeconds(1);
         }
@@ -205,5 +207,14 @@ public class CombatEnemy : CombatHumanoid
     public override void SkipTurn()
     {
         onEnemyTurnEnd(skipTurnAction);
+    }
+
+    public static bool IsActionAvailable(ActionName actionName, List<Action> actions)
+    {
+        foreach (Action action in actions)
+        {
+            if (actionName == action.actionName) return true;
+        }
+        return false;
     }
 }

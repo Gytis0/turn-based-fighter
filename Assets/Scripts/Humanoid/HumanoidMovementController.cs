@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.AI;
 
 public class HumanoidMovementController : MonoBehaviour
@@ -13,8 +12,7 @@ public class HumanoidMovementController : MonoBehaviour
     [SerializeField] float walkingSpeed = 1f;
     [SerializeField] float runningSpeed = 10f;
 
-    public Vector3 destination;
-    public bool isFollowing = false;
+    public bool isReachingInteractable = false;
     bool isFallen = false;
     public bool inCombat = false;
     bool moving = false;
@@ -31,7 +29,8 @@ public class HumanoidMovementController : MonoBehaviour
 
     protected virtual void Walk(Vector3 _destination)
     {
-        moving = false;
+        agent.isStopped = false;
+        moving = true;
         agent.SetDestination(_destination);
         agent.speed = walkingSpeed;
 
@@ -40,7 +39,8 @@ public class HumanoidMovementController : MonoBehaviour
 
     protected virtual void Run(Vector3 _destination)
     {
-        moving = false;
+        agent.isStopped = false;
+        moving = true;
         agent.SetDestination(_destination);
         agent.speed = runningSpeed;
 
@@ -60,32 +60,29 @@ public class HumanoidMovementController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * 5);
     }
 
-    public void Idle()
-    {
-        animationController.SetState(AnimationStates.IDLE);
-    }
-
     public void Stop()
     {
-        if (isFollowing)
+        if (isReachingInteractable)
         {
             FinishedFollowing();
         }
         moving = false;
-        Idle();
-        StopFollowing();
+        agent.isStopped = true;
+        animationController.SetState(AnimationStates.IDLE);
+        StopReaching();
     }
 
-    public void Reach(Vector3 destination, float _radius = 0f)
+    public void ReachInteractable(Vector3 destination, float _radius = 0f)
     {
-        this.destination = destination;
         agent.stoppingDistance = _radius;
-        moving = true;
-        isFollowing = true;
+        Run(destination);
+
+        isReachingInteractable = true;
     }
 
     public void Move(Vector3 destination, float speed, AnimationStates animationState, float angularSpeed = 800f, bool isFallen = false)
     {
+        agent.isStopped = false;
         animationController.SetState(animationState);
         moving = true;
         agent.SetDestination(destination);
@@ -95,11 +92,11 @@ public class HumanoidMovementController : MonoBehaviour
         this.isFallen = isFallen;
     }
 
-    protected virtual void StopFollowing()
+    protected virtual void StopReaching()
     {
-        destination = Vector3.zero;
+        //destination = Vector3.zero;
         agent.stoppingDistance = 0f;
-        isFollowing = false;
+        isReachingInteractable = false;
     }
 
     void FinishedFollowing()
@@ -123,11 +120,6 @@ public class HumanoidMovementController : MonoBehaviour
         if (isFallen)
         {
             return;
-        }
-
-        if (isFollowing && animationController.GetCurrentAnimationState() != AnimationStates.RUNNING)
-        {
-            Run(destination);
         }
 
         // Stop moving if there is no path generating

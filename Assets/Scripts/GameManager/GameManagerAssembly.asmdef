@@ -1,0 +1,23 @@
+{
+    "name": "GameManagerAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:88d7fe0e93589f247b78639c94502622",
+        "GUID:3422fbe30474f8a4aa93d4766bd89342",
+        "GUID:5e4ca9c26a293d84992e0257eab3d7a1",
+        "GUID:86d5c9409e9f9be41a6c4ab25310dff3",
+        "GUID:c9fcfa8234e8a6e4aaa23fb8af4ecf75",
+        "GUID:c92ece8fac95f2149a0475cc93c71c2c",
+        "GUID:d793ec8ca4e913f4e8b9285ffc026332"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

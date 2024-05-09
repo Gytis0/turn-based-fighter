@@ -49,9 +49,4 @@ public class Item : Interactable
         gameObject.SetActive(true);
         transform.parent = null;
     }
-
-    public void HideInInventory()
-    {
-        gameObject.SetActive(false);
-    }
 }
