@@ -6,7 +6,6 @@ public static class UtilityScripts
 {
     static LayerMask movementBlockingObjects = 512;
     static LayerMask charactersMask = 1152;
-
     public static bool IsPositionValid(Vector3 startPos, Vector2 endPos, Tuple<Vector2, Vector2> gridBoundaries)
     {
         startPos.Set(startPos.x, .5f, startPos.z);

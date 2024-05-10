@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Throw
   m_EditorClassIdentifier: 
   actionName: 13
-  baseDuration: 8
+  baseDuration: 10
   baseStaminaDrain: 8
   baseComposureDrain: 3
+  duration: 0
   staminaDrain: 0
   composureDrain: 0
   actionType: 2

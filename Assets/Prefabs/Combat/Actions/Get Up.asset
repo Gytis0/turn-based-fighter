@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Get Up
   m_EditorClassIdentifier: 
   actionName: 3
-  baseDuration: 5
+  baseDuration: 4
   baseStaminaDrain: 5
   baseComposureDrain: -10
+  duration: 0
   staminaDrain: 0
   composureDrain: 0
   actionType: 1

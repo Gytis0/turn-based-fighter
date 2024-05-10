@@ -1,10 +1,4 @@
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
-using static log4net.Appender.RollingFileAppender;
-using UnityEditor.UIElements;
 
 public class HumanoidAnimationController : MonoBehaviour
 {
@@ -19,7 +13,7 @@ public class HumanoidAnimationController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
     }
     
-    public void SetState(AnimationStates newState, float duration = 1f)
+    public void SetState(AnimationStates newState, float duration = 0f)
     {
         foreach (AnimatorControllerParameter state in animator.parameters)
         {
@@ -30,16 +24,7 @@ public class HumanoidAnimationController : MonoBehaviour
             }
         }
         animationState = newState;
-
         animationDuration = duration;
-        if(animationState == AnimationStates.IDLE)
-        {
-            Debug.Log(tempTimer);
-        }
-        else if(animationState == AnimationStates.ROLLING_LEFT || animationState == AnimationStates.ROLLING_RIGHT || animationState == AnimationStates.FALLING) 
-        {
-            tempTimer = 0f;
-        }
     }
 
     public void SetAnimationModes(bool isTwoHanded, bool isLeftHanded, bool inCombat)
@@ -64,7 +49,13 @@ public class HumanoidAnimationController : MonoBehaviour
 
     private void Update()
     {
-        animator.SetFloat("Speed", GetCurrentAnimationLength() / animationDuration);
-        tempTimer += Time.deltaTime;
+        if(animationDuration == 0f)
+        {
+            animator.SetFloat("Speed", 1f);
+        }
+        else
+        {
+            animator.SetFloat("Speed", GetCurrentAnimationLength() / animationDuration);
+        }
     }
 }

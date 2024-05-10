@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Swing
   m_EditorClassIdentifier: 
   actionName: 12
-  baseDuration: 5
+  baseDuration: 7
   baseStaminaDrain: 4
   baseComposureDrain: 1
+  duration: 0
   staminaDrain: 0
   composureDrain: 0
   actionType: 2

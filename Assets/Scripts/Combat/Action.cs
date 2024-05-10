@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor.VersionControl;
-using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Action", menuName = "Combat/Action")]
@@ -48,7 +46,8 @@ public class Action : ScriptableObject
     public int baseDuration;
     public int baseStaminaDrain;
     public int baseComposureDrain;
-
+    
+    [HideInInspector] public float duration;
     [HideInInspector] public float staminaDrain;
     [HideInInspector] public float composureDrain;
 

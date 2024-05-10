@@ -38,11 +38,11 @@ public class CombatHumanoid : MonoBehaviour
     protected List<Action> availableActions = new List<Action>();
 
     // Configuration
-    protected float dodgeSpeed = 2.3f;
-    protected float runSpeed = 5.3f;
-    protected float walkSpeed = 2.3f;
-    [SerializeField] protected float rollSpeed = 3f;
-    [SerializeField] protected float fallingSpeed = 3f;
+    protected float dodgeSpeed = 2f;
+    protected float runSpeed = 4f;
+    protected float walkSpeed = 2f;
+    protected float rollSpeed = 2f;
+    protected float fallingSpeed = 2f;
 
     // Values
     protected int gridSpacing;
@@ -112,17 +112,17 @@ public class CombatHumanoid : MonoBehaviour
         {
             if (action.directions[0] == Direction.Left)
             {
-                humanoidAnimationController.SetState(AnimationStates.BLOCKING_LEFT, action.baseDuration);
+                humanoidAnimationController.SetState(AnimationStates.BLOCKING_LEFT, action.duration);
                 combatState = CombatState.Blocking_Left;
             }
             else if (action.directions[0] == Direction.Right)
             {
-                humanoidAnimationController.SetState(AnimationStates.BLOCKING_RIGHT, action.baseDuration);
+                humanoidAnimationController.SetState(AnimationStates.BLOCKING_RIGHT, action.duration);
                 combatState = CombatState.Blocking_Right;
             }
             else if (action.directions[0] == Direction.Forward)
             {
-                humanoidAnimationController.SetState(AnimationStates.BLOCKING, action.baseDuration);
+                humanoidAnimationController.SetState(AnimationStates.BLOCKING, action.duration);
                 combatState = CombatState.Blocking;
             }
         }
@@ -130,45 +130,45 @@ public class CombatHumanoid : MonoBehaviour
         {
             if (action.directions[0] == Direction.Forward)
             {
-                humanoidMovementController.Move(transform.position + Vector3.forward * gridSpacing, dodgeSpeed, AnimationStates.DODGING_FORWARD, 0);
-                humanoidAnimationController.SetState(AnimationStates.DODGING_FORWARD, action.baseDuration);
+                humanoidMovementController.Move(transform.position + Vector3.forward * gridSpacing, dodgeSpeed / action.duration, AnimationStates.DODGING_FORWARD, 0);
+                humanoidAnimationController.SetState(AnimationStates.DODGING_FORWARD, action.duration);
             }
             else if (action.directions[0] == Direction.Backward)
             {
-                humanoidMovementController.Move(transform.position + Vector3.back * gridSpacing, dodgeSpeed, AnimationStates.DODGING_BACKWARD, 0);
-                humanoidAnimationController.SetState(AnimationStates.DODGING_BACKWARD, action.baseDuration);
+                humanoidMovementController.Move(transform.position + Vector3.back * gridSpacing, dodgeSpeed / action.duration, AnimationStates.DODGING_BACKWARD, 0);
+                humanoidAnimationController.SetState(AnimationStates.DODGING_BACKWARD, action.duration);
             }
             else if (action.directions[0] == Direction.Left)
             {
-                humanoidMovementController.Move(transform.position + Vector3.left * gridSpacing, dodgeSpeed, AnimationStates.DODGING_LEFT, 0);
-                humanoidAnimationController.SetState(AnimationStates.DODGING_LEFT, action.baseDuration);
+                humanoidMovementController.Move(transform.position + Vector3.left * gridSpacing, dodgeSpeed / action.duration, AnimationStates.DODGING_LEFT, 0);
+                humanoidAnimationController.SetState(AnimationStates.DODGING_LEFT, action.duration);
             }
             else if (action.directions[0] == Direction.Right)
             {
-                humanoidMovementController.Move(transform.position + Vector3.right * gridSpacing, dodgeSpeed, AnimationStates.DODGING_RIGHT, 0);
-                humanoidAnimationController.SetState(AnimationStates.DODGING_RIGHT, action.baseDuration);
+                humanoidMovementController.Move(transform.position + Vector3.right * gridSpacing, dodgeSpeed / action.duration, AnimationStates.DODGING_RIGHT, 0);
+                humanoidAnimationController.SetState(AnimationStates.DODGING_RIGHT, action.duration);
             }
         }
         else if (action.actionName == ActionName.Duck)
         {
-            humanoidAnimationController.SetState(AnimationStates.DUCKING, action.baseDuration);
+            humanoidAnimationController.SetState(AnimationStates.DUCKING, action.duration);
             combatState = CombatState.Ducking;
 
         }
         else if (action.actionName == ActionName.Get_Up)
         {
             combatStance = CombatStance.Standing;
-            humanoidAnimationController.SetState(AnimationStates.GETTING_UP, action.baseDuration);
+            humanoidAnimationController.SetState(AnimationStates.GETTING_UP, action.duration);
             fallen = false;
         }
         else if (action.actionName == ActionName.Overhead)
         {
             EnableWeapon(true, action);
-            humanoidAnimationController.SetState(AnimationStates.OVERHEAD, action.baseDuration);
+            humanoidAnimationController.SetState(AnimationStates.OVERHEAD, action.duration);
         }
         else if (action.actionName == ActionName.Kick)
         {
-            humanoidAnimationController.SetState(AnimationStates.KICKING, action.baseDuration);
+            humanoidAnimationController.SetState(AnimationStates.KICKING, action.duration);
             EnableKicking(true);
         }
         else if (action.actionName == ActionName.Roll)
@@ -182,49 +182,49 @@ public class CombatHumanoid : MonoBehaviour
             else animation = AnimationStates.ROLLING_RIGHT;
 
             Dictionary<Direction, Vector3> fourDirections = UtilityScripts.GetFourDirections(transform.position, false, gridSpacing);
-            humanoidAnimationController.SetState(animation, action.baseDuration);
-            humanoidMovementController.Move(fourDirections[action.directions[0]], rollSpeed, animation, 0f, true);
+            humanoidAnimationController.SetState(animation, action.duration);
+            humanoidMovementController.Move(fourDirections[action.directions[0]], rollSpeed / action.duration, animation, 0f, true);
         }
         else if (action.actionName == ActionName.Run)
         {
-            if (action.directions[0] == Direction.Forward) humanoidMovementController.Move(transform.position + Vector3.forward * gridSpacing * 2, runSpeed, AnimationStates.RUNNING);
-            else if (action.directions[0] == Direction.Backward) humanoidMovementController.Move(transform.position + Vector3.back * gridSpacing * 2, runSpeed, AnimationStates.RUNNING);
-            else if (action.directions[0] == Direction.Left) humanoidMovementController.Move(transform.position + Vector3.left * gridSpacing * 2, runSpeed, AnimationStates.RUNNING);
-            else if (action.directions[0] == Direction.Right) humanoidMovementController.Move(transform.position + Vector3.right * gridSpacing * 2, runSpeed, AnimationStates.RUNNING);
+            if (action.directions[0] == Direction.Forward) humanoidMovementController.Move(transform.position + Vector3.forward * gridSpacing * 2, runSpeed / action.duration, AnimationStates.RUNNING);
+            else if (action.directions[0] == Direction.Backward) humanoidMovementController.Move(transform.position + Vector3.back * gridSpacing * 2, runSpeed / action.duration, AnimationStates.RUNNING);
+            else if (action.directions[0] == Direction.Left) humanoidMovementController.Move(transform.position + Vector3.left * gridSpacing * 2, runSpeed / action.duration, AnimationStates.RUNNING);
+            else if (action.directions[0] == Direction.Right) humanoidMovementController.Move(transform.position + Vector3.right * gridSpacing * 2, runSpeed / action.duration, AnimationStates.RUNNING);
 
-            humanoidAnimationController.SetState(AnimationStates.RUNNING, action.baseDuration);
+            humanoidAnimationController.SetState(AnimationStates.RUNNING, action.duration);
         }
         else if (action.actionName == ActionName.Stab)
         {
             EnableWeapon(true, action);
-            if (action.directions[0] == Direction.Forward) humanoidAnimationController.SetState(AnimationStates.STABBING, action.baseDuration);
-            else if (action.directions[0] == Direction.Backward) humanoidAnimationController.SetState(AnimationStates.STABBING_DOWN, action.baseDuration);
+            if (action.directions[0] == Direction.Forward) humanoidAnimationController.SetState(AnimationStates.STABBING, action.duration);
+            else if (action.directions[0] == Direction.Backward) humanoidAnimationController.SetState(AnimationStates.STABBING_DOWN, action.duration);
         }
         else if (action.actionName == ActionName.Stand_Ground)
         {
-            humanoidAnimationController.SetState(AnimationStates.STAND_GROUND, action.baseDuration);
+            humanoidAnimationController.SetState(AnimationStates.STAND_GROUND, action.duration);
         }
         else if (action.actionName == ActionName.Step)
         {
-            if (action.directions[0] == Direction.Forward) humanoidMovementController.Move(transform.position + Vector3.forward * gridSpacing, walkSpeed, AnimationStates.WALKING);
-            else if (action.directions[0] == Direction.Backward) humanoidMovementController.Move(transform.position + Vector3.back * gridSpacing, walkSpeed, AnimationStates.WALKING);
-            else if (action.directions[0] == Direction.Left) humanoidMovementController.Move(transform.position + Vector3.left * gridSpacing, walkSpeed, AnimationStates.WALKING);
-            else if (action.directions[0] == Direction.Right) humanoidMovementController.Move(transform.position + Vector3.right * gridSpacing, walkSpeed, AnimationStates.WALKING);
+            if (action.directions[0] == Direction.Forward) humanoidMovementController.Move(transform.position + Vector3.forward * gridSpacing, walkSpeed / action.duration, AnimationStates.WALKING);
+            else if (action.directions[0] == Direction.Backward) humanoidMovementController.Move(transform.position + Vector3.back * gridSpacing, walkSpeed / action.duration, AnimationStates.WALKING);
+            else if (action.directions[0] == Direction.Left) humanoidMovementController.Move(transform.position + Vector3.left * gridSpacing, walkSpeed / action.duration, AnimationStates.WALKING);
+            else if (action.directions[0] == Direction.Right) humanoidMovementController.Move(transform.position + Vector3.right * gridSpacing, walkSpeed / action.duration, AnimationStates.WALKING);
 
-            humanoidAnimationController.SetState(AnimationStates.WALKING, action.baseDuration);
+            humanoidAnimationController.SetState(AnimationStates.WALKING, action.duration);
         }
         else if (action.actionName == ActionName.Swing)
         {
             EnableWeapon(true, action);
 
-            if (action.directions[0] == Direction.Left) humanoidAnimationController.SetState(AnimationStates.SWINGING_LEFT, action.baseDuration);
-            else if (action.directions[0] == Direction.Right) humanoidAnimationController.SetState(AnimationStates.SWINGING_RIGHT, action.baseDuration);
+            if (action.directions[0] == Direction.Left) humanoidAnimationController.SetState(AnimationStates.SWINGING_LEFT, action.duration);
+            else if (action.directions[0] == Direction.Right) humanoidAnimationController.SetState(AnimationStates.SWINGING_RIGHT, action.duration);
         }
         else if (action.actionName == ActionName.Throw)
         {
             EnableWeapon(true, action);
 
-            humanoidAnimationController.SetState(AnimationStates.THROWING, action.baseDuration);
+            humanoidAnimationController.SetState(AnimationStates.THROWING, action.duration);
         }
     }
 
@@ -258,6 +258,8 @@ public class CombatHumanoid : MonoBehaviour
     {
         return equipment.GetWeaponWeight();
     }
+
+    public float GetWeaponSpeed() { return equipment.GetWeaponSpeed(); }
 
     public float GetShieldWeight()
     {
@@ -315,7 +317,8 @@ public class CombatHumanoid : MonoBehaviour
                     }
                 }
             }
-            
+
+            DenyAction();
 
             combatStance = CombatStance.Fallen;
         }
@@ -349,8 +352,9 @@ public class CombatHumanoid : MonoBehaviour
     public string GetCurrentAnimationName()
     {
         return humanoidAnimationController.GetCurrentAnimationName();
-
     }
+
+    public AnimationStates GetCurrentAnimationState() { return humanoidAnimationController.GetCurrentAnimationState(); }
     
     private void Update()
     {

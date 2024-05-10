@@ -20,6 +20,20 @@ public class CombatManager : MonoBehaviour
     Queue<Action> playerActionsQueue = new Queue<Action>();
     Queue<Action> enemyActionsQueue = new Queue<Action>();
 
+    
+    // When the action will be done, what action is being executed
+    Tuple<float, Action> lastPlayerAction;
+    Tuple<float, Action> lastEnemyAction;
+
+    List<Tuple<float, Action>> playerTimeline = new List<Tuple<float, Action>>();
+    List<Tuple<float, Action>> enemyTimeline = new List<Tuple<float, Action>>();
+
+    bool isPlayerInAction;
+    bool isEnemyInAction;
+
+    float combatTotalTime = 0f;
+    float freeTime = 10f;
+
     // Grid
     Tuple<Vector2, Vector2> gridBoundaries;
     float gridSpacing;
@@ -59,6 +73,9 @@ public class CombatManager : MonoBehaviour
 
     public void StartCombat()
     {
+        combatTotalTime = 0f;
+        playerTimeline.Add(new Tuple<float, Action>(0f, new Action(ActionName.Skip, ActionType.Skip)));
+        enemyTimeline.Add(new Tuple<float, Action>(0f, new Action(ActionName.Skip, ActionType.Skip)));
         inCombat = true;
         EnableUi(true);
         UpdateIndicator();
@@ -113,24 +130,35 @@ public class CombatManager : MonoBehaviour
 
     void ForcefullyEndTurn()
     {
-        //Debug.Log("Forcefully ending turn [" + playersTurn + "]");
+        Debug.Log("Forcefully ending turn [" + isPlayersTurn + "]");
         if (isPlayersTurn) player.EndTurn();
         else enemy.EndTurn();
     }
 
-    void AddActionToPlayerQueue(Action action)
+    void AddActionToPlayerQueue(Queue<Action> actions)
     {
-        playerActionsQueue.Enqueue(action);
+        foreach(Action action in actions)
+        {
+            playerActionsQueue.Enqueue(action);
+        }
+        Update();
+        SwitchTurn();
     }
 
-    void AddActionToEnemyQueue(Action action)
+    void AddActionToEnemyQueue(Queue<Action> actions)
     {
-        enemyActionsQueue.Enqueue(action);
+        foreach (Action action in actions)
+        {
+            enemyActionsQueue.Enqueue(action);
+        }
+        Update();
+
+        SwitchTurn();
     }
 
     void ApproveAction(Action action, CombatHumanoid character)
     {
-        Debug.Log("Approving " + action.actionName);
+        Debug.Log("Approving " + action.actionName + " for " + character.name);
         bool approved = false;
         List<Action> tempActionList = GetAvailableActions(character);
         foreach (Action availableAction in tempActionList)
@@ -146,14 +174,43 @@ public class CombatManager : MonoBehaviour
         {
             DenyAction(character);
             character.PromptAction(tempActionList);
-            Debug.Log("Action " + action.actionName.ToString() + " got denied from " + character.name);
+            Debug.Log("Denying " + action.actionName + " for " + character.name);
         }
 
         if (approved)
         {
+            if (action.actionType == ActionType.Offensive)
+            {
+                action.duration = (action.baseDuration - (character.GetWeaponSpeed() / 3));
+            }
+            else if(action.actionType == ActionType.Movement || action.actionType == ActionType.Agile)
+            {
+                action.duration = action.baseDuration * (character.GetAllWeight() / 100 + 1) ;
+            }
+            action.duration *= 1 - (Mathf.Clamp(character.GetComposure() / character.GetMaxComposure() * 4, 0.01f, 1f)) + 1;
+
+            if(action.actionType == ActionType.Skip)
+            {
+                action.duration = action.baseDuration;
+            }
+
             character.ExecuteAction(action);
-            SwitchTurn();
-            timer.EnableTimer(10f);
+            if (character.GetType() == typeof(CombatPlayer))
+            {
+                if (action.actionType != ActionType.Skip)
+                {
+                    lastPlayerAction = new Tuple<float, Action>(combatTotalTime + action.duration, action);
+                    playerTimeline.Add(lastPlayerAction);
+                }
+            }
+            else
+            {
+                if (action.actionType != ActionType.Skip)
+                {
+                    lastEnemyAction = new Tuple<float, Action>(combatTotalTime + action.duration, action);
+                    enemyTimeline.Add(lastEnemyAction);
+                }
+            }
         }
     }
 
@@ -197,23 +254,69 @@ public class CombatManager : MonoBehaviour
         if (character.GetType() == typeof(CombatPlayer))
         {
             playerActionsQueue.Clear();
+            if (playerTimeline[playerTimeline.Count - 1].Item1 > combatTotalTime) playerTimeline[playerTimeline.Count - 1] = new Tuple<float, Action>(combatTotalTime, playerTimeline[playerTimeline.Count - 1].Item2);
             if (isPlayersTurn) character.PromptAction(GetAvailableActions(character));
         }
         else
         {
             enemyActionsQueue.Clear();
+            if (enemyTimeline[enemyTimeline.Count - 1].Item1 > combatTotalTime) enemyTimeline[enemyTimeline.Count - 1] = new Tuple<float, Action>(combatTotalTime, enemyTimeline[enemyTimeline.Count - 1].Item2);
             if (!isPlayersTurn) character.PromptAction(GetAvailableActions(character));
         }
     }
 
     void SwitchTurn()
     {
-        //Debug.Log("Switching turn [" + playersTurn + "]");
         isPlayersTurn = !isPlayersTurn;
         UpdateIndicator();
 
-        if(isPlayersTurn) { player.PromptAction(GetAvailableActions(player)); }
-        else { enemy.PromptAction(GetAvailableActions(enemy)); }
+        float givenTime = 0f;
+
+        if (isPlayersTurn)
+        {
+            Debug.Log("Player turn");
+
+            if (isPlayerInAction && lastEnemyAction != null)
+            {
+                givenTime = Math.Max(lastEnemyAction.Item1, playerTimeline[playerTimeline.Count - 1].Item1) - combatTotalTime;
+                lastEnemyAction = null;
+            }
+            else if (!isPlayerInAction && lastEnemyAction != null)
+            {
+                givenTime = lastEnemyAction.Item1 - combatTotalTime;
+                lastEnemyAction = null;
+            }
+            else if (lastEnemyAction == null)
+            {
+                givenTime = freeTime;
+            }
+
+            givenTime *= player.GetComposure() / player.GetMaxComposure();
+            player.PromptAction(GetAvailableActions(player));
+        }
+        else 
+        {
+            Debug.Log("Enemey turn");
+            if (isEnemyInAction && lastPlayerAction != null)
+            {
+                givenTime = Math.Max(lastPlayerAction.Item1, enemyTimeline[enemyTimeline.Count - 1].Item1) - combatTotalTime;
+                lastPlayerAction = null;
+            }
+            else if(!isEnemyInAction && lastPlayerAction != null)
+            {
+                givenTime = lastPlayerAction.Item1 - combatTotalTime;
+                lastPlayerAction = null;
+            }
+            else if (lastPlayerAction == null)
+            {
+                givenTime = freeTime;
+            }
+
+            givenTime *= enemy.GetComposure() / enemy.GetMaxComposure();
+            enemy.PromptAction(GetAvailableActions(enemy)); 
+        }
+        givenTime += 5f;
+        timer.EnableTimer(givenTime);
     }
 
     void UpdateIndicator()
@@ -437,13 +540,21 @@ public class CombatManager : MonoBehaviour
     {
         if (!inCombat) return;
 
-        string playerAnimation = player.GetCurrentAnimationName().ToLower();
-        if (playerAnimation.Contains("idle") && playerActionsQueue.Count != 0){
+        combatTotalTime += Time.deltaTime;
+
+        isPlayerInAction = playerTimeline[playerTimeline.Count- 1].Item1 + 0.3f > combatTotalTime;
+        isEnemyInAction = enemyTimeline[enemyTimeline.Count - 1].Item1 + 0.3f > combatTotalTime;
+
+        // Remove lastAction if it's over
+        if (lastPlayerAction != null && lastPlayerAction.Item1 > combatTotalTime) lastPlayerAction = null;
+        if (lastEnemyAction != null && lastEnemyAction.Item1 > combatTotalTime) lastEnemyAction = null;
+
+        // Checking every frame if a queued action can be done
+        if (!isPlayerInAction && playerActionsQueue.Count != 0){
             ApproveAction(playerActionsQueue.Dequeue(), player);
         }
 
-        string enemyAnimation = enemy.GetCurrentAnimationName().ToLower();
-        if (enemyAnimation.Contains("idle") && enemyActionsQueue.Count != 0)
+        if (!isEnemyInAction && enemyActionsQueue.Count != 0)
         {
             ApproveAction(enemyActionsQueue.Dequeue(), enemy);
         }

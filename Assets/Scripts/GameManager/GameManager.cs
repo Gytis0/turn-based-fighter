@@ -118,6 +118,7 @@ public class GameManager : MonoBehaviour
     private void OnDisable()
     {
         StateChanger.onStartGame -= StartGame;
+        StateChanger.onContinueGame -= LoadMainMenu;
     }
 
     private void OnLevelWasLoaded(int level)
@@ -125,6 +126,8 @@ public class GameManager : MonoBehaviour
         if(level == 0)
         {
             MainMenu.onGameStart += LoadEquipmentScene;
+            StateChanger.onStartGame -= StartGame;
+            StateChanger.onContinueGame -= LoadMainMenu;
         }
         else if(level == 1)
         {
@@ -163,7 +166,6 @@ public class GameManager : MonoBehaviour
 
             SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
             SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
-
         }
     }
 
@@ -243,7 +245,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Generate armors to equip
-        List<Armor> armors = itemManager.GetAllArmors();
+        List<Armor> armors = new List<Armor>(itemManager.GetAllArmors());
         List<Armor> selectedArmors = new List<Armor>();
 
         int randomIndex;
@@ -313,7 +315,7 @@ public class GameManager : MonoBehaviour
 
         cinematicCamera.SetActive(false);
 
-        player.transform.position = new Vector3(-14f, 0f, -8f);
+        player.transform.position = new Vector3(-14f, 0f, -10f);
 
         combatManager.StartCombat();
     }

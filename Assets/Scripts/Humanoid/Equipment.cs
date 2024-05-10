@@ -151,6 +151,7 @@ public class Equipment : MonoBehaviour
 
     public void SetEquippedArmors(Dictionary<ArmorType, Armor> armors)
     {
+        armorItems.Clear();
         foreach(ArmorType key in armors.Keys)
         {
             armorItems.Add(key, new Armor(armors[key]));
@@ -161,6 +162,12 @@ public class Equipment : MonoBehaviour
     {
         if(GetEquippedWeaponData() == null) return 0f;
         return GetEquippedWeaponData().GetWeight();
+    }
+
+    public float GetWeaponSpeed()
+    {
+        if (GetEquippedWeaponData() == null) return 0f;
+        return GetEquippedWeaponData().GetSpeed();
     }
 
     public float GetShieldWeight()

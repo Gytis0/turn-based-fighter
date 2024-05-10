@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Run
   m_EditorClassIdentifier: 
   actionName: 7
-  baseDuration: 4
+  baseDuration: 3
   baseStaminaDrain: 3
   baseComposureDrain: -1
+  duration: 0
   staminaDrain: 0
   composureDrain: 0
   actionType: 0

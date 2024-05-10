@@ -37,8 +37,6 @@ public class Timer : MonoBehaviour
 
     void DisableTimer()
     {
-        Debug.Log("Disabling timer");
-
         timerEnabled = false;
         timerText.gameObject.SetActive(false);
     }

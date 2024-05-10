@@ -2363,10 +2363,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: b450942938aedda469cde08f64d2ffbf, type: 2}
-    - target: {fileID: 6381119738525980823, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
-      propertyPath: m_Layer
-      value: 7
-      objectReference: {fileID: 0}
     - target: {fileID: 6441150979485780277, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2735,11 +2731,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   legTrigger: {fileID: 6012807205296417549}
   skipTurnAction: {fileID: 11400000, guid: 61a319a69a8cf2643823f610861279d4, type: 2}
-  dodgeSpeed: 5
-  runSpeed: 3
-  walkSpeed: 1
-  rollSpeed: 3
-  fallingSpeed: 1
   allButtons:
   - {fileID: 4644924624192433253}
   - {fileID: 7354052316842206706}
@@ -2795,7 +2786,7 @@ MonoBehaviour:
   - {fileID: 4593635141774425205}
   - {fileID: 3125684205947082846}
   - {fileID: 8969814362589132283}
-  resetQueue: {fileID: 5087157827545212041}
+  resetQueueButton: {fileID: 5087157827545212041}
   endTurnButton: {fileID: 6098256504167624685}
   skipTurnButton: {fileID: 5977411141085883823}
   addActionButton: {fileID: 7009064792569761105}

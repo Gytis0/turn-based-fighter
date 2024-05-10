@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Stand Ground
   m_EditorClassIdentifier: 
   actionName: 10
-  baseDuration: 10
+  baseDuration: 1
   baseStaminaDrain: -5
   baseComposureDrain: -10
+  duration: 0
   staminaDrain: 0
   composureDrain: 0
   actionType: 3

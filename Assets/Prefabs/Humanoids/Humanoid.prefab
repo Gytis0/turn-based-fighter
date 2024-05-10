@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 5460217152705259741}
   - component: {fileID: 8410256841291206021}
   - component: {fileID: 1829277673638755767}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Leg Hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -270,11 +270,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   legTrigger: {fileID: 0}
   skipTurnAction: {fileID: 0}
-  dodgeSpeed: 5
-  runSpeed: 3
-  walkSpeed: 1
-  rollSpeed: 3
-  fallingSpeed: 3
 --- !u!114 &4005558496075148690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,8 +284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkingSpeed: 1
   runningSpeed: 10
-  destination: {x: 0, y: 0, z: 0}
-  isFollowing: 0
+  isReachingInteractable: 0
   inCombat: 0
 --- !u!114 &6978001258738036122
 MonoBehaviour:

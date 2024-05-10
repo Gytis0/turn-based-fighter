@@ -22,6 +22,7 @@ public class PlayerControls : MonoBehaviour
 
     void Awake()
     {
+        Time.timeScale = 1f;
         UILayer = LayerMask.NameToLayer("UI");
         cam = Camera.main;
         inputActions = new InputController();
@@ -35,6 +36,8 @@ public class PlayerControls : MonoBehaviour
     void TogglePauseMenu()
     {
         pauseMenu.SetActive(!pauseMenu.activeSelf);
+        if(pauseMenu.activeSelf ) Time.timeScale = 0f;
+        else Time.timeScale = 1f;
     }
 
     private void Update()

@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Skip
   m_EditorClassIdentifier: 
   actionName: 8
-  baseDuration: 10
+  baseDuration: 1
   baseStaminaDrain: -10
   baseComposureDrain: -5
+  duration: 1
   staminaDrain: -10
   composureDrain: -5
   actionType: 4

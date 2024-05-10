@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class CombatPlayer : CombatHumanoid
 {
-    public delegate void PlayerTurnEnd(Action action);
+    public delegate void PlayerTurnEnd(Queue<Action> actions);
     public event PlayerTurnEnd onPlayerTurnEnd;
 
     List<Action> movementActions, agileActions, offenseActions, defenseActions;
@@ -22,7 +22,7 @@ public class CombatPlayer : CombatHumanoid
 
     [SerializeField] List<TextMeshProUGUI> bubblesTexts;
     [SerializeField] List<Image> bubblesIndicators;
-    [SerializeField] Button resetQueue;
+    [SerializeField] Button resetQueueButton;
     [SerializeField] Button endTurnButton;
     [SerializeField] Button skipTurnButton;
     [SerializeField] Button addActionButton;
@@ -41,19 +41,19 @@ public class CombatPlayer : CombatHumanoid
         agileActions = new List<Action>();
         offenseActions = new List<Action>();
         defenseActions = new List<Action>();
+        DisableButtons();
     }
 
     public override void EnableCombatMode(bool _enable, float gridSpacing, Tuple<Vector2, Vector2> gridBoundaries)
     {
         base.EnableCombatMode(_enable, gridSpacing, gridBoundaries);
         combatUI.SetActive(_enable);
-        DisableButtons();
+        if (!_enable) DisableButtons();
     }
 
     public override void ExecuteAction(Action action)
     {
         base.ExecuteAction(action);
-
     }
 
     public override void PromptAction(List<Action> availableActions)
@@ -105,6 +105,12 @@ public class CombatPlayer : CombatHumanoid
                 offenseActions.Add(availableActions[i]);
             }
         }
+
+        resetQueueButton.interactable = true;
+        endTurnButton.interactable = true;
+        skipTurnButton.interactable = true;
+        addActionButton.interactable = true;
+
     }
 
     void DisableButtons()
@@ -114,6 +120,11 @@ public class CombatPlayer : CombatHumanoid
             button.transform.parent.GetComponent<Image>().color = notSelectedButton;
             button.transform.parent.gameObject.SetActive(false);
         }
+
+        resetQueueButton.interactable = false;
+        endTurnButton.interactable = false;
+        skipTurnButton.interactable = false;
+        addActionButton.interactable = false;
         ClearActionsLists();
     }
 
@@ -254,10 +265,12 @@ public class CombatPlayer : CombatHumanoid
         }
         else
         {
-            onPlayerTurnEnd(actionQueue.Dequeue());
+            Queue<Action> temp = new Queue<Action>(actionQueue);
+            actionQueue.Clear();
+
+            onPlayerTurnEnd(temp);
             UpdateBubbles();
         }
-
     }
 
     public override void SkipTurn()
@@ -267,8 +280,10 @@ public class CombatPlayer : CombatHumanoid
         DemarkEverything();
 
         DisableButtons();
-
-        onPlayerTurnEnd(skipTurnAction);
+        actionQueue.Enqueue(skipTurnAction);
+        Queue<Action> temp = new Queue<Action>(actionQueue);
+        actionQueue.Clear();
+        onPlayerTurnEnd(temp);
     }
 
     public void ResetQueue()

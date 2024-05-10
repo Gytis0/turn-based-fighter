@@ -16,6 +16,7 @@ MonoBehaviour:
   baseDuration: 4
   baseStaminaDrain: 1
   baseComposureDrain: -1
+  duration: 0
   staminaDrain: 0
   composureDrain: 0
   actionType: 0
