@@ -51,7 +51,6 @@ public class GameManager : MonoBehaviour
         itemManager = ItemManager.Instance;
         combatManager = CombatManager.Instance;
         menuObject = GameObject.FindGameObjectWithTag("Main Menu");
-        endScreen = GameObject.FindGameObjectWithTag("End Screen");
 
         if(menuObject != null)
         {
@@ -75,6 +74,7 @@ public class GameManager : MonoBehaviour
             // TEMPORARY //
             cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
             preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
+            endScreen = GameObject.FindGameObjectWithTag("End Screen");
 
             StateChanger.onStartGame += StartGame;
 
@@ -147,6 +147,8 @@ public class GameManager : MonoBehaviour
             combatManager.onCombatEnd += EndGame;
             cinematicCamera = GameObject.FindGameObjectWithTag("Cinematic Camera");
             preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
+            endScreen = GameObject.FindGameObjectWithTag("End Screen");
+
 
             enemy = GameObject.FindGameObjectWithTag("Enemy");
             enemyProperties = enemy.GetComponent<HumanoidProperties>();
