@@ -4,6 +4,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Items/Weapon")]
 public class Weapon : ItemData
 {
+    public Weapon(int damage, int speed, int durability)
+    {
+        this.damage = damage;
+        this.speed = speed;
+        this.durability = durability;
+    }
+
     public Weapon(int damage)
     {
         this.damage = damage;

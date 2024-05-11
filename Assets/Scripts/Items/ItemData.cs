@@ -35,6 +35,14 @@ public class ItemData : ScriptableObject
 
     }
 
+    public ItemData(string name, int weight, ItemType itemType)
+    {
+        this.itemName = name;
+        this.weight = weight;
+        this.itemType = itemType;
+    }
+
+
     public Sprite GetIcon() { return icon; }
     public Vector3 GetHandOffset(HandSlot slot)
     {

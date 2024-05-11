@@ -25,11 +25,15 @@ public class Inventory : MonoBehaviour
         return allItems;
     }
 
-    public void SetItemInventory(Dictionary<int, ItemData> inventory)
+    public virtual void SetItemInventory(Dictionary<int, ItemData> inventory)
     {
         allItems = inventory;
     }
 
+    public Dictionary<int, ItemData> GetInventory()
+    {
+        return allItems;
+    }
 
     // Armors------------------------------------------------------------
 

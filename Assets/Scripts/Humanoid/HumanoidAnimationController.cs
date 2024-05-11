@@ -4,7 +4,7 @@ public class HumanoidAnimationController : MonoBehaviour
 {
     Animator animator;
     AnimationStates animationState;
-    float animationDuration = 1f;
+    float animationDuration = 0f;
 
     float tempTimer = 0f;
 
@@ -36,7 +36,7 @@ public class HumanoidAnimationController : MonoBehaviour
 
     public string GetCurrentAnimationName()
     {
-        if (animator.GetCurrentAnimatorClipInfoCount(0) == 0) return "";
+        if (animator == null || animator.GetCurrentAnimatorClipInfoCount(0) == 0) return "";
         return animator.GetCurrentAnimatorClipInfo(0)[0].clip.ToString();
     }
     public AnimationStates GetCurrentAnimationState() { return animationState; }
@@ -49,6 +49,8 @@ public class HumanoidAnimationController : MonoBehaviour
 
     private void Update()
     {
+        if (animator == null) return;
+
         if(animationDuration == 0f)
         {
             animator.SetFloat("Speed", 1f);

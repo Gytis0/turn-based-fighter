@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
             SetEnemyItems();
 
             //SetPlayerStats();
-            playerProperties.SetStats(new int[] { 3, 3, 1, 2 });
+            playerProperties.SetStats(new int[] { 3, 3, 1, 4 });
             SetPlayerItems();
 
             SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());

@@ -9,7 +9,7 @@ public class Timer : MonoBehaviour
     public event TimerDone onTimerDone;
 
     [SerializeField]
-    TextMeshProUGUI timerText;
+    public TextMeshProUGUI timerText;
 
     float remainingTime = 0;
     bool timerEnabled = false;

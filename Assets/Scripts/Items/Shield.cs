@@ -20,6 +20,11 @@ public class Shield : ItemData
         icon = shield.icon;
         weight = shield.weight;
     }
+    public Shield(int durability)
+    {
+        this.durability = durability;
+    }
+
     [SerializeField] protected int durability;
     [SerializeField] protected List<ActionName> actions;
     protected override ItemType itemType { get { return ItemType.Shield; } }

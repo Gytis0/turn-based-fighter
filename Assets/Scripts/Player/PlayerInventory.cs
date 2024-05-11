@@ -10,7 +10,7 @@ public class PlayerInventory : Inventory
     InputController inputActions;
 
     Transform itemInventoryRoot;
-    List<Transform> allItemsSlots = new();
+    List<Transform> allItemsSlots;
 
     Transform armorInventoryRoot;
     Dictionary<ArmorType, Transform> armorItemsSlots = new();
@@ -28,24 +28,32 @@ public class PlayerInventory : Inventory
     private void Awake()
     {
         itemManager = ItemManager.Instance;
-        itemInventoryRoot = GameObject.FindGameObjectWithTag("Item Inventory").transform;
-        armorInventoryRoot = GameObject.FindGameObjectWithTag("Armor Inventory").transform;
+
         try
         {
+            itemInventoryRoot = GameObject.FindGameObjectWithTag("Item Inventory").transform;
+            armorInventoryRoot = GameObject.FindGameObjectWithTag("Armor Inventory").transform;
             weaponInventoryRoot = GameObject.FindGameObjectWithTag("Weapon Inventory").transform;
         }
-        catch(System.Exception e) { }
+        catch (System.Exception e) { }
 
         equipment = GetComponentInParent<Equipment>();
 
-        foreach (Transform t in itemInventoryRoot)
-        {
-            allItemsSlots.Add(t.GetChild(0));
+        if (itemInventoryRoot != null)
+        { 
+            allItemsSlots = new List<Transform>();
+            foreach (Transform t in itemInventoryRoot)
+            {
+                allItemsSlots.Add(t.GetChild(0));
+            }
         }
 
-        for(int i = 0; i < armorInventoryRoot.childCount; i++)
+        if (itemInventoryRoot != null)
         {
-            armorItemsSlots.Add((ArmorType)Enum.GetValues(typeof(ArmorType)).GetValue(i), armorInventoryRoot.GetChild(i).GetChild(0));
+            for (int i = 0; i < armorInventoryRoot.childCount; i++)
+            {
+                armorItemsSlots.Add((ArmorType)Enum.GetValues(typeof(ArmorType)).GetValue(i), armorInventoryRoot.GetChild(i).GetChild(0));
+            }
         }
 
         if(weaponInventoryRoot != null)
@@ -115,11 +123,6 @@ public class PlayerInventory : Inventory
 
     // All items------------------------------------------------------------
 
-    private void Update()
-    {
-        
-    }
-
     void AddItem(GameObject item)
     {
         if (allItems.Count >= inventorySize) return;
@@ -158,7 +161,7 @@ public class PlayerInventory : Inventory
         UpdateItemInventory();
     }
 
-    void SwitchItem(int indexFrom, int indexTo)
+    public void SwitchItem(int indexFrom, int indexTo)
     {
         ItemData temp;
 
@@ -182,6 +185,8 @@ public class PlayerInventory : Inventory
 
     void UpdateItemInventory()
     {
+        if (allItemsSlots == null) return;
+
         Image tempImage;
         ItemSlot tempItemData;
         for (int i = 0; i < inventorySize; i++)
@@ -210,7 +215,7 @@ public class PlayerInventory : Inventory
         }
     }
 
-    int FindFirstEmptySlot()
+    public int FindFirstEmptySlot()
     {
         for (int i = 0; i < inventorySize; i++)
         {
@@ -222,9 +227,9 @@ public class PlayerInventory : Inventory
         return -1;
     }
 
-    public void SetItemInventory(Dictionary<int, ItemData> inventory)
+    public override void SetItemInventory(Dictionary<int, ItemData> inventory)
     {
-        allItems = inventory;
+        base.SetItemInventory(inventory);
         UpdateItemInventory();
     }
 

@@ -8,8 +8,8 @@ public class Equipment : MonoBehaviour
     protected Dictionary<ArmorType, Armor> armorItems = new();
 
     // References
-    [SerializeField] GameObject rightHand;
-    [SerializeField] GameObject leftHand;
+    [SerializeField] public GameObject rightHand;
+    [SerializeField] public GameObject leftHand;
 
     // Start is called before the first frame update
     void Awake()
@@ -96,7 +96,7 @@ public class Equipment : MonoBehaviour
         handSlots[(int)slot] = null;
     }
 
-    void Drop(HandSlot slot)
+    public void Drop(HandSlot slot)
     {
         Item item = new Item(handSlots[(int)slot], handSlots[(int)slot].GetItemData());
         UnequipHand(slot);

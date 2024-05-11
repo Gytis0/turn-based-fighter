@@ -35,30 +35,30 @@ public class OptionsMenu : MonoBehaviour
         resolutionsDropdown.value = currentResolution;
         resolutionsDropdown.RefreshShownValue();
 
-        load();
+        Load();
     }
 
-    public void setResolution(int resolutionIndex)
+    public void SetResolution(int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
-    public void setVolume(float newVolume)
+    public void SetVolume(float newVolume)
     {
         audioMixer.SetFloat("Main Volume", newVolume);
     }
 
-    public void setQualityLevel(int newQualityLevel)
+    public void SetQualityLevel(int newQualityLevel)
     {
         QualitySettings.SetQualityLevel(newQualityLevel);
     }
 
-    public void setFullscreen(bool isFullscreen)
+    public void SetFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
     }
 
-    public void save()
+    public void Save()
     {
         PlayerPrefs.SetInt("resolutionIndex", resolutionsDropdown.value);
         float volume;
@@ -77,7 +77,7 @@ public class OptionsMenu : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    public void load()
+    public void Load()
     {
         int index = PlayerPrefs.GetInt("resolutionIndex");
         Resolution resolution = resolutions[index];
@@ -107,10 +107,5 @@ public class OptionsMenu : MonoBehaviour
         }
         fullscreenToggle.Select();
 
-    }
-
-    public void Method()
-    {
-        throw new System.NotImplementedException();
     }
 }

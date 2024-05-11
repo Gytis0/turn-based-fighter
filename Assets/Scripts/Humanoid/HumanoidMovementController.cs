@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -17,8 +15,8 @@ public class HumanoidMovementController : MonoBehaviour
     public bool inCombat = false;
     bool moving = false;
 
-    protected delegate void Followed();
-    protected event Followed OnFollowed;
+    public delegate void Followed();
+    public event Followed OnFollowed;
 
     protected virtual void Awake()
     {
