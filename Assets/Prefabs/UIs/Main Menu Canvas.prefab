@@ -1061,7 +1061,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1071194694176198825}
         m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
-        m_MethodName: setFullscreen
+        m_MethodName: SetFullscreen
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2200,7 +2200,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1071194694176198825}
         m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
-        m_MethodName: save
+        m_MethodName: Save
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2570,7 +2570,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1071194694176198825}
         m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
-        m_MethodName: setQualityLevel
+        m_MethodName: SetQualityLevel
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2735,7 +2735,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1071194694176198825}
         m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
-        m_MethodName: setResolution
+        m_MethodName: SetResolution
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2852,7 +2852,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1071194694176198825}
         m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
-        m_MethodName: setVolume
+        m_MethodName: SetVolume
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11206,7 +11206,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1071194694176198825}
         m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
-        m_MethodName: load
+        m_MethodName: Load
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
