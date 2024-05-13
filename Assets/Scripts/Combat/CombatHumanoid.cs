@@ -99,6 +99,7 @@ public class CombatHumanoid : MonoBehaviour
 
     public virtual void ExecuteAction(Action action)
     {
+        Debug.Log(name + " executing " + action.actionName);
         EnableWeapon(false); EnableKicking(false);
         if(action.actionName == ActionName.Skip && combatStance == CombatStance.Fallen)
         {

@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static CombatHumanoid;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class GameManager : MonoBehaviour
     GameObject endScreen;
 
     int[] points;
+    float[] enemyStatsIntervals;
+
     Dictionary<int, ItemData> allItems = new();
     Dictionary<ArmorType, Armor> armorItems = new();
 
@@ -99,15 +102,14 @@ public class GameManager : MonoBehaviour
             allItems.Add(4, shieldItemData);
             armorItems.Add(ArmorType.Chestplate, chestplate);
 
-            SetEnemyStats();
-            SetEnemyItems();
-
-            //SetPlayerStats();
             playerProperties.SetStats(new int[] { 3, 3, 1, 4 });
             SetPlayerItems();
 
-            SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
-            SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
+            SetEnemyStats();
+            SetEnemyItems();
+
+            SetEnemyCharacterStats(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyStatsIntervals);
+            SetPlayerCharacterStats(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure());
 
             combatManager.onCombatEnd += EndGame;
             StateChanger.onContinueGame += LoadMainMenu;
@@ -166,8 +168,8 @@ public class GameManager : MonoBehaviour
 
             SetEnemyItems();
 
-            SetCharacterStatsWindow(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyProperties.GetHealth(), enemyProperties.GetStamina(), enemyProperties.GetComposure(), false, playerProperties.GetIntelligence());
-            SetCharacterStatsWindow(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure(), true);
+            SetEnemyCharacterStats(preFightScreen.transform.GetChild(1).gameObject, "Enemy", enemyStatsIntervals);
+            SetPlayerCharacterStats(preFightScreen.transform.GetChild(2).gameObject, "Player", playerProperties.GetHealth(), playerProperties.GetStamina(), playerProperties.GetComposure());
         }
     }
 
@@ -222,8 +224,10 @@ public class GameManager : MonoBehaviour
             availablePoints -= tempPoints;
             points[i] = tempPoints;
         }
-       
-        enemyProperties.SetStats(points);
+
+        enemyStatsIntervals = GenerateRandomIntervals(points, playerProperties.GetIntelligence());
+
+        enemyProperties.SetStats(points, enemyStatsIntervals);
     }
 
     void SetEnemyItems()
@@ -322,37 +326,22 @@ public class GameManager : MonoBehaviour
         combatManager.StartCombat();
     }
 
-    void SetCharacterStatsWindow(GameObject windowParentObject, string name, float health, float stamina, float composure, bool precise, int intelligence = 5)
+    void SetPlayerCharacterStats(GameObject windowParentObject, string name, float health, float stamina, float composure)
     {
         GameObject windowObject = windowParentObject.transform.GetChild(0).gameObject;
         CharacterStatsWindow characterStatsUI = windowObject.GetComponent<CharacterStatsWindow>();
         characterStatsUI.SetTitle(name);
 
-        if(precise || intelligence == 5) characterStatsUI.SetSlidersValues(health, stamina, composure);
-        else
-        {
-            int range = (5-intelligence) * 20;
+        characterStatsUI.SetSlidersValues(health, stamina, composure);
+    }
 
-            int randomRangeDown = Random.Range(0, range + 1);
+    void SetEnemyCharacterStats(GameObject windowParentObject, string name, float[] stats)
+    {
+        GameObject windowObject = windowParentObject.transform.GetChild(0).gameObject;
+        CharacterStatsWindow characterStatsUI = windowObject.GetComponent<CharacterStatsWindow>();
+        characterStatsUI.SetTitle(name);
 
-            float minHealth = Mathf.Clamp(health - randomRangeDown, 20, 100);
-            float actualReduce = health - minHealth;
-            float maxHealth = Mathf.Clamp(health + range - actualReduce, 20, 100);
-
-            randomRangeDown = Random.Range(0, range + 1);
-
-            float minStamina = Mathf.Clamp(stamina - randomRangeDown, 20, 100);
-            actualReduce = stamina - minStamina;
-            float maxStamina = Mathf.Clamp(stamina + range - actualReduce, 20, 100);
-
-            randomRangeDown = Random.Range(0, range + 1);
-
-            float minComposure = Mathf.Clamp(composure - randomRangeDown, 20, 100);
-            actualReduce = composure - minComposure;
-            float maxComposure = Mathf.Clamp(composure + range - actualReduce, 20, 100);
-
-            characterStatsUI.SetSlidersIntervals(minHealth, maxHealth, minStamina, maxStamina, minComposure, maxComposure);
-        }
+        characterStatsUI.SetSlidersIntervals(stats);
     }
 
     public void EndGame(bool isPlayerWinner, HumanoidProperties playerProperties, HumanoidProperties enemyProperties)
@@ -394,5 +383,30 @@ public class GameManager : MonoBehaviour
             result /= 2;
         }
         return result;
+    }
+
+    float[] GenerateRandomIntervals(int[] points , int intelligence)
+    {
+        int range = (5 - intelligence) * 20;
+
+        int randomRangeDown = Random.Range(0, range + 1);
+
+        float minHealth = Mathf.Clamp(points[0] * 20 - randomRangeDown, 20, 100);
+        float actualReduce = points[0] * 20 - minHealth;
+        float maxHealth = Mathf.Clamp(points[0] * 20 + range - actualReduce, 20, 100);
+
+        randomRangeDown = Random.Range(0, range + 1);
+
+        float minStamina = Mathf.Clamp(points[1] * 20 - randomRangeDown, 20, 100);
+        actualReduce = points[1] * 20 - minStamina;
+        float maxStamina = Mathf.Clamp(points[1] * 20 + range - actualReduce, 20, 100);
+
+        randomRangeDown = Random.Range(0, range + 1);
+
+        float minComposure = Mathf.Clamp(points[2] * 20 - randomRangeDown, 20, 100);
+        actualReduce = points[2] * 20 - minComposure;
+        float maxComposure = Mathf.Clamp(points[2] * 20 + range - actualReduce, 20, 100);
+
+        return new float[6] {minHealth, maxHealth, minStamina, maxStamina, minComposure, maxComposure};
     }
 }

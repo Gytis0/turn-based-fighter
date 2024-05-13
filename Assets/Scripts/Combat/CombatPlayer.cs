@@ -80,28 +80,28 @@ public class CombatPlayer : CombatHumanoid
             {
                 index = movementActions.Count;
                 movementButtons[index].transform.parent.gameObject.SetActive(true);
-                movementButtons[index].GetComponentInChildren<TextMeshProUGUI>().SetText(availableActions[i].actionName.ToString());
+                movementButtons[index].GetComponentInChildren<TextMeshProUGUI>().SetText(availableActions[i].actionName.ToString().Replace('_', ' '));
                 movementActions.Add(availableActions[i]);
             }
             else if (availableActions[i].actionType == ActionType.Agile)
             {
                 index = agileActions.Count;
                 agileButtons[index].transform.parent.gameObject.SetActive(true);
-                agileButtons[index].GetComponentInChildren<TextMeshProUGUI>().SetText(availableActions[i].actionName.ToString());
+                agileButtons[index].GetComponentInChildren<TextMeshProUGUI>().SetText(availableActions[i].actionName.ToString().Replace('_', ' '));
                 agileActions.Add(availableActions[i]);
             }
             else if (availableActions[i].actionType == ActionType.Defensive)
             {
                 index = defenseActions.Count;
                 defenseButtons[index].transform.parent.gameObject.SetActive(true);
-                defenseButtons[index].GetComponentInChildren<TextMeshProUGUI>().SetText(availableActions[i].actionName.ToString());
+                defenseButtons[index].GetComponentInChildren<TextMeshProUGUI>().SetText(availableActions[i].actionName.ToString().Replace('_', ' '));
                 defenseActions.Add(availableActions[i]);
             }
             else if (availableActions[i].actionType == ActionType.Offensive)
             {
                 index = offenseActions.Count;
                 offenseButtons[index].transform.parent.gameObject.SetActive(true);
-                offenseButtons[index].GetComponentInChildren<TextMeshProUGUI>().SetText(availableActions[i].actionName.ToString());
+                offenseButtons[index].GetComponentInChildren<TextMeshProUGUI>().SetText(availableActions[i].actionName.ToString().Replace('_', ' '));
                 offenseActions.Add(availableActions[i]);
             }
         }
@@ -206,7 +206,7 @@ public class CombatPlayer : CombatHumanoid
             }
             else
             {
-                bubblesTexts[i].SetText(actions[i].actionName.ToString());
+                bubblesTexts[i].SetText(actions[i].actionName.ToString().Replace('_', ' '));
                 bubblesIndicators[i].enabled = true;
                 if (actions[i].directions[0] == Direction.None) { bubblesIndicators[i].enabled = false; }
                 else if (actions[i].directions[0] == Direction.Left) { bubblesIndicators[i].rectTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 0)); }

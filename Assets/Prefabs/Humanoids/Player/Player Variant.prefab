@@ -1763,6 +1763,10 @@ PrefabInstance:
       propertyPath: staminaRegen
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 272045157908810615, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
+      propertyPath: floatingNumber
+      value: 
+      objectReference: {fileID: 4259928951879784213, guid: 50926141f63fede41a37106c6ee40133, type: 3}
     - target: {fileID: 486473555221311362, guid: 4df15a52cd84b21488cc4edeeac4b087, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

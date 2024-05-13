@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class HumanoidProperties : MonoBehaviour
 {
+    [SerializeField] bool isPropertiesPrecise = true;
+    [SerializeField] GameObject floatingNumber;
     protected CharacterStatsOverhead characterStats;
 
     protected int maxHealth = 100;
@@ -15,10 +17,12 @@ public class HumanoidProperties : MonoBehaviour
     protected float stamina;
     protected float composure;
 
+    Color blue = new Color(0f, 0.5f, 1f);
+    Color yellow = new Color(1f, 0.64f, 0f);
+
     protected void Awake()
     {
         characterStats = GetComponentInChildren<CharacterStatsOverhead>();
-
     }
     protected void Start()
     {
@@ -30,17 +34,26 @@ public class HumanoidProperties : MonoBehaviour
     public void AlterHealth(float change)
     {
         health += change;
-        characterStats.UpdateHealthSlider(health);
+        if(isPropertiesPrecise) characterStats.UpdateHealthSlider(health);
+        else characterStats.UpdateHealthInterval(change);
+        FloatingNumber floatingNumber = Instantiate(this.floatingNumber, characterStats.transform).GetComponent<FloatingNumber>();
+        floatingNumber.SetNumber(change, Color.red);
     }
     public void AlterStamina(float change)
     {
         stamina = Mathf.Clamp(stamina + change, 0, maxStamina);
-        characterStats.UpdateStaminaSlider(stamina);
+        if (isPropertiesPrecise) characterStats.UpdateStaminaSlider(stamina);
+        else characterStats.UpdateStaminaInterval(change);
+        FloatingNumber floatingNumber = Instantiate(this.floatingNumber, characterStats.transform).GetComponent<FloatingNumber>();
+        floatingNumber.SetNumber(change, blue);
     }
     public void AlterComposure(float change)
     {
         composure = Mathf.Clamp(composure + change, 0, maxComposure);
-        characterStats.UpdateComposureSlider(composure);
+        if (isPropertiesPrecise) characterStats.UpdateComposureSlider(composure);
+        else characterStats.UpdateComposureInterval(change);
+        FloatingNumber floatingNumber = Instantiate(this.floatingNumber, characterStats.transform).GetComponent<FloatingNumber>();
+        floatingNumber.SetNumber(change, yellow);
     }
 
     public float GetStamina() { return stamina; }
@@ -51,7 +64,7 @@ public class HumanoidProperties : MonoBehaviour
     public int GetMaxComposure() { return maxComposure; }
     public int GetIntelligence() { return intelligence; }
 
-    public void SetStats(int[] points)
+    public void SetStats(int[] points, float[] intervals = null)
     {
         maxHealth = points[0] * 20;
         maxStamina = points[1] * 20;
@@ -62,7 +75,8 @@ public class HumanoidProperties : MonoBehaviour
         stamina = maxStamina;
         composure = maxComposure;
 
-        characterStats.SetSlidersValues(health, stamina, composure);
+        if (intervals == null) characterStats.SetSlidersValues(health, stamina, composure);
+        else characterStats.SetSlidersIntervals(intervals);
     }
     public void EnableCharacterStatsOverhead(bool enable)
     {

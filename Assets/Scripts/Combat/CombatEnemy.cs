@@ -13,8 +13,6 @@ public class CombatEnemy : CombatHumanoid
     GameObject playerObject;
     CombatPlayer player;
 
-    Coroutine thinkingProcess;
-
     // Values to determine bot style
     float baseDefensiveFactor, baseRetreatFactor;
     float thinkingSpeed;
@@ -42,7 +40,7 @@ public class CombatEnemy : CombatHumanoid
     public override void PromptAction(List<Action> availableActions)
     {
         this.availableActions = availableActions;
-        if (actionQueue.Count == 0) thinkingProcess = StartCoroutine(GenerateAction());
+        if (actionQueue.Count == 0) StartCoroutine(GenerateAction());
         else EndTurn();
     }
 
@@ -64,7 +62,7 @@ public class CombatEnemy : CombatHumanoid
                 List<Action> agileActions = new List<Action>();
                 foreach (Action tempAction in availableActions)
                     if (tempAction.actionType == ActionType.Agile && tempAction.actionName != ActionName.Get_Up) agileActions.Add(tempAction);
-                if(agileActions.Count > 0) action = agileActions[Random.Range(0, availableActions.Count)];
+                if(agileActions.Count > 0) action = agileActions[Random.Range(0, agileActions.Count)];
             }
             else
             {
@@ -260,7 +258,7 @@ public class CombatEnemy : CombatHumanoid
 
     public override void SkipTurn()
     {
-        StopCoroutine(thinkingProcess);
+        StopAllCoroutines();
         actionQueue.Enqueue(skipTurnAction);
         Queue<Action> temp = new Queue<Action>(actionQueue);
         actionQueue.Clear();
@@ -270,7 +268,7 @@ public class CombatEnemy : CombatHumanoid
     public override void DenyAction()
     {
         base.DenyAction();
-        StopCoroutine(thinkingProcess);
+        StopAllCoroutines();
     }
 
     bool IsActionAvailable(ActionName actionName, List<Action> actions)

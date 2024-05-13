@@ -44,6 +44,21 @@ public class CharacterStatsOverhead : MonoBehaviour
         composureSlider.value = newComposure;
     }
 
+    public void UpdateHealthInterval(float change)
+    {
+        healthIntervalSlider.AlterInterval(change);
+    }
+
+    public void UpdateStaminaInterval(float change)
+    {
+        staminaIntervalSlider.AlterInterval(change);
+    }
+
+    public void UpdateComposureInterval(float change)
+    {
+        composureIntervalSlider.AlterInterval(change);
+    }
+
     public void SetSlidersValues(float health, float stamina, float composure)
     {
         healthSlider.maxValue = health;
@@ -59,10 +74,10 @@ public class CharacterStatsOverhead : MonoBehaviour
         composureDashLayout.SetDashes();
     }
 
-    public void SetSlidersIntervals(float minHealth, float maxHealth, float minStamina, float maxStamina, float minComposure, float maxComposure)
+    public void SetSlidersIntervals(float[] stats)
     {
-        healthIntervalSlider.SetInterval(minHealth, maxHealth);
-        staminaIntervalSlider.SetInterval(minStamina, maxStamina);
-        composureIntervalSlider.SetInterval(minComposure, maxComposure);
+        healthIntervalSlider.SetInterval(stats[0], stats[1]);
+        staminaIntervalSlider.SetInterval(stats[2], stats[3]);
+        composureIntervalSlider.SetInterval(stats[4], stats[5]);
     }
 }
