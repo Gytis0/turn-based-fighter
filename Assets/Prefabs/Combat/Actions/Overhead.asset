@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Overhead
   m_EditorClassIdentifier: 
   actionName: 4
-  baseDuration: 9
+  baseDuration: 10
   baseStaminaDrain: 5
   baseComposureDrain: 1
   duration: 0

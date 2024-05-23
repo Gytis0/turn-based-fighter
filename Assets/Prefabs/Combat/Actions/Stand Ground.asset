@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionName: 10
   baseDuration: 1
-  baseStaminaDrain: -5
-  baseComposureDrain: -10
+  baseStaminaDrain: -2
+  baseComposureDrain: -5
   duration: 0
   staminaDrain: 0
   composureDrain: 0

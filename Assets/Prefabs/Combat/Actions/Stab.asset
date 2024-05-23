@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Stab
   m_EditorClassIdentifier: 
   actionName: 9
-  baseDuration: 7
+  baseDuration: 8
   baseStaminaDrain: 4
   baseComposureDrain: 1
   duration: 0

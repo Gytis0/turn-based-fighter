@@ -28,7 +28,7 @@ public class CombatEnemy : CombatHumanoid
 
         baseDefensiveFactor = Random.Range(0.1f, 0.2f);
         baseRetreatFactor = Random.Range(0.3f, 0.5f);
-        thinkingSpeed = Random.Range(1.5f, 2.5f);
+        thinkingSpeed = Random.Range(1f, 2f);
     }
 
     public override void ExecuteAction(Action action)
@@ -47,7 +47,7 @@ public class CombatEnemy : CombatHumanoid
     IEnumerator GenerateAction()
     {
         float composurePercentage = Mathf.Clamp((GetComposure() / GetMaxComposure()) * 2, 0, 1);
-        float randomWaitTime = thinkingSpeed * Random.Range(1f, 1.4f) / composurePercentage;
+        float randomWaitTime = thinkingSpeed * Random.Range(1f, 1.2f) / composurePercentage;
         yield return new WaitForSeconds(randomWaitTime);
 
         Action action = GetAction(ActionName.Skip, availableActions);

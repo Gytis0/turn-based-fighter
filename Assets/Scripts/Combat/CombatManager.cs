@@ -130,7 +130,6 @@ public class CombatManager : MonoBehaviour
 
     void ForcefullyEndTurn()
     {
-        Debug.Log("Forcefully ending turn [" + isPlayersTurn + "]");
         if (isPlayersTurn) player.EndTurn();
         else enemy.EndTurn();
     }
@@ -139,7 +138,6 @@ public class CombatManager : MonoBehaviour
     {
         if (!isPlayersTurn) return;
         
-        Debug.Log("Adding player actions");
         foreach (Action action in actions)
         {
             playerActionsQueue.Enqueue(action);
@@ -152,7 +150,6 @@ public class CombatManager : MonoBehaviour
     {
         if (isPlayersTurn) return;
 
-        Debug.Log("Adding enemy actions");
         foreach (Action action in actions)
         {
             enemyActionsQueue.Enqueue(action);
@@ -179,12 +176,10 @@ public class CombatManager : MonoBehaviour
         {
             DenyAction(character);
             character.PromptAction(tempActionList);
-            Debug.Log("Denied " + action.actionName + " for " + character.name);
         }
 
         if (approved)
         {
-            Debug.Log("Approved " + action.actionName + " for " + character.name);
             if (action.actionType == ActionType.Offensive)
             {
                 action.duration = (action.baseDuration - (character.GetWeaponSpeed() / 3));
@@ -280,7 +275,6 @@ public class CombatManager : MonoBehaviour
 
         if (isPlayersTurn)
         {
-            Debug.Log("Player turn");
 
             if (isPlayerInAction && lastEnemyAction != null)
             {
@@ -302,7 +296,6 @@ public class CombatManager : MonoBehaviour
         }
         else 
         {
-            Debug.Log("Enemey turn");
             if (isEnemyInAction && lastPlayerAction != null)
             {
                 givenTime = Math.Max(lastPlayerAction.Item1, enemyTimeline[enemyTimeline.Count - 1].Item1) - combatTotalTime;
@@ -322,7 +315,6 @@ public class CombatManager : MonoBehaviour
             enemy.PromptAction(GetAvailableActions(enemy)); 
         }
         givenTime += 5f;
-        Debug.Log("Total given time: " + givenTime);
         timer.EnableTimer(givenTime);
     }
 
@@ -534,7 +526,6 @@ public class CombatManager : MonoBehaviour
 
     void PromptActionWhenFallen(CombatHumanoid character)
     {
-        Debug.Log("Prompting for an action when fallen: " + character);
         if(isPlayersTurn && character.GetType() == typeof(CombatPlayer)){
             character.PromptAction(GetAvailableActions(character));
         }
@@ -559,13 +550,11 @@ public class CombatManager : MonoBehaviour
 
         // Checking every frame if a queued action can be done
         if (!isPlayerInAction && playerActionsQueue.Count != 0){
-            Debug.Log("There is a queued action availaible for player: " +  playerActionsQueue.Peek().actionName);
             ApproveAction(playerActionsQueue.Dequeue(), player);
         }
 
         if (!isEnemyInAction && enemyActionsQueue.Count != 0)
         {
-            Debug.Log("There is a queued action availaible for enemy: " + enemyActionsQueue.Peek().actionName);
             ApproveAction(enemyActionsQueue.Dequeue(), enemy);
         }
     }

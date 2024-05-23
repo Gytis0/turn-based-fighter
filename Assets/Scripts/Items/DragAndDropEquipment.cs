@@ -41,12 +41,16 @@ public class DragAndDropEquipment : MonoBehaviour, IBeginDragHandler, IEndDragHa
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
         canvasGroup.alpha = 0.7f;
         canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
         if (itemSlot.itemData != null)
         {
             imageRect.position = eventData.position;
@@ -55,6 +59,8 @@ public class DragAndDropEquipment : MonoBehaviour, IBeginDragHandler, IEndDragHa
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
         imageRect.localPosition = new Vector2(0, 0);
 
         canvasGroup.alpha = 1f;
@@ -63,6 +69,8 @@ public class DragAndDropEquipment : MonoBehaviour, IBeginDragHandler, IEndDragHa
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
         ItemSlot otherItemSlot = eventData.pointerDrag.GetComponent<ItemSlot>();
 
         // Item dropped on armor slot
@@ -86,8 +94,8 @@ public class DragAndDropEquipment : MonoBehaviour, IBeginDragHandler, IEndDragHa
             // Item is not a weapon and not a shield
             if (otherItemSlot.itemData.GetItemType() != ItemType.Weapon && otherItemSlot.itemData.GetItemType() != ItemType.Shield) return;
 
-            // If the slot is already full
-            if (itemSlot.itemData != null) return;
+            // If the slot is already full or coming from weaponry inventory
+            if (itemSlot.itemData != null || otherItemSlot.slotType == SlotType.Weaponry) return;
 
             ItemData itemData = otherItemSlot.itemData;
             Item item = ItemManager.Instance.GetItem(itemData.GetName());

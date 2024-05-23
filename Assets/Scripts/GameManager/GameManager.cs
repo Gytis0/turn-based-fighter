@@ -185,10 +185,24 @@ public class GameManager : MonoBehaviour
     {
         playerInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<PlayerInventory>();
         allItems = playerInventory.GetItemsInventory();
-        armorItems = playerInventory.GetArmorInventory();
-        Interactable.onTravel -= LoadFightScene;
+        bool weaponFound = false;
+        foreach(ItemData item in allItems.Values)
+        {
+            if (item.GetType() == typeof(Weapon)) 
+            {
+                weaponFound = true;
+                break;
+            }
+        }
 
-        SceneManager.LoadScene(2);
+        if (weaponFound)
+        {
+            armorItems = playerInventory.GetArmorInventory();
+            Interactable.onTravel -= LoadFightScene;
+
+            SceneManager.LoadScene(2);
+        }
+        
     }
 
     public void LoadMainMenu()
@@ -301,6 +315,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        if (playerInventory.GetEquippedWeaponData() == null) return;
+
         preFightScreen = GameObject.FindGameObjectWithTag("Pre Fight Screen");
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");

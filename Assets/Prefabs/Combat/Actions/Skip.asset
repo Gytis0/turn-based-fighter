@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionName: 8
   baseDuration: 1
-  baseStaminaDrain: -10
-  baseComposureDrain: -5
+  baseStaminaDrain: -5
+  baseComposureDrain: -2
   duration: 1
-  staminaDrain: -10
-  composureDrain: -5
+  staminaDrain: -5
+  composureDrain: -2
   actionType: 4
   availableWhen: 00000000
   directions: 00000000

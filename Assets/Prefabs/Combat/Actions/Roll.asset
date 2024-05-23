@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Roll
   m_EditorClassIdentifier: 
   actionName: 6
-  baseDuration: 4
-  baseStaminaDrain: 3
+  baseDuration: 3
+  baseStaminaDrain: 5
   baseComposureDrain: 0
   duration: 0
   staminaDrain: 0

@@ -35,13 +35,16 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left) return;
         canvasGroup.alpha = 0.7f;
         canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if(itemSlot.itemData != null)
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
+        if (itemSlot.itemData != null)
         {
             imageRect.position = eventData.position;
         }
@@ -49,6 +52,8 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
         // Item was dragged out of the inventories
         if (!IsRectInside(imageRect, armorInventoryBackground) && !IsRectInside(imageRect, itemInventoryBackground))
         {
@@ -64,6 +69,8 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
         ItemSlot otherItemSlot = eventData.pointerDrag.GetComponent<ItemSlot>();
 
         // Item dropped on armor slot

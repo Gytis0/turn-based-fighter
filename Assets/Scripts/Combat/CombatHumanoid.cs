@@ -47,7 +47,7 @@ public class CombatHumanoid : MonoBehaviour
     // Values
     protected int gridSpacing;
     protected Tuple<Vector2, Vector2> gridBoundaries;
-    protected float fallOverThreshold = 15f;
+    protected float fallOverThreshold = 10f;
 
     protected void Start()
     {
@@ -99,7 +99,6 @@ public class CombatHumanoid : MonoBehaviour
 
     public virtual void ExecuteAction(Action action)
     {
-        Debug.Log(name + " executing " + action.actionName);
         EnableWeapon(false); EnableKicking(false);
         if(action.actionName == ActionName.Skip && combatStance == CombatStance.Fallen)
         {

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Duck
   m_EditorClassIdentifier: 
   actionName: 2
-  baseDuration: 5
+  baseDuration: 4
   baseStaminaDrain: 2
   baseComposureDrain: 6
   duration: 0

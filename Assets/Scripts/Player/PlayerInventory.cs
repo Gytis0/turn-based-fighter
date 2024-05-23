@@ -390,4 +390,11 @@ public class PlayerInventory : Inventory
             }
         }
     }
+
+    public Weapon GetEquippedWeaponData()
+    {
+        return equipment.GetEquippedWeaponData();
+    }
+
+
 }
