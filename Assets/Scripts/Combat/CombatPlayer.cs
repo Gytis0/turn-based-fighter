@@ -27,6 +27,10 @@ public class CombatPlayer : CombatHumanoid
     [SerializeField] Button skipTurnButton;
     [SerializeField] Button addActionButton;
 
+    [SerializeField] TextMeshProUGUI staminaImpact;
+    [SerializeField] TextMeshProUGUI composureImpact;
+    [SerializeField] TextMeshProUGUI durationImpact;
+
     Action selectedAction;
     Direction selectedDirection;
 
@@ -49,6 +53,8 @@ public class CombatPlayer : CombatHumanoid
         base.EnableCombatMode(_enable, gridSpacing, gridBoundaries);
         combatUI.SetActive(_enable);
         if (!_enable) DisableButtons();
+
+        DemarkEverything();
     }
 
     public override void ExecuteAction(Action action)
@@ -175,6 +181,10 @@ public class CombatPlayer : CombatHumanoid
         else if(buttonId == 32) selectedAction = defenseActions[2];
         else if(buttonId == 33) selectedAction = defenseActions[3];
 
+        staminaImpact.SetText("Stamina: " + selectedAction.baseStaminaDrain * -1);
+        composureImpact.SetText("Composure: " + selectedAction.baseComposureDrain * -1);
+        durationImpact.SetText("Duration: " + selectedAction.baseDuration * -1);
+
         ShowActionDirections();
     }
 
@@ -220,6 +230,11 @@ public class CombatPlayer : CombatHumanoid
 
     void DemarkEverything()
     {
+        staminaImpact.SetText("");
+        composureImpact.SetText("");
+        durationImpact.SetText("");
+
+        selectedDirection = Direction.None;
         foreach (Button button in allButtons)
         {
             button.transform.parent.GetComponent<Image>().color = notSelectedButton;

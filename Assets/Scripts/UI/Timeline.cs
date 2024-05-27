@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,9 +18,6 @@ public class Timeline : MonoBehaviour
     private void Start()
     {
         oneSecondWidth = transform.GetComponent<RectTransform>().sizeDelta.x / timelineTotalSeconds;
-        AddAction(5f, 4f, true, "Step", Direction.Right);
-        AddAction(7f, 2f, false, "Stand Ground");
-        AddAction(16f, 5f, true, "Swing", Direction.Left);
     }
 
     void FixedUpdate()
@@ -30,7 +25,7 @@ public class Timeline : MonoBehaviour
         itemsTransform.Translate(Vector2.left * oneSecondWidth * 0.02f * parentCanvas.localScale.x);
     }
 
-    void AddAction(float time, float duration, bool isPlayer, string name, Direction direction = Direction.None)
+    public void AddAction(float time, float duration, bool isPlayer, string name, Direction direction = Direction.None)
     {
         GameObject actionTemp = Instantiate(action, itemsTransform);
         RectTransform rect = actionTemp.GetComponent<RectTransform>();
@@ -40,14 +35,14 @@ public class Timeline : MonoBehaviour
         {
             rect.anchorMax = new Vector2(0, 1);
             rect.anchorMin = new Vector2(0, 1);
-            rect.anchoredPosition = new Vector3(time * oneSecondWidth - (oneSecondWidth * duration) / 2, -25f, 0f);
+            rect.anchoredPosition = new Vector3(time * oneSecondWidth + (oneSecondWidth * duration) / 2, -25f, 0f);
             actionTemp.transform.GetComponent<Image>().color = greenColor;
         }
         else
         {
             rect.anchorMax = new Vector2(0, 0);
             rect.anchorMin = new Vector2(0, 0);
-            rect.anchoredPosition = new Vector3(time * oneSecondWidth - (oneSecondWidth * duration) / 2, 25f, 0f);
+            rect.anchoredPosition = new Vector3(time * oneSecondWidth + (oneSecondWidth * duration) / 2, 25f, 0f);
             actionTemp.transform.GetComponent<Image>().color = redColor;
         }
 
