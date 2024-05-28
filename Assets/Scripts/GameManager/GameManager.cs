@@ -425,4 +425,6 @@ public class GameManager : MonoBehaviour
 
         return new float[6] {minHealth, maxHealth, minStamina, maxStamina, minComposure, maxComposure};
     }
+
+
 }

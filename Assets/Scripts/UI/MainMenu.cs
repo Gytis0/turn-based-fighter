@@ -17,6 +17,17 @@ public class MainMenu : MonoBehaviour
     [SerializeField] List<Image> composureBubbles;
     [SerializeField] List<Image> intelligenceBubbles;
 
+    [SerializeField] TextMeshProUGUI matchesPlayedText;
+    [SerializeField] TextMeshProUGUI matchesWonText;
+    [SerializeField] TextMeshProUGUI averageMatchTimeText;
+    [SerializeField] TextMeshProUGUI actionsTakenText;
+    [SerializeField] TextMeshProUGUI bestScoreText;
+    [SerializeField] TextMeshProUGUI averageHealthChoiceText;
+    [SerializeField] TextMeshProUGUI averageStaminaChoiceText;
+    [SerializeField] TextMeshProUGUI averageComposureChoiceText;
+    [SerializeField] TextMeshProUGUI averageIntelligenceChoiceText;
+    [SerializeField] TextMeshProUGUI oneHandedWeaponChoicesText;
+
     public delegate void StartGame();
     public static event StartGame onGameStart;
 
@@ -88,6 +99,20 @@ public class MainMenu : MonoBehaviour
             else image.sprite = emptyBubble;
             i++;
         }
+    }
+
+    void UpdateStats()
+    {
+        matchesPlayedText.SetText(PlayerPrefs.GetInt("matchesPlayed").ToString());
+        matchesWonText.SetText(PlayerPrefs.GetInt("matchesWon").ToString());
+        averageMatchTimeText.SetText((PlayerPrefs.GetFloat("totalTime") / PlayerPrefs.GetInt("countTime")).ToString());
+        actionsTakenText.SetText(PlayerPrefs.GetInt("actionsTaken").ToString());
+        bestScoreText.SetText(PlayerPrefs.GetInt("bestScore").ToString());
+        averageHealthChoiceText.SetText((PlayerPrefs.GetInt("totalHealth") / PlayerPrefs.GetInt("countHealth")).ToString());
+        averageStaminaChoiceText.SetText((PlayerPrefs.GetInt("totalStamina") / PlayerPrefs.GetInt("countStamina")).ToString());
+        averageComposureChoiceText.SetText((PlayerPrefs.GetInt("totalComposure") / PlayerPrefs.GetInt("countComposure")).ToString());
+        averageIntelligenceChoiceText.SetText((PlayerPrefs.GetInt("totalIntelligence") / PlayerPrefs.GetInt("countIntelligence")).ToString());
+        oneHandedWeaponChoicesText.SetText((PlayerPrefs.GetInt("totalOneHanded") / PlayerPrefs.GetInt("countOneHanded")).ToString());
     }
 
     void updateAllPanels()

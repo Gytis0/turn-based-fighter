@@ -27,8 +27,11 @@ public class CombatManager : MonoBehaviour
     Tuple<float, Action> lastPlayerAction;
     Tuple<float, Action> lastEnemyAction;
 
+    List<Tuple<float, Action>> playerHistory = new List<Tuple<float, Action>>();
+    List<Tuple<float, Action>> enemyHistory = new List<Tuple<float, Action>>();
     List<Tuple<float, Action>> playerTimeline = new List<Tuple<float, Action>>();
     List<Tuple<float, Action>> enemyTimeline = new List<Tuple<float, Action>>();
+
 
     bool isPlayerInAction;
     bool isEnemyInAction;
@@ -47,8 +50,6 @@ public class CombatManager : MonoBehaviour
     [SerializeField] GameObject combatObjects;
     [SerializeField] Timeline timeline;
     [SerializeField] TextMeshProUGUI indicator;
-
-    [SerializeField] List<UnityEngine.UI.Image> images = new();
 
     private void Awake()
     {
@@ -77,7 +78,9 @@ public class CombatManager : MonoBehaviour
     public void StartCombat()
     {
         combatTotalTime = 0f;
+        playerHistory.Add(new Tuple<float, Action>(0f, new Action(ActionName.Skip, ActionType.Skip)));
         playerTimeline.Add(new Tuple<float, Action>(0f, new Action(ActionName.Skip, ActionType.Skip)));
+        enemyHistory.Add(new Tuple<float, Action>(0f, new Action(ActionName.Skip, ActionType.Skip)));
         enemyTimeline.Add(new Tuple<float, Action>(0f, new Action(ActionName.Skip, ActionType.Skip)));
         inCombat = true;
         EnableUi(true);
@@ -144,14 +147,16 @@ public class CombatManager : MonoBehaviour
         foreach (Action action in actions)
         {
             action.duration = CalculateActionDuration(action, player);
-            playerActionsQueue.Enqueue(action);
             float time = combatTotalTime;
-            if(playerTimeline[playerTimeline.Count - 1].Item1 + GetQueueDuration(playerActionsQueue) > time)
+            if(playerTimeline[playerTimeline.Count - 1].Item1 > time)
             {
-                time = playerTimeline[playerTimeline.Count - 1].Item1 + GetQueueDuration(playerActionsQueue);
+                time = playerTimeline[playerTimeline.Count - 1].Item1;
             }
 
-            if(action.actionType != ActionType.Skip)
+            playerTimeline.Add(new Tuple<float, Action>(time + action.duration + 0.3f, action));
+            playerActionsQueue.Enqueue(action);
+
+            if (action.actionType != ActionType.Skip)
                 timeline.AddAction(time, action.duration, true, action.actionName.ToString(), action.directions[0]);
         }
         Update();
@@ -165,12 +170,15 @@ public class CombatManager : MonoBehaviour
         foreach (Action action in actions)
         {
             action.duration = CalculateActionDuration(action, enemy);
-            enemyActionsQueue.Enqueue(action);
             float time = combatTotalTime;
             if (enemyTimeline[enemyTimeline.Count - 1].Item1 + GetQueueDuration(enemyActionsQueue) > time)
             {
                 time = enemyTimeline[enemyTimeline.Count - 1].Item1 + GetQueueDuration(enemyActionsQueue);
             }
+
+            enemyTimeline.Add(new Tuple<float, Action>(combatTotalTime + action.duration, action));
+            enemyActionsQueue.Enqueue(action);
+
             if (action.actionType != ActionType.Skip)
                 timeline.AddAction(time, action.duration, false, action.actionName.ToString(), action.directions[0]);
         }
@@ -213,7 +221,7 @@ public class CombatManager : MonoBehaviour
                 if (action.actionType != ActionType.Skip)
                 {
                     lastPlayerAction = new Tuple<float, Action>(combatTotalTime + action.duration, action);
-                    playerTimeline.Add(lastPlayerAction);
+                    playerHistory.Add(lastPlayerAction);
                 }
             }
             else
@@ -221,7 +229,7 @@ public class CombatManager : MonoBehaviour
                 if (action.actionType != ActionType.Skip)
                 {
                     lastEnemyAction = new Tuple<float, Action>(combatTotalTime + action.duration, action);
-                    enemyTimeline.Add(lastEnemyAction);
+                    enemyHistory.Add(lastEnemyAction);
                 }
             }
         }
@@ -266,14 +274,30 @@ public class CombatManager : MonoBehaviour
         character.DenyAction();
         if (character.GetType() == typeof(CombatPlayer))
         {
+            int sum = 0;
+            while (playerTimeline[playerTimeline.Count - 1].Item1 > combatTotalTime)
+            {
+                sum++;
+                playerTimeline.RemoveAt(playerTimeline.Count - 1);
+            }
+            timeline.RemoveActions(sum, true);
+
             playerActionsQueue.Clear();
-            if (playerTimeline[playerTimeline.Count - 1].Item1 > combatTotalTime) playerTimeline[playerTimeline.Count - 1] = new Tuple<float, Action>(combatTotalTime, playerTimeline[playerTimeline.Count - 1].Item2);
+            if (playerHistory[playerHistory.Count - 1].Item1 > combatTotalTime) playerHistory[playerHistory.Count - 1] = new Tuple<float, Action>(combatTotalTime, playerHistory[playerHistory.Count - 1].Item2);
             if (isPlayersTurn) character.PromptAction(GetAvailableActions(character));
         }
         else
         {
+            int sum = 0;
+            while (enemyTimeline[enemyTimeline.Count - 1].Item1 > combatTotalTime)
+            {
+                sum++;
+                enemyTimeline.RemoveAt(enemyTimeline.Count - 1);
+            }
+            timeline.RemoveActions(sum, false);
+
             enemyActionsQueue.Clear();
-            if (enemyTimeline[enemyTimeline.Count - 1].Item1 > combatTotalTime) enemyTimeline[enemyTimeline.Count - 1] = new Tuple<float, Action>(combatTotalTime, enemyTimeline[enemyTimeline.Count - 1].Item2);
+            if (enemyHistory[enemyHistory.Count - 1].Item1 > combatTotalTime) enemyHistory[enemyHistory.Count - 1] = new Tuple<float, Action>(combatTotalTime, enemyHistory[enemyHistory.Count - 1].Item2);
             if (!isPlayersTurn) character.PromptAction(GetAvailableActions(character));
         }
     }
@@ -290,7 +314,7 @@ public class CombatManager : MonoBehaviour
 
             if (isPlayerInAction && lastEnemyAction != null)
             {
-                givenTime = Math.Max(lastEnemyAction.Item1, playerTimeline[playerTimeline.Count - 1].Item1) - combatTotalTime;
+                givenTime = Math.Max(lastEnemyAction.Item1, playerHistory[playerHistory.Count - 1].Item1) - combatTotalTime;
                 lastEnemyAction = null;
             }
             else if (!isPlayerInAction && lastEnemyAction != null)
@@ -310,7 +334,7 @@ public class CombatManager : MonoBehaviour
         {
             if (isEnemyInAction && lastPlayerAction != null)
             {
-                givenTime = Math.Max(lastPlayerAction.Item1, enemyTimeline[enemyTimeline.Count - 1].Item1) - combatTotalTime;
+                givenTime = Math.Max(lastPlayerAction.Item1, enemyHistory[enemyHistory.Count - 1].Item1) - combatTotalTime;
                 lastPlayerAction = null;
             }
             else if (!isEnemyInAction && lastPlayerAction != null)
@@ -539,8 +563,8 @@ public class CombatManager : MonoBehaviour
 
         combatTotalTime += Time.deltaTime;
 
-        isPlayerInAction = playerTimeline[playerTimeline.Count - 1].Item1 + 0.3f > combatTotalTime;
-        isEnemyInAction = enemyTimeline[enemyTimeline.Count - 1].Item1 + 0.3f > combatTotalTime;
+        isPlayerInAction = playerHistory[playerHistory.Count - 1].Item1 + 0.3f > combatTotalTime;
+        isEnemyInAction = enemyHistory[enemyHistory.Count - 1].Item1 + 0.3f > combatTotalTime;
 
         // Remove lastAction if it's over
         if (lastPlayerAction != null && lastPlayerAction.Item1 > combatTotalTime) lastPlayerAction = null;
