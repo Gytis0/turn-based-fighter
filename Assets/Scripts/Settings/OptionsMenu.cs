@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class OptionsMenu : MonoBehaviour
@@ -17,6 +18,7 @@ public class OptionsMenu : MonoBehaviour
 
     private void Start()
     {
+        
         resolutions = Screen.resolutions;
         resolutionsDropdown.ClearOptions();
 
@@ -34,6 +36,14 @@ public class OptionsMenu : MonoBehaviour
         resolutionsDropdown.AddOptions(optionsNames);
         resolutionsDropdown.value = currentResolution;
         resolutionsDropdown.RefreshShownValue();
+
+        if (!PlayerPrefs.HasKey("resolutionIndex"))
+        {
+            PlayerPrefs.SetInt("resolutionIndex", resolutions.Length - 1);
+            PlayerPrefs.SetFloat("volume", -40f);
+            PlayerPrefs.SetInt("quality", 5);
+            PlayerPrefs.SetInt("fullscreen", 1);
+        }
 
         Load();
     }

@@ -249,7 +249,10 @@ public class CombatHumanoid : MonoBehaviour
         return humanoidProperties.GetStamina();
     }
     public float GetComposure() { return humanoidProperties.GetComposure(); }
+    public float GetMaxHealth() { return humanoidProperties.GetMaxHealth(); }
+    public float GetMaxStamina() { return humanoidProperties.GetMaxStamina(); }
     public float GetMaxComposure() { return humanoidProperties.GetMaxComposure(); }
+    public float GetIntelligence() { return humanoidProperties.GetIntelligence(); }
 
     public CombatStance GetCombatStance() { return combatStance; }
     public CombatState GetCombatState() { return combatState; }
@@ -260,6 +263,8 @@ public class CombatHumanoid : MonoBehaviour
     }
 
     public float GetWeaponSpeed() { return equipment.GetWeaponSpeed(); }
+
+    public WeaponType GetWeaponType() { return equipment.GetEquippedWeaponData().GetWeaponType(); }
 
     public float GetShieldWeight()
     {

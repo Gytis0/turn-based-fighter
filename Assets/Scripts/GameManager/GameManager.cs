@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        if (!PlayerPrefs.HasKey("matchesPlayed")) SetupStats();
+
         itemManager = ItemManager.Instance;
         combatManager = CombatManager.Instance;
         menuObject = GameObject.FindGameObjectWithTag("Main Menu");
@@ -375,6 +377,7 @@ public class GameManager : MonoBehaviour
         {
             title.SetText("Victory");
             headerImage.color = footerImage.color = greenColor;
+            PlayerPrefs.SetInt("matchesWon", PlayerPrefs.GetInt("matchesWon") + 1);
         }
         else
         {
@@ -382,13 +385,22 @@ public class GameManager : MonoBehaviour
             headerImage.color = footerImage.color = redColor;
         }
 
-        score.SetText("Score: " + CalculateScore(playerProperties, isPlayerWinner));
+        int scoreValue = CalculateScore(playerProperties, isPlayerWinner);
+        int bestScore = PlayerPrefs.GetInt("bestScore");
+        score.SetText("Score: " + scoreValue);
+        if(scoreValue >  bestScore)
+        {
+            PlayerPrefs.SetInt("bestScore", scoreValue);
+        }
+
 
         playerStats.SetTitle("Player");
         playerStats.SetSlidersValues(playerProperties.GetHealth(), playerProperties.GetMaxHealth(), playerProperties.GetStamina(), playerProperties.GetMaxStamina(), playerProperties.GetComposure(), playerProperties.GetMaxComposure()) ;
 
         enemyStats.SetTitle("Enemy");
         enemyStats.SetSlidersValues(enemyProperties.GetHealth(), enemyProperties.GetMaxHealth(), enemyProperties.GetStamina(), enemyProperties.GetMaxStamina(), enemyProperties.GetComposure(), enemyProperties.GetMaxComposure());
+
+        PlayerPrefs.SetInt("matchesPlayed", PlayerPrefs.GetInt("matchesPlayed") + 1);
     }
 
     int CalculateScore(HumanoidProperties properties, bool isPlayerWinner)
@@ -426,5 +438,23 @@ public class GameManager : MonoBehaviour
         return new float[6] {minHealth, maxHealth, minStamina, maxStamina, minComposure, maxComposure};
     }
 
-
+    void SetupStats()
+    {
+        PlayerPrefs.SetInt("matchesPlayed", 0);
+        PlayerPrefs.SetInt("matchesWon", 0);
+        PlayerPrefs.SetInt("totalTime", 0);
+        PlayerPrefs.SetInt("countTime", 0);
+        PlayerPrefs.SetInt("actionsTaken", 0);
+        PlayerPrefs.SetInt("bestScore", 0);
+        PlayerPrefs.SetInt("totalHealth", 0);
+        PlayerPrefs.SetInt("countHealth", 0);
+        PlayerPrefs.SetInt("totalStamina", 0);
+        PlayerPrefs.SetInt("countStamina", 0);
+        PlayerPrefs.SetInt("totalComposure", 0);
+        PlayerPrefs.SetInt("countComposure", 0);
+        PlayerPrefs.SetInt("totalIntelligence", 0);
+        PlayerPrefs.SetInt("countIntelligence", 0);
+        PlayerPrefs.SetInt("totalOneHanded", 0);
+        PlayerPrefs.SetInt("countOneHanded", 0);
+    }
 }

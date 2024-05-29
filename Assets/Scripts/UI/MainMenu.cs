@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -101,18 +102,37 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    void UpdateStats()
+    public void UpdateStats()
     {
-        matchesPlayedText.SetText(PlayerPrefs.GetInt("matchesPlayed").ToString());
-        matchesWonText.SetText(PlayerPrefs.GetInt("matchesWon").ToString());
-        averageMatchTimeText.SetText((PlayerPrefs.GetFloat("totalTime") / PlayerPrefs.GetInt("countTime")).ToString());
-        actionsTakenText.SetText(PlayerPrefs.GetInt("actionsTaken").ToString());
-        bestScoreText.SetText(PlayerPrefs.GetInt("bestScore").ToString());
-        averageHealthChoiceText.SetText((PlayerPrefs.GetInt("totalHealth") / PlayerPrefs.GetInt("countHealth")).ToString());
-        averageStaminaChoiceText.SetText((PlayerPrefs.GetInt("totalStamina") / PlayerPrefs.GetInt("countStamina")).ToString());
-        averageComposureChoiceText.SetText((PlayerPrefs.GetInt("totalComposure") / PlayerPrefs.GetInt("countComposure")).ToString());
-        averageIntelligenceChoiceText.SetText((PlayerPrefs.GetInt("totalIntelligence") / PlayerPrefs.GetInt("countIntelligence")).ToString());
-        oneHandedWeaponChoicesText.SetText((PlayerPrefs.GetInt("totalOneHanded") / PlayerPrefs.GetInt("countOneHanded")).ToString());
+        matchesPlayedText.SetText("Matches played: " + PlayerPrefs.GetInt("matchesPlayed"));
+        
+        actionsTakenText.SetText("Actions taken: " + PlayerPrefs.GetInt("actionsTaken"));
+        bestScoreText.SetText("Best score: " + PlayerPrefs.GetInt("bestScore"));
+        
+
+        int hours, minutes, seconds;
+        hours = minutes = seconds = 0;
+        try
+        {
+            float averageTotalTime = PlayerPrefs.GetInt("totalTime") / PlayerPrefs.GetInt("countTime");
+            if(!float.IsNaN(averageTotalTime))
+            {
+                hours = (int)(averageTotalTime / 3600);
+                averageTotalTime -= hours * 3600;
+                minutes = (int)(averageTotalTime / 60);
+                averageTotalTime -= minutes * 60;
+                seconds = (int)averageTotalTime;
+            }
+        }
+        catch (DivideByZeroException e) { Debug.LogError("Divided by 0");    }
+        
+        try { averageMatchTimeText.SetText("Average match time: " + hours + ":" + minutes + ":" + seconds); } catch (Exception) { }
+        try { matchesWonText.SetText("Matches won: " + PlayerPrefs.GetInt("matchesWon") / PlayerPrefs.GetInt("matchesPlayed") * 100 + "%"); } catch (Exception) { }
+        try { averageHealthChoiceText.SetText("Average health choice: " + (PlayerPrefs.GetInt("totalHealth") / PlayerPrefs.GetInt("countHealth"))); } catch (Exception) { }
+        try { averageStaminaChoiceText.SetText("Average stamina choice: " + (PlayerPrefs.GetInt("totalStamina") / PlayerPrefs.GetInt("countStamina"))); } catch (Exception) { }
+        try { averageComposureChoiceText.SetText("Average composure choice: " + (PlayerPrefs.GetInt("totalComposure") / PlayerPrefs.GetInt("countComposure"))); } catch (Exception) { }
+        try { averageIntelligenceChoiceText.SetText("Average intelligence choice: " + (PlayerPrefs.GetInt("totalIntelligence") / PlayerPrefs.GetInt("countIntelligence"))); } catch (Exception) { }
+        try { oneHandedWeaponChoicesText.SetText("One handed weapon choice: " + (PlayerPrefs.GetInt("countOneHanded") / PlayerPrefs.GetInt("matchesPlayed") * 100) + "%"); } catch (Exception) { }
     }
 
     void updateAllPanels()

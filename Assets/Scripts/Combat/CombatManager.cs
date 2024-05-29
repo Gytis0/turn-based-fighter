@@ -116,6 +116,20 @@ public class CombatManager : MonoBehaviour
         player.PromptAction(GetAvailableActions(player));
 
         timer.EnableTimer(60f);
+
+        PlayerPrefs.SetInt("totalHealth", PlayerPrefs.GetInt("totalHealth") + (int)player.GetMaxHealth());
+        PlayerPrefs.SetInt("countHealth", PlayerPrefs.GetInt("countHealth") + 1);
+
+        PlayerPrefs.SetInt("totalStamina", PlayerPrefs.GetInt("totalStamina") + (int)player.GetMaxStamina());
+        PlayerPrefs.SetInt("countStamina", PlayerPrefs.GetInt("countStamina") + 1);
+
+        PlayerPrefs.SetInt("totalComposure", PlayerPrefs.GetInt("totalComposure") + (int)player.GetMaxComposure());
+        PlayerPrefs.SetInt("countComposure", PlayerPrefs.GetInt("countComposure") + 1);
+
+        PlayerPrefs.SetInt("totalIntelligence", PlayerPrefs.GetInt("totalIntelligence") + (int)player.GetIntelligence());
+        PlayerPrefs.SetInt("countIntelligence", PlayerPrefs.GetInt("countIntelligence") + 1);
+
+        if (player.GetWeaponType() == WeaponType.OneHanded) PlayerPrefs.SetInt("countOneHanded", PlayerPrefs.GetInt("countOneHanded") + 1);
     }
 
     public void StopCombat(CombatHumanoid loser)
@@ -130,6 +144,9 @@ public class CombatManager : MonoBehaviour
         HumanoidProperties playerProperties = player.GetComponent<HumanoidProperties>();
         HumanoidProperties enemyProperties = enemy.GetComponent<HumanoidProperties>();
         isPlayerWinner = loser.GetType() == typeof(CombatEnemy);
+
+        PlayerPrefs.SetFloat("totalTime", PlayerPrefs.GetFloat("totalTime") + combatTotalTime);
+        PlayerPrefs.SetInt("countTime", PlayerPrefs.GetInt("countTime") + 1);
 
         onCombatEnd(isPlayerWinner, playerProperties, enemyProperties);
     }
@@ -207,6 +224,8 @@ public class CombatManager : MonoBehaviour
 
         if (approved)
         {
+            PlayerPrefs.SetInt("actionsTaken", PlayerPrefs.GetInt("actionsTaken") + 1);
+
             action.duration = CalculateActionDuration(action, character);
             //action.duration *= 1 - (Mathf.Clamp(character.GetComposure() / character.GetMaxComposure() * 4, 0.01f, 1f)) + 1;
 
@@ -350,7 +369,7 @@ public class CombatManager : MonoBehaviour
             givenTime *= enemy.GetComposure() / enemy.GetMaxComposure();
             enemy.PromptAction(GetAvailableActions(enemy));
         }
-        givenTime += 5f;
+        givenTime += 8f;
         timer.EnableTimer(givenTime);
     }
 
